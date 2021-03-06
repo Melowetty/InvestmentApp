@@ -43,10 +43,12 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
 
+    // Charts
+    implementation 'com.diogobernardino:williamchart:3.10.1'
 
-    implementation 'com.github.majorkik:SparkLineLayout:1.0.1'
-
-    implementation 'im.dacer:AndroidCharts:1.0.4'
+// Tooltips
+    implementation 'com.diogobernardino.williamchart:tooltip-slider:3.10.1'
+    implementation 'com.diogobernardino.williamchart:tooltip-points:3.10.1'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
