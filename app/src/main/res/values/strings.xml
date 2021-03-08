@@ -5,6 +5,6 @@
     <string name="favourite">Favourite</string>
     <string name="placeholder_name" translatable="false">YNDX</string>
     <string name="placeholder_surname" translatable="false">Yandex, LLC</string>
-    <string name="placeholder_cost">4 764,6 ₽</string>
-    <string name="placeholder_percent">+55 ₽ (1,15%)</string>
+    <string name="placeholder_cost" translatable="false">4 764,6 ₽</string>
+    <string name="placeholder_percent" translatable="false">+55 ₽ (1,15%)</string>
 </resources>

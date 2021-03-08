@@ -15,7 +15,8 @@ class TestFragment : Fragment() {
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.activity_stock_view, container, false)
+    ):
+        View? = inflater.inflate(R.layout.activity_stock_view, container, false)
 
     @OptIn(ExperimentalFeature::class)
     override fun onViewCreated(view: View, saveInstanceState: Bundle?) {
@@ -24,7 +25,8 @@ class TestFragment : Fragment() {
          * Line Chart
          */
         // TODO
-        val lineChart = layoutInflater.inflate(R.id.lineChart) as LineChartView
+        val lineChart = StockView().getLineChart()
+        val lineChartValue = StockView().getLineChartValue()
         lineChart.gradientFillColors =
                 intArrayOf(
                         Color.parseColor("#81FFFFFF"),
