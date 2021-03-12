@@ -12,7 +12,7 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         var stockList = ArrayList<StockItem>()
-        stockList.add(StockItem("YNDX","Yandex Inc.",null, 263.0, 25.0, true))
+        stockList.add(StockItem("YNDX","Yandex Inc.","", 263.0, 25.0, true))
         recyclerView.adapter = StockAdapter(stockList, this)
 
 

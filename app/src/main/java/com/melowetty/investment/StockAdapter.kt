@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.melowetty.investment.utils.Helper
 
 public class StockAdapter(private val listStocks: List<StockItem>, private val context: Context) :
     RecyclerView.Adapter<StockAdapter.ViewHolder>() {
@@ -21,7 +22,7 @@ public class StockAdapter(private val listStocks: List<StockItem>, private val c
         holder.subtitle.text = item.subtitle
         holder.difference.text = item.difference.toString()
         holder.cost.text = item.cost.toString()
-        holder.logo.setImageDrawable(item.logo)
+        Helper.pasteImage(context, item.logo, holder.logo)
     }
 
     override fun getItemCount(): Int {
