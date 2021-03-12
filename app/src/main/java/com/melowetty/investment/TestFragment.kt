@@ -17,7 +17,6 @@ class TestFragment : Fragment() {
     ):
         View? = inflater.inflate(R.layout.activity_stock_view, container, false)
 
-    @OptIn(ExperimentalFeature::class)
     override fun onViewCreated(view: View, saveInstanceState: Bundle?) {
 
         /**
