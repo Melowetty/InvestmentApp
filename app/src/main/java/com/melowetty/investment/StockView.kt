@@ -18,8 +18,8 @@ class StockView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock_view)
-        lineChartView = findViewById<LineChartView>(R.id.lineChart)
-        lineChartValue = findViewById<TextView>(R.id.lineChartValue)
+        lineChartView = findViewById(R.id.lineChart)
+        lineChartValue = findViewById(R.id.lineChartValue)
 
     }
 }

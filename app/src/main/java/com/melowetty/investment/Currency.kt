@@ -1,5 +1,7 @@
 package com.melowetty.investment
 
+import java.util.*
+
 enum class Currency(val currency: String) {
     USD("$") {
         override fun format(cost: Float): String {
@@ -18,6 +20,6 @@ enum class Currency(val currency: String) {
     };
     abstract fun format(cost: Float): String;
     companion object {
-        fun getCardTypeByName(name: String) = valueOf(name.toUpperCase())
+        fun getCardTypeByName(name: String) = valueOf(name.toUpperCase(Locale.ROOT))
     }
 }

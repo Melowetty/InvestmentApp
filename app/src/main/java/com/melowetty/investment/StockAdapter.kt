@@ -22,7 +22,8 @@ public class StockAdapter(private val listStocks: List<StockItem>, private val c
         holder.subtitle.text = item.subtitle
         holder.difference.text = item.difference.toString()
         holder.cost.text = item.cost.toString()
-        Helper.pasteImage(context, item.logo, holder.logo)
+        item.logo?.let { Helper.pasteImage(context, it, holder.logo) }
+        holder.logo.clipToOutline = true
     }
 
     override fun getItemCount(): Int {
