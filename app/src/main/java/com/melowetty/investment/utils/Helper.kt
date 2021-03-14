@@ -2,6 +2,8 @@ package com.melowetty.investment.utils
 
 import android.content.Context
 import android.widget.ImageView
+import android.widget.TextView
+import com.melowetty.investment.R
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -52,6 +54,10 @@ class Helper {
                 }
             }
             return str.substring(pos)
+        }
+        fun changeCondition(textView: TextView, active: Boolean) {
+            if(active) textView.setTextAppearance(R.style.PrimaryButtonActive)
+            else textView.setTextAppearance(R.style.PrimaryButtonNotActive)
         }
     }
 }

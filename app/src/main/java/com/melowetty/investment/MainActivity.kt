@@ -1,27 +1,39 @@
 package com.melowetty.investment
 
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.melowetty.investment.utils.Helper
 
 class MainActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
-
+    private lateinit var favourite: TextView
+    private lateinit var stocks: TextView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var search_bar: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerView = findViewById(R.id.recyclerView)
-        Log.d(TAG, "IO called")
-        fillRecyclerView(recyclerView, this).execute()
-
-        Log.d(TAG, "Adapter selected")
-
-        Log.d(TAG, "IO is call")
+        favourite = findViewById(R.id.favourite)
+        stocks = findViewById(R.id.stocks)
+        favourite.setOnClickListener {
+            Helper.changeCondition(favourite, true)
+            Helper.changeCondition(stocks, false)
+        }
+        stocks.setOnClickListener {
+            Helper.changeCondition(favourite, false)
+            Helper.changeCondition(stocks, true)
+            //val stockView = Intent(this, StockView::class.java)
+            //startActivity(stockView)
+        }
     }
 
     class fillRecyclerView(val target: RecyclerView, val context: Context) :
