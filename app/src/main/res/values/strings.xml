@@ -7,4 +7,10 @@
     <string name="placeholder_surname" translatable="false">Yandex, LLC</string>
     <string name="placeholder_cost" translatable="false">4 764,6 ₽</string>
     <string name="placeholder_percent" translatable="false">+55 ₽ (1,15%)</string>
+    <string name="news">News</string>
+    <string name="forecasts">Forecasts</string>
+    <string name="summary">Summary</string>
+    <string name="chart">Chart</string>
+    <string name="company_placeholder">Apple Inc.</string>
+    <string name="name_placeholder">AAPL</string>
 </resources>

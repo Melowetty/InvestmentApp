@@ -21,7 +21,7 @@ class StockView : AppCompatActivity() {
         lineChart.gradientFillColors =
                 intArrayOf(
                         Color.parseColor("#81DCDCDC"),
-                        Color.TRANSPARENT
+                        Color.parseColor("#81EBEBEB")
                 )
         lineChart.animation.duration = animationDuration
         lineChart.tooltip =

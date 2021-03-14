@@ -7,4 +7,5 @@
     <color name="colorMediumGray">#F0F4F7</color>
     <color name="colorUp">#24B25D</color>
     <color name="colorDown">#B22424</color>
+    <color name="colorBlack">#1A1A1A</color>
 </resources>
