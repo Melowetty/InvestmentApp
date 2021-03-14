@@ -4,4 +4,15 @@
     <string name="find">Найти компанию или тикер</string>
     <string name="stocks">Акции</string>
     <string name="favourite">Избранное</string>
+    <string name="news">Новости</string>
+    <string name="chart">График</string>
+    <string name="interval_all">Всё</string>
+    <string name="interval_year">1Г</string>
+    <string name="interval_6m">6М</string>
+    <string name="interval_month">М</string>
+    <string name="interval_w">Н</string>
+    <string name="inverval_day">Д</string>
+    <string name="forecasts">Прогнозы</string>
+    <string name="summary">Сводка</string>
+    <string name="buy_btn">Купить за 4 764,6 ₽</string>
 </resources>
