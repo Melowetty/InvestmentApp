@@ -17,7 +17,7 @@ class StockView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock_view)
         lineChart = findViewById(R.id.lineChart)
-        lineChartValue = findViewById(R.id.lineChartValue)
+        //lineChartValue = findViewById(R.id.lineChartValue)
         lineChart.gradientFillColors =
                 intArrayOf(
                         Color.parseColor("#81DCDCDC"),
@@ -29,9 +29,9 @@ class StockView : AppCompatActivity() {
                     it.color = Color.BLACK
                 }
         lineChart.onDataPointTouchListener = { index, _, _ ->
-            lineChartValue.text =
-                    lineSet.toList()[index]
-                            .first + " " + lineSet.toList()[index].second.toString()
+            //lineChartValue.text =
+              //      lineSet.toList()[index]
+                //            .first + " " + lineSet.toList()[index].second.toString()
         }
         lineChart.animate(lineSet)
         // TODO БИБЛИОТЕКА УСПЕШНО ПРОТЕСТИРОВАНА

@@ -17,13 +17,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var favourite: TextView
     private lateinit var stocks: TextView
     private lateinit var recyclerView: RecyclerView
-    private lateinit var search_bar: EditText
+    private lateinit var searchBar: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         recyclerView = findViewById(R.id.recyclerView)
         favourite = findViewById(R.id.favourite)
         stocks = findViewById(R.id.stocks)
+        searchBar = findViewById(R.id.search_bar)
+
         favourite.setOnClickListener {
             Helper.changeCondition(favourite, true)
             Helper.changeCondition(stocks, false)

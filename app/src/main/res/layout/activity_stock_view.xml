@@ -144,7 +144,6 @@
         app:chart_labelsSize="10sp"
         app:chart_lineColor="#1A1A1A"
         app:chart_lineThickness="2dp"
-        app:chart_pointDrawable="drawable"
         app:chart_smoothLine="true"
         app:layout_constraintBottom_toTopOf="@+id/intervals"
         app:layout_constraintLeft_toLeftOf="parent"

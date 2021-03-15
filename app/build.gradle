@@ -49,17 +49,21 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'com.diogobernardino:williamchart:3.10.1' // Графики
-    implementation 'com.finnhub:kotlin-client:1.1.0' // Finhug API
     implementation 'com.squareup.picasso:picasso:2.5.2' // Библиотека для работы с изображениями
 
     // Дополнения к чартам
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.10.1'
     implementation 'com.diogobernardino.williamchart:tooltip-points:3.10.1'
 
-    //RxJava2
+    // RxJava2
     implementation "io.reactivex.rxjava2:rxjava:2.2.7"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
 
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.7"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.7"
+    // Retrofit2
+    implementation 'com.squareup.retrofit2:retrofit:2.7.1' // Собственно сам Retrofit 2
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1' // Конвертер для работы с JSON
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1' // Перехватчик запросов
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1' // Адаптер для работы с RxJava
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0' // OkHttp - это HTTP-клиент
+    implementation 'com.google.code.gson:gson:2.8.6'
 }
