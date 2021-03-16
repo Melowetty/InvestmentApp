@@ -20,4 +20,6 @@
     <string name="interval_month">M</string>
     <string name="interval_w">W</string>
     <string name="inverval_day">D</string>
+    <string name="stock_difference" translatable="false">+$0.12 (1,15%)</string>
+    <string name="stock_price" translatable="false">$131.93</string>
 </resources>
