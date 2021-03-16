@@ -40,7 +40,7 @@
         app:layout_constraintLeft_toRightOf="@id/name"
         app:layout_constraintBottom_toBottomOf="@id/name"
         app:layout_constraintTop_toTopOf="@id/name"
-        android:layout_marginStart="6dp"/>
+        android:layout_marginStart="6dp" />
     <TextView
         android:id="@+id/company"
         android:layout_width="wrap_content"
