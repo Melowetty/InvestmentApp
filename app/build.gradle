@@ -44,6 +44,19 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
+
+    def room_version = "2.2.6"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -55,15 +68,5 @@ dependencies {
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.10.1'
     implementation 'com.diogobernardino.williamchart:tooltip-points:3.10.1'
 
-    // RxJava2
-    implementation "io.reactivex.rxjava2:rxjava:2.2.7"
-    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
 
-    // Retrofit2
-    implementation 'com.squareup.retrofit2:retrofit:2.7.1' // Собственно сам Retrofit 2
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1' // Конвертер для работы с JSON
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1' // Перехватчик запросов
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1' // Адаптер для работы с RxJava
-    implementation 'com.squareup.okhttp3:okhttp:4.9.0' // OkHttp - это HTTP-клиент
-    implementation 'com.google.code.gson:gson:2.8.6'
 }
