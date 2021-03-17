@@ -1,12 +1,9 @@
 package com.melowetty.investment
 
-import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.utils.Helper
 
@@ -38,26 +35,6 @@ class MainActivity : AppCompatActivity() {
         searchBar.setOnClickListener {
             val stockView = Intent(this, SearchActivity::class.java)
             startActivity(stockView)
-        }
-    }
-
-    class fillRecyclerView(val target: RecyclerView, val context: Context) :
-        AsyncTask<Void, Void, ArrayList<StockItem>>() {
-        private val TAG = this::class.java.simpleName
-        override fun doInBackground(vararg params: Void?): ArrayList<StockItem> {
-            val stockList = ArrayList<StockItem>()
-            val profile = CompanyProfile("YNDX")
-            stockList.add(profile.getStockItem())
-            val profile2 = CompanyProfile("AAPL")
-            stockList.add(profile2.getStockItem())
-            return stockList
-            // TODO(" Вызов Company Profile выдает Caused by: java.lang.ClassNotFoundException: Didn't find class "java.time.OffsetDateTime". Требует перехода на вебсокеты ")
-        }
-
-        override fun onPostExecute(result: ArrayList<StockItem>) {
-            target.layoutManager = LinearLayoutManager(context)
-            target.adapter = StockAdapter(result, context)
-            super.onPostExecute(result)
         }
     }
 }
