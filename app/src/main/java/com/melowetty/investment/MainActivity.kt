@@ -1,6 +1,7 @@
 package com.melowetty.investment
 
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.widget.TextView
@@ -31,8 +32,12 @@ class MainActivity : AppCompatActivity() {
         stocks.setOnClickListener {
             Helper.changeCondition(favourite, false)
             Helper.changeCondition(stocks, true)
-            //val stockView = Intent(this, StockView::class.java)
-            //startActivity(stockView)
+            val stockView = Intent(this, StockView::class.java)
+            startActivity(stockView)
+        }
+        searchBar.setOnClickListener {
+            val stockView = Intent(this, SearchActivity::class.java)
+            startActivity(stockView)
         }
     }
 

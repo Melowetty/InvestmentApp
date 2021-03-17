@@ -1,8 +1,10 @@
 package com.melowetty.investment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.db.williamchart.slidertooltip.SliderTooltip
@@ -16,6 +18,8 @@ class StockView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock_view)
+
+        val back = findViewById<ImageView>(R.id.back)
         lineChart = findViewById(R.id.lineChart)
         //lineChartValue = findViewById(R.id.lineChartValue)
         lineChart.gradientFillColors =
@@ -34,7 +38,11 @@ class StockView : AppCompatActivity() {
                 //            .first + " " + lineSet.toList()[index].second.toString()
         }
         lineChart.animate(lineSet)
-        // TODO БИБЛИОТЕКА УСПЕШНО ПРОТЕСТИРОВАНА
+
+        back.setOnClickListener {
+            val stockView = Intent(this, MainActivity::class.java)
+            startActivity(stockView)
+        }
     }
     companion object {
         private val lineSet = listOf(
