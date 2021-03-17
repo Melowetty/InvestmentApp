@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Investment Accelerator</string>
+    <string name="app_name">Investment</string>
     <string name="find">Find company or ticker</string>
     <string name="stocks">Stocks</string>
     <string name="favourite">Favourite</string>
@@ -22,4 +22,6 @@
     <string name="inverval_day">D</string>
     <string name="stock_difference" translatable="false">+$0.12 (1,15%)</string>
     <string name="stock_price" translatable="false">$131.93</string>
+    <string name="popular_requests">Popular requests</string>
+    <string name="you_ve_searched_for_this">You’ve searched for this</string>
 </resources>

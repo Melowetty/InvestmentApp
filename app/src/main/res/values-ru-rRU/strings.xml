@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Акселератор инвестиций</string>
+    <string name="app_name">Инвестиции</string>
     <string name="find">Найти компанию или тикер</string>
     <string name="stocks">Акции</string>
     <string name="favourite">Избранное</string>
@@ -15,4 +15,6 @@
     <string name="forecasts">Прогнозы</string>
     <string name="summary">Сводка</string>
     <string name="buy_btn">Купить за 4 764,6 ₽</string>
+    <string name="popular_requests">Популярные запросы</string>
+    <string name="you_ve_searched_for_this">Вы искали это</string>
 </resources>
