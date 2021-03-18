@@ -1,15 +1,22 @@
 package com.melowetty.investment
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.melowetty.investment.models.StockListModel
+import com.melowetty.investment.viewmodel.SearchActivityViewModel
 
 class SearchActivity : AppCompatActivity() {
+    private val TAG = this::class.java.simpleName
     lateinit var search: EditText
+    lateinit var viewModel: SearchActivityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -25,14 +32,32 @@ class SearchActivity : AppCompatActivity() {
 
         search.addTextChangedListener {
             if (it != null) {
-                if (it.isNotEmpty()) clear.visibility = View.VISIBLE
+                if (it.isNotEmpty())  {
+                    clear.visibility = View.VISIBLE
+                    loadAPIData(it.toString())
+                }
                 else clear.visibility = View.GONE
             }
         }
+        search.text
 
         clear.setOnClickListener {
             search.text = null
             clear.visibility = View.GONE
         }
+    }
+    fun loadAPIData(input: String) {
+        viewModel = ViewModelProvider(this).get(SearchActivityViewModel::class.java)
+        viewModel.getStockListObserver().observe(this, Observer<StockListModel> {
+            if(it != null) {
+                it.result.forEach {
+                    Log.d(TAG, it.symbol)
+                }
+            }
+            else {
+                Log.e(TAG, "Error in fetching data")
+            }
+        })
+        viewModel.makeApiCall(input)
     }
 }
