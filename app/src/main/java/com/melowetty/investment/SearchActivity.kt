@@ -10,7 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.StockListModel
+import com.melowetty.investment.viewmodel.CompanyProfileViewModel
 import com.melowetty.investment.viewmodel.SearchActivityViewModel
 
 class SearchActivity : AppCompatActivity() {
@@ -51,7 +53,7 @@ class SearchActivity : AppCompatActivity() {
         viewModel.getStockListObserver().observe(this, Observer<StockListModel> {
             if(it != null) {
                 it.result.forEach {
-                    Log.d(TAG, it.symbol)
+                    getCompanyProfileInfo(it.symbol)
                 }
             }
             else {
@@ -59,5 +61,17 @@ class SearchActivity : AppCompatActivity() {
             }
         })
         viewModel.makeApiCall(input)
+    }
+    fun getCompanyProfileInfo(symbol: String) {
+        val viewProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        viewProfileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
+            if(it != null) {
+                Log.d(TAG, it.toString())
+            }
+            else {
+                Log.e(TAG, "Error in fetching data")
+            }
+        })
+        viewProfileModel.makeApiCall(symbol)
     }
 }

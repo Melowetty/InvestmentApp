@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.melowetty.investment.models.StockItem
 import com.melowetty.investment.utils.Helper
 
 public class StockAdapter(private val listStocks: List<StockItem>, private val context: Context) :
@@ -20,8 +21,8 @@ public class StockAdapter(private val listStocks: List<StockItem>, private val c
         val item = listStocks[position]
         holder.title.text = item.title
         holder.subtitle.text = item.subtitle
-        holder.difference.text = item.difference.toString()
-        holder.cost.text = item.cost.toString()
+        holder.difference.text = item.priceInfo.difference.toString()
+        holder.cost.text = item.priceInfo.cost.toString()
         item.logo?.let { Helper.pasteImage(context, it, holder.logo) }
         holder.logo.clipToOutline = true
     }
