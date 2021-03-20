@@ -10,10 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.models.ExchangeRateModel
 import com.melowetty.investment.models.IndicesConstituensModel
 import com.melowetty.investment.models.RealTimePriceModel
 import com.melowetty.investment.utils.Helper
 import com.melowetty.investment.viewmodel.CompanyProfileViewModel
+import com.melowetty.investment.viewmodel.ExchangeRateViewModel
 import com.melowetty.investment.viewmodel.IndicesConstituenceViewModel
 import com.melowetty.investment.viewmodel.PriceViewModel
 
@@ -26,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var priceModel: PriceViewModel
     private lateinit var profileModel: CompanyProfileViewModel
     private lateinit var incideConstituensModel: IndicesConstituenceViewModel
+    private lateinit var exchangeRateModel: ExchangeRateViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -55,6 +58,7 @@ class MainActivity : AppCompatActivity() {
         getRealTimePrice("AAPL")
         getCompanyProfile("AAPL")
         getIndexConstituens(Indices.DOW_JONES)
+        getExchangeRate(Currency.USD)
     }
     fun initModels() {
         priceModel = ViewModelProvider(this).get(PriceViewModel::class.java)
@@ -84,6 +88,15 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Error in fetching data")
             }
         })
+        exchangeRateModel = ViewModelProvider(this).get(ExchangeRateViewModel::class.java)
+        exchangeRateModel.getExchangeRateObserver().observe(this, Observer<ExchangeRateModel> { it ->
+            if(it != null) {
+                Log.d(TAG, it.toString())
+            }
+            else {
+                Log.e(TAG, "Error in fetching data")
+            }
+        })
     }
     fun initRecyclerView() {
         recyclerView.apply {
@@ -98,5 +111,8 @@ class MainActivity : AppCompatActivity() {
     }
     fun getIndexConstituens(indice: Indices) {
         incideConstituensModel.makeApiCall(indice.code)
+    }
+    fun getExchangeRate(exchange: Currency) {
+        exchangeRateModel.makeApiCall(exchange.name)
     }
 }
