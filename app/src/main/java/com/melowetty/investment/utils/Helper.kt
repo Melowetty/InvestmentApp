@@ -1,6 +1,5 @@
 package com.melowetty.investment.utils
 
-import android.content.Context
 import android.widget.ImageView
 import android.widget.TextView
 import com.melowetty.investment.R
