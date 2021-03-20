@@ -17,8 +17,8 @@ class Helper {
             return format.format(date)
         }
         fun formatCost(cost: Float?): Float = DecimalFormat("#0.0").format(cost).replace(',','.').toFloat();
-        fun pasteImage(context: Context, url: String, imageView: ImageView) {
-            Picasso.with(context)
+        fun pasteImage(url: String, imageView: ImageView) {
+            Picasso.get()
                 .load(url)
                 .into(imageView)
         }

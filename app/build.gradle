@@ -62,7 +62,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'com.diogobernardino:williamchart:3.10.1' // Графики
-    implementation 'com.squareup.picasso:picasso:2.5.2' // Библиотека для работы с изображениями
+    implementation 'com.squareup.picasso:picasso:2.8' // Библиотека для работы с изображениями
 
     // Дополнения к чартам
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.10.1'

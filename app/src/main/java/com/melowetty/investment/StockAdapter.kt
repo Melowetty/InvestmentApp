@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.models.StockItem
 import com.melowetty.investment.utils.Helper
 
-public class StockAdapter(private val listStocks: List<StockItem>, private val context: Context) :
+public class StockAdapter(private val listStocks: List<StockItem>) :
     RecyclerView.Adapter<StockAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.stock_item, parent, false)
@@ -23,7 +23,7 @@ public class StockAdapter(private val listStocks: List<StockItem>, private val c
         holder.subtitle.text = item.subtitle
         holder.difference.text = item.priceInfo.difference.toString()
         holder.cost.text = item.priceInfo.cost.toString()
-        item.logo?.let { Helper.pasteImage(context, it, holder.logo) }
+        item.logo?.let { Helper.pasteImage(it, holder.logo) }
         holder.logo.clipToOutline = true
     }
 
