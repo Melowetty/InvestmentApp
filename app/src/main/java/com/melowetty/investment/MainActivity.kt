@@ -4,19 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.RealTimePriceModel
-import com.melowetty.investment.models.StockListModel
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodel.CompanyProfileViewModel
 import com.melowetty.investment.viewmodel.PriceViewModel
-import com.melowetty.investment.viewmodel.SearchActivityViewModel
 
 class MainActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName

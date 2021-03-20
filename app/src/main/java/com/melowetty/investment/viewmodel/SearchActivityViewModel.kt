@@ -2,9 +2,9 @@ package com.melowetty.investment.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.melowetty.investment.models.StockListModel
 import com.melowetty.investment.network.RetrofitFinhubInstance
 import com.melowetty.investment.network.RetrofitService
-import com.melowetty.investment.models.StockListModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable

@@ -3,31 +3,31 @@ package com.melowetty.investment
 import com.melowetty.investment.utils.Helper
 import java.util.*
 
-enum class Currency(val currency: String) {
+enum class Currency(val symbol: String) {
     USD("$") {
         override fun format(cost: Float): String {
             return if(cost >= 1000) {
-                USD.currency + Helper.spaceEveryThreeNums(cost.toInt())
+                USD.symbol + Helper.spaceEveryThreeNums(cost.toInt())
             } else {
-                USD.currency + Helper.spaceEveryThreeNums(Helper.formatCost(cost),'.')
+                USD.symbol + Helper.spaceEveryThreeNums(Helper.formatCost(cost),'.')
             }
         }
     },
     EUR("€") {
         override fun format(cost: Float): String {
             return if(cost >= 1000) {
-                Helper.spaceEveryThreeNums(cost.toInt()) + " " + EUR.currency
+                Helper.spaceEveryThreeNums(cost.toInt()) + " " + EUR.symbol
             } else {
-                Helper.spaceEveryThreeNums(Helper.formatCost(cost),'.') + " " + EUR.currency
+                Helper.spaceEveryThreeNums(Helper.formatCost(cost),'.') + " " + EUR.symbol
             }
         }
     },
     RUB("₽") {
         override fun format(cost: Float): String {
             return if(cost >= 10000) {
-                Helper.spaceEveryThreeNums(cost.toInt()) + " " + RUB.currency
+                Helper.spaceEveryThreeNums(cost.toInt()) + " " + RUB.symbol
             } else {
-                Helper.spaceEveryThreeNums(Helper.formatCost(cost),',') + " " + RUB.currency
+                Helper.spaceEveryThreeNums(Helper.formatCost(cost),',') + " " + RUB.symbol
             }
         }
     };

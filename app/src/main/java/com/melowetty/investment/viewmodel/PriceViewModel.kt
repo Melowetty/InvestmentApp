@@ -3,7 +3,6 @@ package com.melowetty.investment.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.melowetty.investment.models.RealTimePriceModel
-import com.melowetty.investment.network.RetrofitFinhubInstance
 import com.melowetty.investment.network.RetrofitService
 import com.melowetty.investment.network.RetrofitYahooFinanceInstance
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
