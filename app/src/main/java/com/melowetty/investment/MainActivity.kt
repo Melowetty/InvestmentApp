@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stocks: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextView
+    private lateinit var priceModel: PriceViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -42,17 +43,16 @@ class MainActivity : AppCompatActivity() {
             val stockView = Intent(this, SearchActivity::class.java)
             startActivity(stockView)
         }
+
+        initPriceModel()
+
         getRealTimePrice("AAPL")
         getRealTimePrice("YNDX")
+        getRealTimePrice("TSLA")
     }
-    fun initRecyclerView() {
-        recyclerView.apply {
-            val layoutManager = LinearLayoutManager(this@MainActivity)
-        }
-    }
-    fun getRealTimePrice(input: String) {
-        val viewModel = ViewModelProvider(this).get(PriceViewModel::class.java)
-        viewModel.getPriceObserver().observe(this, Observer<RealTimePriceModel> { it ->
+    fun initPriceModel() {
+        priceModel = ViewModelProvider(this).get(PriceViewModel::class.java)
+        priceModel.getPriceObserver().observe(this, Observer<RealTimePriceModel> { it ->
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -60,6 +60,13 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Error in fetching data")
             }
         })
-        viewModel.makeApiCall(input)
+    }
+    fun initRecyclerView() {
+        recyclerView.apply {
+            val layoutManager = LinearLayoutManager(this@MainActivity)
+        }
+    }
+    fun getRealTimePrice(input: String) {
+        priceModel.makeApiCall(input)
     }
 }

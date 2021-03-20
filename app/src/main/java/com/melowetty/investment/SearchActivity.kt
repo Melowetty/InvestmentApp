@@ -17,11 +17,14 @@ import com.melowetty.investment.viewmodel.SearchActivityViewModel
 
 class SearchActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
-    lateinit var search: EditText
-    lateinit var viewModel: SearchActivityViewModel
+    private lateinit var search: EditText
+    private lateinit var searchModel: SearchActivityViewModel
+    private lateinit var ProfileModel: CompanyProfileViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        initViewModels()
 
         val back = findViewById<ImageView>(R.id.search_back)
         val clear = findViewById<ImageView>(R.id.clear)
@@ -36,35 +39,32 @@ class SearchActivity : AppCompatActivity() {
             if (it != null) {
                 if (it.isNotEmpty())  {
                     clear.visibility = View.VISIBLE
-                    loadAPIData(it.toString())
+                    searchStocks(it.toString())
                 }
                 else clear.visibility = View.GONE
             }
         }
-        search.text
 
         clear.setOnClickListener {
             search.text = null
             clear.visibility = View.GONE
         }
     }
-    fun loadAPIData(input: String) {
-        viewModel = ViewModelProvider(this).get(SearchActivityViewModel::class.java)
-        viewModel.getStockListObserver().observe(this, Observer<StockListModel> {
+    fun initViewModels() {
+        searchModel = ViewModelProvider(this).get(SearchActivityViewModel::class.java)
+        searchModel.getStockListObserver().observe(this, Observer<StockListModel> {
             if(it != null) {
                 it.result.forEach {
-                    getCompanyProfileInfo(it.symbol)
+                    getCompanyProfile(it.symbol)
                 }
             }
             else {
                 Log.e(TAG, "Error in fetching data")
             }
         })
-        viewModel.makeApiCall(input)
-    }
-    fun getCompanyProfileInfo(symbol: String) {
-        val viewProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
-        viewProfileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
+
+        ProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        ProfileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -72,6 +72,11 @@ class SearchActivity : AppCompatActivity() {
                 Log.e(TAG, "Error in fetching data")
             }
         })
-        viewProfileModel.makeApiCall(symbol)
+    }
+    fun searchStocks(input: String) {
+        searchModel.makeApiCall(input)
+    }
+    fun getCompanyProfile(symbol: String) {
+        ProfileModel.makeApiCall(symbol)
     }
 }
