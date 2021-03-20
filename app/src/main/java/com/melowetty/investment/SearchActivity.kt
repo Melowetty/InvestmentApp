@@ -19,7 +19,7 @@ class SearchActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
     private lateinit var search: EditText
     private lateinit var searchModel: SearchActivityViewModel
-    private lateinit var ProfileModel: CompanyProfileViewModel
+    private lateinit var profileModel: CompanyProfileViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -63,8 +63,8 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
-        ProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
-        ProfileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
+        profileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        profileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -77,6 +77,6 @@ class SearchActivity : AppCompatActivity() {
         searchModel.makeApiCall(input)
     }
     fun getCompanyProfile(symbol: String) {
-        ProfileModel.makeApiCall(symbol)
+        profileModel.makeApiCall(symbol)
     }
 }

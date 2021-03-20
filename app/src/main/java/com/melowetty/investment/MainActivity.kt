@@ -9,8 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.models.IndicesConstituensModel
 import com.melowetty.investment.models.RealTimePriceModel
 import com.melowetty.investment.utils.Helper
+import com.melowetty.investment.viewmodel.CompanyProfileViewModel
+import com.melowetty.investment.viewmodel.IndicesConstituenceViewModel
 import com.melowetty.investment.viewmodel.PriceViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextView
     private lateinit var priceModel: PriceViewModel
+    private lateinit var profileModel: CompanyProfileViewModel
+    private lateinit var incideConstituensModel: IndicesConstituenceViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -44,15 +50,33 @@ class MainActivity : AppCompatActivity() {
             startActivity(stockView)
         }
 
-        initPriceModel()
+        initModels()
 
         getRealTimePrice("AAPL")
-        getRealTimePrice("YNDX")
-        getRealTimePrice("TSLA")
+        getCompanyProfile("AAPL")
+        getIndexConstituens(Indices.DOW_JONES)
     }
-    fun initPriceModel() {
+    fun initModels() {
         priceModel = ViewModelProvider(this).get(PriceViewModel::class.java)
         priceModel.getPriceObserver().observe(this, Observer<RealTimePriceModel> { it ->
+            if(it != null) {
+                Log.d(TAG, it.toString())
+            }
+            else {
+                Log.e(TAG, "Error in fetching data")
+            }
+        })
+        profileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        profileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
+            if(it != null) {
+                Log.d(TAG, it.toString())
+            }
+            else {
+                Log.e(TAG, "Error in fetching data")
+            }
+        })
+        incideConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
+        incideConstituensModel.getConstituenceObserver().observe(this, Observer<IndicesConstituensModel> { it ->
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -68,5 +92,11 @@ class MainActivity : AppCompatActivity() {
     }
     fun getRealTimePrice(input: String) {
         priceModel.makeApiCall(input)
+    }
+    fun getCompanyProfile(symbol: String) {
+        profileModel.makeApiCall(symbol)
+    }
+    fun getIndexConstituens(indice: Indices) {
+        incideConstituensModel.makeApiCall(indice.code)
     }
 }

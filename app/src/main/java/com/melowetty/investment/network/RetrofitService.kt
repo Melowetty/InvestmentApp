@@ -1,6 +1,7 @@
 package com.melowetty.investment.network
 
 import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.models.IndicesConstituensModel
 import com.melowetty.investment.models.RealTimePriceModel
 import com.melowetty.investment.models.StockListModel
 import io.reactivex.rxjava3.core.Observable
@@ -15,4 +16,6 @@ interface RetrofitService {
     fun getCompanyInfoFromAPI(@Query("symbol") symbol: String): Observable<CompanyProfileModel>
     @GET("v10/finance/quoteSummary/{ticker}?modules=price")
     fun getRealTimePrice(@Path("ticker") ticker: String): Observable<RealTimePriceModel>
+    @GET("index/constituents")
+    fun getIndexConstituens(@Query("symbol") symbol: String): Observable<IndicesConstituensModel>
 }

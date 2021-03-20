@@ -11,10 +11,10 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CompanyProfileViewModel: ViewModel() {
-    var stockList: MutableLiveData<CompanyProfileModel> = MutableLiveData()
+    var profile: MutableLiveData<CompanyProfileModel> = MutableLiveData()
 
     fun getCompanyProfileObserver(): MutableLiveData<CompanyProfileModel> {
-        return stockList
+        return profile
     }
 
     fun makeApiCall(symbol: String) {
@@ -32,11 +32,11 @@ class CompanyProfileViewModel: ViewModel() {
             }
 
             override fun onError(e: Throwable?) {
-                stockList.postValue(null)
+                profile.postValue(null)
             }
 
             override fun onNext(t: CompanyProfileModel?) {
-                stockList.postValue(t)
+                profile.postValue(t)
             }
 
             override fun onSubscribe(d: Disposable?) {
