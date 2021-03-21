@@ -2,11 +2,16 @@ package com.melowetty.investment.utils
 
 import android.widget.ImageView
 import android.widget.TextView
+import com.melowetty.investment.Currency
 import com.melowetty.investment.R
+import com.melowetty.investment.models.CompanyInfoModel
+import com.melowetty.investment.models.Stock
+import com.melowetty.investment.models.StockPrice
 import com.squareup.picasso.Picasso
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.abs
 
 class Helper {
     companion object {
@@ -16,10 +21,17 @@ class Helper {
             return format.format(date)
         }
         fun formatCost(cost: Float?): Float = DecimalFormat("#0.0").format(cost).replace(',','.').toFloat();
-        fun pasteImage(url: String, imageView: ImageView) {
-            Picasso.get()
-                .load(url)
-                .into(imageView)
+        fun pasteImage(ticker: String, imageView: ImageView) {
+            try {
+                Picasso.get()
+                    .load("https://yastatic.net/s3/fintech-icons/1/i/$ticker.svg")
+                    .into(imageView)
+            }
+            catch (e: Exception) {
+                Picasso.get()
+                    .load("https://finnhub.io/api/logo?symbol=$ticker")
+                    .into(imageView)
+            }
         }
         fun spaceEveryThreeNums(num : Int): String {
             val str = num.toString()
@@ -57,6 +69,23 @@ class Helper {
         fun changeCondition(textView: TextView, active: Boolean) {
             if(active) textView.setTextAppearance(R.style.PrimaryButtonActive)
             else textView.setTextAppearance(R.style.PrimaryButtonNotActive)
+        }
+        fun getUpChangeBool(percent: String): Boolean {
+            return percent[0] != '-'
+        }
+        fun getDoublePercentChange(percent: String): Double {
+            if(getUpChangeBool(percent)) return percent.toDouble()
+            else return percent.substring(1, percent.length-1).toDouble()
+        }
+        fun companyInfoToStock(model: CompanyInfoModel): Stock {
+            val result = model.quoteSummary.result.get(0).price
+            val price = result.regularMarketPrice.fmt
+            val priceChange = abs(result.regularMarketChange.fmt)
+            val currency = Currency.getCardTypeByName(result.currency)
+            val up = getUpChangeBool(result.regularMarketChangePercent.fmt)
+            val priceChangePercent = getDoublePercentChange(result.regularMarketChangePercent.fmt)
+            val stockPrice = StockPrice(currency, price, priceChange, priceChangePercent, up)
+            return Stock(result.symbol, result.shortName, stockPrice)
         }
     }
 }

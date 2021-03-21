@@ -10,16 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.StockListModel
-import com.melowetty.investment.viewmodel.CompanyProfileViewModel
 import com.melowetty.investment.viewmodel.SearchActivityViewModel
 
 class SearchActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
     private lateinit var search: EditText
     private lateinit var searchModel: SearchActivityViewModel
-    private lateinit var profileModel: CompanyProfileViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -55,18 +52,8 @@ class SearchActivity : AppCompatActivity() {
         searchModel.getStockListObserver().observe(this, Observer<StockListModel> {
             if(it != null) {
                 it.result.forEach {
-                    getCompanyProfile(it.symbol)
+                    Log.d(TAG, it.toString())
                 }
-            }
-            else {
-                Log.e(TAG, "Error in fetching data")
-            }
-        })
-
-        profileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
-        profileModel.getCompanyProfileObserver().observe(this, Observer<CompanyProfileModel> {
-            if(it != null) {
-                Log.d(TAG, it.toString())
             }
             else {
                 Log.e(TAG, "Error in fetching data")
@@ -75,8 +62,5 @@ class SearchActivity : AppCompatActivity() {
     }
     fun searchStocks(input: String) {
         searchModel.makeApiCall(input)
-    }
-    fun getCompanyProfile(symbol: String) {
-        profileModel.makeApiCall(symbol)
     }
 }

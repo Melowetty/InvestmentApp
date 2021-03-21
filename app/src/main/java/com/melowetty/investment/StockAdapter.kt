@@ -20,9 +20,9 @@ public class StockAdapter(private val listStocks: List<StockItem>) :
         val item = listStocks[position]
         holder.title.text = item.title
         holder.subtitle.text = item.subtitle
-        holder.difference.text = item.priceInfo.difference.toString()
-        holder.cost.text = item.priceInfo.cost.toString()
-        item.logo?.let { Helper.pasteImage(it, holder.logo) }
+        holder.difference.text = item.priceInfo.change.toString()
+        holder.cost.text = item.priceInfo.price.toString()
+        Helper.pasteImage(item.title, holder.logo)
         holder.logo.clipToOutline = true
     }
 

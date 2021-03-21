@@ -9,10 +9,8 @@ import retrofit2.http.Query
 interface RetrofitService {
     @GET("search")
     fun getQueryListFromApi(@Query("q") query: String): Observable<StockListModel>
-    @GET("stock/profile2")
-    fun getCompanyInfoFromAPI(@Query("symbol") symbol: String): Observable<CompanyProfileModel>
     @GET("v10/finance/quoteSummary/{ticker}?modules=price")
-    fun getRealTimePrice(@Path("ticker") ticker: String): Observable<RealTimePriceModel>
+    fun getCompanyInfo(@Path("ticker") ticker: String): Observable<CompanyInfoModel>
     @GET("index/constituents")
     fun getIndexConstituens(@Query("symbol") symbol: String): Observable<IndicesConstituensModel>
     @GET("forex/rates")
