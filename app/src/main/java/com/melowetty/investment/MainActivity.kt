@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextView
 
+    private var stockList: ArrayList<Stock> = ArrayList()
+
     private lateinit var adapter: StockAdapter
 
     private lateinit var companyInfoModel: CompanyInfoViewModel
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = StockAdapter(arrayListOf())
         recyclerView.adapter = adapter
         favourite = findViewById(R.id.favourite)
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         stocks.setOnClickListener {
             Helper.changeCondition(favourite, false)
             Helper.changeCondition(stocks, true)
+            Log.d(TAG, stockList.size.toString())
         }
         searchBar.setOnClickListener {
             val stockView = Intent(this, SearchActivity::class.java)
@@ -56,17 +59,15 @@ class MainActivity : AppCompatActivity() {
 
         initModels()
 
-        getCompanyInfo("AAPL")
-        getIndexConstituens(Indices.DOW_JONES)
+        getIndexConstituens(Indices.NASDAQ_100)
         getExchangeRate(Currency.USD)
-        getCompanyNews("MSFT", "2021-03-13", "2021-03-20")
     }
     fun initModels() {
         companyInfoModel = ViewModelProvider(this).get(CompanyInfoViewModel::class.java)
         companyInfoModel.getCompanyInfoObserver().observe(this, Observer<CompanyInfoModel> { it ->
             if(it != null) {
-                retrieveList(arrayListOf(Helper.companyInfoToStock(it)))
-                Log.d(TAG, Helper.companyInfoToStock(it).toString())
+                stockList.add(Helper.companyInfoToStock(it))
+                retrieveList(Helper.companyInfoToStock(it))
             }
             else {
                 Log.e(TAG, "Error in fetching data")
@@ -75,7 +76,10 @@ class MainActivity : AppCompatActivity() {
         incideConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
         incideConstituensModel.getConstituenceObserver().observe(this, Observer<IndicesConstituensModel> { it ->
             if(it != null) {
-                Log.d(TAG, it.toString())
+                Log.d(TAG, it.constituents.size.toString())
+                it.constituents.forEach {
+                    getCompanyInfo(it)
+                }
             }
             else {
                 Log.e(TAG, "Error in fetching data")
@@ -113,11 +117,11 @@ class MainActivity : AppCompatActivity() {
         // TODO("Выдает Error in fetching data")
         companyNewsModel.makeApiCall(ticker, from, to)
     }
-    private fun retrieveList(stocks: List<Stock>) {
+    private fun retrieveList(stock: Stock) {
         adapter.apply {
             Log.d(TAG, "Adapter notify")
+            this.stocks.add(stock)
             Log.d(TAG, stocks.toString())
-            addStocks(stocks)
             notifyDataSetChanged()
         }
     }

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 
-class StockAdapter(private val stocks: ArrayList<Stock>) :
+class StockAdapter(val stocks: ArrayList<Stock>) :
     RecyclerView.Adapter<StockAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.stock_item, parent, false)
