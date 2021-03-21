@@ -17,4 +17,6 @@ interface RetrofitService {
     fun getIndexConstituens(@Query("symbol") symbol: String): Observable<IndicesConstituensModel>
     @GET("forex/rates")
     fun getExchangeRate(@Query("base") base: String): Observable<ExchangeRateModel>
+    @GET("company-news")
+    fun getCompanyNews(@Query("symbol") ticker: String, @Query("from") from: String, @Query("to") to: String): Observable<CompanyNewsModel>
 }
