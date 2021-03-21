@@ -20,16 +20,16 @@ class Helper {
             val format = SimpleDateFormat("dd.MM.yyyy HH:mm")
             return format.format(date)
         }
-        fun formatCost(cost: Float?): Float = DecimalFormat("#0.0").format(cost).replace(',','.').toFloat();
+        fun formatCost(cost: Double?): Double = DecimalFormat("#0.00").format(cost).replace(',','.').toDouble();
         fun pasteImage(ticker: String, imageView: ImageView) {
             try {
                 Picasso.get()
-                    .load("https://yastatic.net/s3/fintech-icons/1/i/$ticker.svg")
+                    .load("https://finnhub.io/api/logo?symbol=$ticker")
                     .into(imageView)
             }
             catch (e: Exception) {
                 Picasso.get()
-                    .load("https://finnhub.io/api/logo?symbol=$ticker")
+                    .load("https://yastatic.net/s3/fintech-icons/1/i/$ticker.svg")
                     .into(imageView)
             }
         }
@@ -49,11 +49,11 @@ class Helper {
             }
             return output.reversed()
         }
-        fun spaceEveryThreeNums(num : Float, symbol: Char): String {
+        fun spaceEveryThreeNums(num : Double, symbol: Char): String {
             val output = spaceEveryThreeNums(num.toInt())
             return "$output$symbol${getNumsAfterComma(num)}"
         }
-        private fun getNumsAfterComma(num: Float): String {
+        private fun getNumsAfterComma(num: Double): String {
             val str = num.toString()
             var pos = 0
             var count = 0
@@ -74,7 +74,7 @@ class Helper {
             return percent[0] != '-'
         }
         fun getDoublePercentChange(percent: String): Double {
-            if(getUpChangeBool(percent)) return percent.toDouble()
+            if(getUpChangeBool(percent)) return percent.substring(0, percent.length-1).toDouble()
             else return percent.substring(1, percent.length-1).toDouble()
         }
         fun companyInfoToStock(model: CompanyInfoModel): Stock {
@@ -86,6 +86,13 @@ class Helper {
             val priceChangePercent = getDoublePercentChange(result.regularMarketChangePercent.fmt)
             val stockPrice = StockPrice(currency, price, priceChange, priceChangePercent, up)
             return Stock(result.symbol, result.shortName, stockPrice)
+        }
+        fun formatChangePrice(textView: TextView, price: StockPrice) {
+            val symbol = if (price.up) "+" else "-"
+            val style = if (price.up) R.style.StockPriceUp else R.style.StockPriceDown
+            val percent = price.changePercent.toString().replace(".",",")
+            textView.setTextAppearance(style)
+            textView.text = "$symbol${price.currency.format(price.change)} ($percent%)"
         }
     }
 }

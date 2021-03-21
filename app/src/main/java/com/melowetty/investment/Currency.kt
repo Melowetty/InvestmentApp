@@ -5,7 +5,7 @@ import java.util.*
 
 enum class Currency(val symbol: String) {
     USD("$") {
-        override fun format(cost: Float): String {
+        override fun format(cost: Double): String {
             return if(cost >= 1000) {
                 USD.symbol + Helper.spaceEveryThreeNums(cost.toInt())
             } else {
@@ -14,7 +14,7 @@ enum class Currency(val symbol: String) {
         }
     },
     EUR("€") {
-        override fun format(cost: Float): String {
+        override fun format(cost: Double): String {
             return if(cost >= 1000) {
                 Helper.spaceEveryThreeNums(cost.toInt()) + " " + EUR.symbol
             } else {
@@ -23,7 +23,7 @@ enum class Currency(val symbol: String) {
         }
     },
     RUB("₽") {
-        override fun format(cost: Float): String {
+        override fun format(cost: Double): String {
             return if(cost >= 10000) {
                 Helper.spaceEveryThreeNums(cost.toInt()) + " " + RUB.symbol
             } else {
@@ -31,7 +31,7 @@ enum class Currency(val symbol: String) {
             }
         }
     };
-    abstract fun format(cost: Float): String;
+    abstract fun format(cost: Double): String;
     companion object {
         fun getCardTypeByName(name: String) = valueOf(name.toUpperCase(Locale.ROOT))
     }

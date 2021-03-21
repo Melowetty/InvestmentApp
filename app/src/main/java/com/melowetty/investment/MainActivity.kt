@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.models.*
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextView
 
+    private lateinit var adapter: StockAdapter
+
     private lateinit var companyInfoModel: CompanyInfoViewModel
     private lateinit var incideConstituensModel: IndicesConstituenceViewModel
     private lateinit var exchangeRateModel: ExchangeRateViewModel
@@ -31,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter = StockAdapter(arrayListOf())
+        recyclerView.adapter = adapter
         favourite = findViewById(R.id.favourite)
         stocks = findViewById(R.id.stocks)
         searchBar = findViewById(R.id.search_bar)
@@ -59,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         companyInfoModel = ViewModelProvider(this).get(CompanyInfoViewModel::class.java)
         companyInfoModel.getCompanyInfoObserver().observe(this, Observer<CompanyInfoModel> { it ->
             if(it != null) {
+                retrieveList(arrayListOf(Helper.companyInfoToStock(it)))
                 Log.d(TAG, Helper.companyInfoToStock(it).toString())
             }
             else {
@@ -93,11 +100,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-    fun initRecyclerView() {
-        recyclerView.apply {
-            val layoutManager = LinearLayoutManager(this@MainActivity)
-        }
-    }
     fun getCompanyInfo(ticker: String) {
         companyInfoModel.makeApiCall(ticker)
     }
@@ -110,5 +112,13 @@ class MainActivity : AppCompatActivity() {
     fun getCompanyNews(ticker: String, from: String, to: String) {
         // TODO("Выдает Error in fetching data")
         companyNewsModel.makeApiCall(ticker, from, to)
+    }
+    private fun retrieveList(stocks: List<Stock>) {
+        adapter.apply {
+            Log.d(TAG, "Adapter notify")
+            Log.d(TAG, stocks.toString())
+            addStocks(stocks)
+            notifyDataSetChanged()
+        }
     }
 }

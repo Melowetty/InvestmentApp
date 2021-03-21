@@ -28,5 +28,10 @@
         <item name="android:textColor">@color/colorGray</item>
         <item name="android:textStyle">bold</item>
     </style>
-
+    <style name="StockPriceUp">
+        <item name="android:textColor">@color/colorUp</item>
+    </style>
+    <style name="StockPriceDown">
+        <item name="android:textColor">@color/colorDown</item>
+    </style>
 </resources>

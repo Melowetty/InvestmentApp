@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.melowetty.investment.models.StockItem
+import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 
-public class StockAdapter(private val listStocks: List<StockItem>) :
+class StockAdapter(private val stocks: ArrayList<Stock>) :
     RecyclerView.Adapter<StockAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.stock_item, parent, false)
@@ -17,18 +17,25 @@ public class StockAdapter(private val listStocks: List<StockItem>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = listStocks[position]
-        holder.title.text = item.title
-        holder.subtitle.text = item.subtitle
-        holder.difference.text = item.priceInfo.change.toString()
-        holder.cost.text = item.priceInfo.price.toString()
-        Helper.pasteImage(item.title, holder.logo)
+        val item = stocks[position]
+        holder.title.text = item.symbol
+        holder.subtitle.text = item.company
+        Helper.formatChangePrice(holder.difference, item.stockPrice)
+        holder.cost.text = item.stockPrice.currency.format(item.stockPrice.price)
+        Helper.pasteImage(item.symbol, holder.logo)
         holder.logo.clipToOutline = true
     }
 
     override fun getItemCount(): Int {
-        return listStocks.size
+        return stocks.size
     }
+    fun addStocks(stocks: List<Stock>) {
+        this.stocks.apply {
+            //clear()
+            addAll(stocks)
+        }
+    }
+
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var title: TextView
