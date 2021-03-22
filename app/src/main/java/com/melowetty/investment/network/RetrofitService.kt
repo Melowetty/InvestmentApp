@@ -8,8 +8,6 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface RetrofitService {
-    @GET("search")
-    fun getQueryListFromApi(@Query("q") query: String): Observable<StockListModel>
     @GET("v10/finance/quoteSummary/{ticker}?modules=price")
     fun getCompanyInfo(@Path("ticker") ticker: String): Observable<CompanyInfoModel>
     @GET("index/constituents")
