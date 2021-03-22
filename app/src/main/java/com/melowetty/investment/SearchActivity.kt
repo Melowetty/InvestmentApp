@@ -2,6 +2,10 @@ package com.melowetty.investment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -17,6 +21,10 @@ class SearchActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
     private lateinit var search: EditText
     private lateinit var searchModel: SearchActivityViewModel
+
+    private var latest = 0L
+    private var delay = 2000
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -36,12 +44,17 @@ class SearchActivity : AppCompatActivity() {
             if (it != null) {
                 if (it.isNotEmpty())  {
                     clear.visibility = View.VISIBLE
-                    searchStocks(it.toString())
                 }
                 else clear.visibility = View.GONE
             }
         }
-
+        search.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) {
+                filterWithDelay(s.toString())
+            }
+        })
         clear.setOnClickListener {
             search.text = null
             clear.visibility = View.GONE
@@ -50,17 +63,28 @@ class SearchActivity : AppCompatActivity() {
     fun initViewModels() {
         searchModel = ViewModelProvider(this).get(SearchActivityViewModel::class.java)
         searchModel.getStockListObserver().observe(this, Observer<StockListModel> {
-            if(it != null) {
+            if (it != null) {
                 it.result.forEach {
                     Log.d(TAG, it.toString())
                 }
-            }
-            else {
+            } else {
                 Log.e(TAG, "Error in fetching data")
             }
         })
     }
     fun searchStocks(input: String) {
         searchModel.makeApiCall(input)
+    }
+    fun filterWithDelay(s: String) {
+        latest = System.currentTimeMillis()
+        val h = Handler(Looper.getMainLooper())
+        val r = Runnable {
+            if (System.currentTimeMillis() - delay > latest)
+                searchStocks(input = s)
+        }
+        h.postDelayed(
+            r,
+            (delay + 50).toLong()
+        )
     }
 }

@@ -7,13 +7,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.models.*
-import com.melowetty.investment.models.CompanyInfoModel
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodel.*
+import com.melowetty.investment.viewmodel.CompanyInfoViewModel
+import com.melowetty.investment.viewmodel.CompanyNewsViewModel
+import com.melowetty.investment.viewmodel.ExchangeRateViewModel
+import com.melowetty.investment.viewmodel.IndicesConstituenceViewModel
 
 class MainActivity : AppCompatActivity() {
     private val TAG = this::class.java.simpleName
