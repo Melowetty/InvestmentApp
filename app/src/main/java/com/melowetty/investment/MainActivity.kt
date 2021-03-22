@@ -61,17 +61,18 @@ class MainActivity : AppCompatActivity() {
         initModels()
 
         getIndexConstituens(Indices.NASDAQ_100)
+        getCompanyNews("TSLA", "2021-03-15", "2021-03-21")
         getExchangeRate(Currency.USD)
     }
     fun initModels() {
         companyInfoModel = ViewModelProvider(this).get(CompanyInfoViewModel::class.java)
         companyInfoModel.getCompanyInfoObserver().observe(this, Observer<CompanyInfoModel> { it ->
             if(it != null) {
-                stockList.add(Helper.companyInfoToStock(it))
-                retrieveList(Helper.companyInfoToStock(it))
+                Helper.companyInfoToStock(it)?.let { it1 -> stockList.add(it1) }
+                Helper.companyInfoToStock(it)?.let { it1 -> retrieveList(it1) }
             }
             else {
-                Log.e(TAG, "Error in fetching data")
+                Log.e("$TAG [Company Info Model]", "Error in fetching data")
             }
         })
         incideConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
@@ -83,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             else {
-                Log.e(TAG, "Error in fetching data")
+                Log.e("$TAG [Incide Constituens Model]", "Error in fetching data")
             }
         })
         exchangeRateModel = ViewModelProvider(this).get(ExchangeRateViewModel::class.java)
@@ -92,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, it.toString())
             }
             else {
-                Log.e(TAG, "Error in fetching data")
+                Log.e("$TAG [Exchange Rate Model]", "Error in fetching data")
             }
         })
         companyNewsModel = ViewModelProvider(this).get(CompanyNewsViewModel::class.java)
@@ -101,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, it.toString())
             }
             else {
-                Log.e(TAG, "Error in fetching data")
+                Log.e("$TAG [Company News Model]", "Error in fetching data")
             }
         })
     }
@@ -120,9 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun retrieveList(stock: Stock) {
         adapter.apply {
-            Log.d(TAG, "Adapter notify")
             this.stocks.add(stock)
-            Log.d(TAG, stocks.toString())
             notifyDataSetChanged()
         }
     }

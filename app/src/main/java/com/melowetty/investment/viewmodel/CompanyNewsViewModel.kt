@@ -19,7 +19,7 @@ class CompanyNewsViewModel: ViewModel() {
 
     fun makeApiCall(ticker: String, from: String, to: String) {
         val retrofitInstance = RetrofitFinhubInstance.getRetrofitInstance().create(RetrofitService::class.java)
-        retrofitInstance.getCompanyNews(ticker, from, to)
+        retrofitInstance.getCompanyNews(mapOf("symbol" to ticker, "from" to from, "to" to to))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getNewsListObserverRx())

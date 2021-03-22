@@ -33,6 +33,12 @@ enum class Currency(val symbol: String) {
     };
     abstract fun format(cost: Double): String;
     companion object {
-        fun getCardTypeByName(name: String) = valueOf(name.toUpperCase(Locale.ROOT))
+        fun getCardTypeByName(name: String): Currency {
+            return try {
+                valueOf(name.toUpperCase(Locale.ROOT))
+            } catch (e: Exception) {
+                USD
+            }
+        }
     }
 }

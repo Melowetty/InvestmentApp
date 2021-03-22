@@ -16,7 +16,7 @@
         android:layout_height="52dp"
         android:layout_margin="8dp"
         android:background="@drawable/round_image"
-        android:src="@drawable/placeholder"
+        android:src="@drawable/placeholder_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

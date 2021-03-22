@@ -77,15 +77,20 @@ class Helper {
             if(getUpChangeBool(percent)) return percent.substring(0, percent.length-1).toDouble()
             else return percent.substring(1, percent.length-1).toDouble()
         }
-        fun companyInfoToStock(model: CompanyInfoModel): Stock {
-            val result = model.quoteSummary.result.get(0).price
-            val price = result.regularMarketPrice.fmt
-            val priceChange = abs(result.regularMarketChange.fmt)
-            val currency = Currency.getCardTypeByName(result.currency)
-            val up = getUpChangeBool(result.regularMarketChangePercent.fmt)
-            val priceChangePercent = getDoublePercentChange(result.regularMarketChangePercent.fmt)
-            val stockPrice = StockPrice(currency, price, priceChange, priceChangePercent, up)
-            return Stock(result.symbol, result.shortName, stockPrice)
+        fun companyInfoToStock(model: CompanyInfoModel): Stock? {
+            return try {
+                val result = model.quoteSummary.result[0].price
+                val price = result.regularMarketPrice.fmt
+                val priceChange = abs(result.regularMarketChange.fmt)
+                val currency = Currency.getCardTypeByName(result.currency)
+                val up = getUpChangeBool(result.regularMarketChangePercent.fmt)
+                val priceChangePercent = getDoublePercentChange(result.regularMarketChangePercent.fmt)
+                val stockPrice = StockPrice(currency, price, priceChange, priceChangePercent, up)
+                Stock(result.symbol, result.shortName, stockPrice)
+            } catch (e: Exception) {
+                null
+            }
+
         }
         fun formatChangePrice(textView: TextView, price: StockPrice) {
             val symbol = if (price.up) "+" else "-"
