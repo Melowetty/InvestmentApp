@@ -17,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.models.CompanyInfoModel
 import com.melowetty.investment.models.SearchModel
 import com.melowetty.investment.models.Stock
@@ -30,6 +31,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var search: EditText
     private lateinit var miniRecyclerView: RecyclerView
+    private lateinit var mShimmerViewContainer: ShimmerFrameLayout
 
     private lateinit var adapter: StockAdapter
 
@@ -44,6 +46,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         miniRecyclerView = findViewById(R.id.mini_recycler_view)
+
         miniRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = StockAdapter(arrayListOf())
         miniRecyclerView.adapter = adapter
@@ -56,6 +59,7 @@ class SearchActivity : AppCompatActivity() {
         val searchInfo = findViewById<ConstraintLayout>(R.id.search_info)
 
         search = findViewById(R.id.search_label)
+        mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
 
         back.setOnClickListener {
             val stockView = Intent(this, MainActivity::class.java)
@@ -68,7 +72,8 @@ class SearchActivity : AppCompatActivity() {
                     clear.visibility = View.VISIBLE
                     menu.visibility = View.VISIBLE
                     searchInfo.visibility = View.GONE
-                    miniRecyclerView.visibility = View.VISIBLE
+                    mShimmerViewContainer.visibility = View.VISIBLE
+                    mShimmerViewContainer.startShimmerAnimation();
 
                 }
                 else {
@@ -76,13 +81,17 @@ class SearchActivity : AppCompatActivity() {
                     menu.visibility = View.GONE
                     searchInfo.visibility = View.VISIBLE
                     miniRecyclerView.visibility = View.GONE
+                    mShimmerViewContainer.stopShimmerAnimation()
+                    mShimmerViewContainer.visibility = View.GONE
                     clearResultList()
                 }
             }
         }
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearResultList()
+            }
             override fun afterTextChanged(s: Editable) {
                 if(s.toString().isNotEmpty()) filterWithDelay(s.toString())
             }
@@ -98,7 +107,7 @@ class SearchActivity : AppCompatActivity() {
             if (it != null) {
                 it.data.forEach {
                     clearResultList()
-                    getCompanyInfo(it.symbol)
+                    if(search.text.isNotEmpty()) getCompanyInfo(it.symbol)
                 }
             } else {
                 Log.e(TAG, "Error in fetching data")
@@ -107,7 +116,7 @@ class SearchActivity : AppCompatActivity() {
         companyInfoModel = ViewModelProvider(this).get(CompanyInfoViewModel::class.java)
         companyInfoModel.getCompanyInfoObserver().observe(this, Observer<CompanyInfoModel> { it ->
             if(it != null) {
-                Helper.companyInfoToStock(it)?.let { it1 -> retrieveList(it1) }
+                if(search.text.isNotEmpty()) Helper.companyInfoToStock(it)?.let { it1 -> retrieveList(it1) }
             }
             else {
                 Log.e("$TAG [Company Info Model]", "Error in fetching data")
@@ -133,12 +142,17 @@ class SearchActivity : AppCompatActivity() {
         )
     }
     private fun retrieveList(stock: Stock) {
+        // TODO Нужно сделать проверку времени без ответа, потому что если нет ответа, то приложение уходит в бесконечную загрузку
         adapter.apply {
+            mShimmerViewContainer.stopShimmerAnimation()
+            mShimmerViewContainer.visibility = View.GONE
+            miniRecyclerView.visibility = View.VISIBLE
             if(stocks.size == 6) return
             stocks.forEach {
                 if(it.symbol == stock.symbol) return
             }
             stocks.add(stock)
+
             notifyDataSetChanged()
         }
     }

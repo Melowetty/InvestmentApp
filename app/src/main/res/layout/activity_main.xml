@@ -79,6 +79,34 @@
         android:background="@color/colorBlack"
         android:alpha="0.05"
         android:visibility="gone"/>
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmer_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/constraint">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_shimmer_layout" />
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
     <LinearLayout
         app:layout_constraintTop_toBottomOf="@id/constraint"
         android:layout_width="match_parent"
@@ -88,6 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/constraint"

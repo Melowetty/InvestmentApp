@@ -3,12 +3,14 @@ package com.melowetty.investment
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.models.*
 import com.melowetty.investment.utils.Helper
 import com.melowetty.investment.viewmodel.CompanyInfoViewModel
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stocks: TextView
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextView
+    private lateinit var mShimmerViewContainer: ShimmerFrameLayout
 
     private var stockList: ArrayList<Stock> = ArrayList()
 
@@ -37,12 +40,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         recyclerView = findViewById(R.id.recyclerView)
+
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = StockAdapter(arrayListOf())
         recyclerView.adapter = adapter
+
         favourite = findViewById(R.id.favourite)
         stocks = findViewById(R.id.stocks)
         searchBar = findViewById(R.id.search_bar)
+        mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
 
         favourite.setOnClickListener {
             Helper.changeCondition(favourite, true)
@@ -59,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         initModels()
-
+        mShimmerViewContainer.startShimmerAnimation();
         getIndexConstituens(Indices.NASDAQ_100)
         getCompanyNews("TSLA", "2021-03-15", "2021-03-21")
         getExchangeRate(Currency.USD)
@@ -78,13 +84,12 @@ class MainActivity : AppCompatActivity() {
         incideConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
         incideConstituensModel.getConstituenceObserver().observe(this, Observer<IndicesConstituensModel> { it ->
             if(it != null) {
-                Log.d(TAG, it.constituents.size.toString())
                 it.constituents.forEach {
                     getCompanyInfo(it)
                 }
             }
             else {
-                Log.e("$TAG [Incide Constituens Model]", "Error in fetching data")
+                Log.e("$TAG [Indice Constituens Model]", "Error in fetching data")
             }
         })
         exchangeRateModel = ViewModelProvider(this).get(ExchangeRateViewModel::class.java)
@@ -122,6 +127,9 @@ class MainActivity : AppCompatActivity() {
     private fun retrieveList(stock: Stock) {
         adapter.apply {
             stocks.add(stock)
+            mShimmerViewContainer.stopShimmerAnimation()
+            mShimmerViewContainer.setVisibility(View.GONE);
+            recyclerView.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
     }
