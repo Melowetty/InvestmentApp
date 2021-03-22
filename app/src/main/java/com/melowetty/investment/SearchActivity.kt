@@ -135,7 +135,10 @@ class SearchActivity : AppCompatActivity() {
     private fun retrieveList(stock: Stock) {
         adapter.apply {
             if(stocks.size == 6) return
-            this.stocks.add(stock)
+            stocks.forEach {
+                if(it.symbol == stock.symbol) return
+            }
+            stocks.add(stock)
             notifyDataSetChanged()
         }
     }

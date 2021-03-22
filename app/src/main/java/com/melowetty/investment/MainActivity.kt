@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
     private fun retrieveList(stock: Stock) {
         adapter.apply {
-            this.stocks.add(stock)
+            stocks.add(stock)
             notifyDataSetChanged()
         }
     }
