@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitYahooFinanceInstance {
     companion object {
-        val baseURL = "https://query1.finance.yahoo.com/"
+        private const val baseURL = "https://query1.finance.yahoo.com/"
 
         fun getRetrofitInstance() : Retrofit {
 

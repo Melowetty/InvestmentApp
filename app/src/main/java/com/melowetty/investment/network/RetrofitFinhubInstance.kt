@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitFinhubInstance {
 
     companion object {
-        val baseURL = "https://finnhub.io/api/v1/"
+        private const val baseURL = "https://finnhub.io/api/v1/"
 
         fun getRetrofitInstance() : Retrofit {
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->

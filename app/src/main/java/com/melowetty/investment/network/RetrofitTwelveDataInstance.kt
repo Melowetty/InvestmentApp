@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RetrofitTwelveDataInstance {
 
     companion object {
-        val baseURL = "https://api.twelvedata.com/"
+        private const val baseURL = "https://api.twelvedata.com/"
 
         fun getRetrofitInstance() : Retrofit {
             return Retrofit.Builder()

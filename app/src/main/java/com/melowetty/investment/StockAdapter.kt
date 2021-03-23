@@ -38,18 +38,11 @@ class StockAdapter(val stocks: ArrayList<Stock>) :
 
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var title: TextView
-        var subtitle: TextView
-        var cost: TextView
-        var difference: TextView
-        var logo: ImageView
+        var title: TextView = view.findViewById<View>(R.id.name) as TextView
+        var subtitle: TextView = view.findViewById<View>(R.id.company) as TextView
+        var cost: TextView = view.findViewById<View>(R.id.cost) as TextView
+        var difference: TextView = view.findViewById<View>(R.id.growth) as TextView
+        var logo: ImageView = view.findViewById<View>(R.id.logo) as ImageView
 
-        init {
-            title = view.findViewById<View>(R.id.name) as TextView
-            subtitle = view.findViewById<View>(R.id.company) as TextView
-            cost = view.findViewById<View>(R.id.cost) as TextView
-            difference = view.findViewById<View>(R.id.growth) as TextView
-            logo = view.findViewById<View>(R.id.logo) as ImageView
-        }
     }
 }

@@ -38,7 +38,8 @@
         app:layout_constraintTop_toTopOf="@id/search_bar"
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="@id/search_bar"
-        app:layout_constraintBottom_toBottomOf="@id/search_bar"/>
+        app:layout_constraintBottom_toBottomOf="@id/search_bar"
+        tools:ignore="ContentDescription" />
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraint"
         android:layout_width="match_parent"
