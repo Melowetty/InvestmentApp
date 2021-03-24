@@ -18,11 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.melowetty.investment.models.CompanyInfoModel
 import com.melowetty.investment.models.SearchModel
 import com.melowetty.investment.models.Stock
-import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodel.CompanyInfoViewModel
 import com.melowetty.investment.viewmodel.SearchViewModel
 
 class SearchActivity : AppCompatActivity() {
@@ -36,7 +33,6 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: StockAdapter
 
     private lateinit var searchModel: SearchViewModel
-    private lateinit var companyInfoModel: CompanyInfoViewModel
 
     private var latest = 0L
     private var delay = 2000
@@ -107,27 +103,15 @@ class SearchActivity : AppCompatActivity() {
             if (it != null) {
                 it.data.forEach {
                     clearResultList()
-                    if(search.text.isNotEmpty()) getCompanyInfo(it.symbol)
+                    //if(search.text.isNotEmpty()) getCompanyInfo(it.symbol)
                 }
             } else {
                 Log.e(TAG, "Error in fetching data")
             }
         })
-        companyInfoModel = ViewModelProvider(this).get(CompanyInfoViewModel::class.java)
-        companyInfoModel.getCompanyInfoObserver().observe(this, Observer<CompanyInfoModel> { it ->
-            if(it != null) {
-                if(search.text.isNotEmpty()) Helper.companyInfoToStock(it)?.let { it1 -> retrieveList(it1) }
-            }
-            else {
-                Log.e("$TAG [Company Info Model]", "Error in fetching data")
-            }
-        })
     }
     fun searchStocks(input: String) {
         searchModel.makeApiCall(input)
-    }
-    fun getCompanyInfo(ticker: String) {
-        companyInfoModel.makeApiCall(ticker)
     }
     fun filterWithDelay(s: String) {
         latest = System.currentTimeMillis()
