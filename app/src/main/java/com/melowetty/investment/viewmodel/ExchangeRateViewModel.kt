@@ -3,7 +3,7 @@ package com.melowetty.investment.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.melowetty.investment.models.ExchangeRateModel
-import com.melowetty.investment.network.RetrofitFinhubInstance
+import com.melowetty.investment.network.RetrofitFinhub
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
@@ -18,7 +18,7 @@ class ExchangeRateViewModel: ViewModel() {
     }
 
     fun makeApiCall(base: String) {
-        val retrofitInstance = RetrofitFinhubInstance.getRetrofitInstance().create(
+        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
             RetrofitService::class.java)
         retrofitInstance.getExchangeRate(base)
             .subscribeOn(Schedulers.io())

@@ -3,7 +3,7 @@ package com.melowetty.investment.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.melowetty.investment.models.CompanyProfileModel
-import com.melowetty.investment.network.RetrofitFinancialModelingInstance
+import com.melowetty.investment.network.RetrofitFinancialModeling
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
@@ -18,7 +18,7 @@ class CompanyProfileViewModel: ViewModel() {
     }
 
     fun makeApiCall(ticker: String) {
-        val retrofitInstance = RetrofitFinancialModelingInstance.getRetrofitInstance().create(
+        val retrofitInstance = RetrofitFinancialModeling.getRetrofitInstance().create(
             RetrofitService::class.java)
         retrofitInstance.getCompaniesProfile(tickers = ticker, apikey = "bb2a76dacd02fc18fadde7dc58bff592")
             .subscribeOn(Schedulers.io())

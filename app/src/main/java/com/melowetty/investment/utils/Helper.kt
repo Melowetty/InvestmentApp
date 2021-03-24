@@ -4,8 +4,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.melowetty.investment.Currency
 import com.melowetty.investment.R
-import com.melowetty.investment.models.CompanyInfoModel
 import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.models.StockPrice
 import com.squareup.picasso.Picasso
@@ -94,21 +94,6 @@ class Helper {
             if(getUpChangeBool(percent)) return percent.substring(0).toDouble()
             else return percent.substring(1).toDouble()
         }
-        fun companyInfoToStock(model: CompanyInfoModel): Stock? {
-            return try {
-                val result = model.quoteSummary.result[0].price
-                val price = result.regularMarketPrice.fmt
-                val priceChange = abs(result.regularMarketChange.fmt)
-                val currency = Currency.getCardTypeByName(result.currency)
-                val up = getUpChangeBool(result.regularMarketChangePercent.fmt)
-                val priceChangePercent = getDoublePercentChange(result.regularMarketChangePercent.fmt)
-                val stockPrice = StockPrice(currency, price, priceChange, priceChangePercent, up)
-                Stock(result.symbol, result.shortName, "", stockPrice)
-            } catch (e: Exception) {
-                null
-            }
-
-        }
         fun companyProfileToStock(model: CompanyProfileModel): Stock? {
             return try {
                 val currency = Currency.getCardTypeByName(model.currency)
@@ -132,6 +117,15 @@ class Helper {
             stocks.apply {
                 array.forEach {
                     companyProfileToStock(it)?.let { it1 -> this.add(it1) }
+                }
+            }
+            return stocks
+        }
+        fun convertModelListToStringList(target: FindStockModel): List<String> {
+            val stocks: ArrayList<String> = ArrayList()
+            stocks.apply {
+                target.data.forEach {
+                    this.add(it.symbol)
                 }
             }
             return stocks

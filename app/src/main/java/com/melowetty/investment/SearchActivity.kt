@@ -18,9 +18,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.melowetty.investment.models.SearchModel
+import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock
-import com.melowetty.investment.viewmodel.SearchViewModel
+import com.melowetty.investment.utils.Helper
+import com.melowetty.investment.viewmodel.CompanyProfileViewModel
+import com.melowetty.investment.viewmodel.FindStockViewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -32,7 +35,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var adapter: StockAdapter
 
-    private lateinit var searchModel: SearchViewModel
+    private lateinit var searchModel: FindStockViewModel
+    private lateinit var companyProfileModel: CompanyProfileViewModel
 
     private var latest = 0L
     private var delay = 2000
@@ -98,20 +102,32 @@ class SearchActivity : AppCompatActivity() {
         }
     }
     fun initViewModels() {
-        searchModel = ViewModelProvider(this).get(SearchViewModel::class.java)
-        searchModel.getFindetStocksObserver().observe(this, Observer<SearchModel> {
+        searchModel = ViewModelProvider(this).get(FindStockViewModel::class.java)
+        searchModel.getFindStocksObserver().observe(this, Observer<FindStockModel> {
             if (it != null) {
-                it.data.forEach {
-                    clearResultList()
-                    //if(search.text.isNotEmpty()) getCompanyInfo(it.symbol)
-                }
+                clearResultList()
+                getCompanyProfile(Helper.convertModelListToStringList(it).joinToString(separator = ","))
+
             } else {
-                Log.e(TAG, "Error in fetching data")
+                Log.e("$TAG [Search Model]", "Error in fetching data")
+            }
+        })
+
+        companyProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        companyProfileModel.getCompanyProfileObserver().observe(this, Observer<List<CompanyProfileModel>> {
+            if(it != null) {
+                retrieveList(Helper.convertModelListToStockList(it))
+            }
+            else {
+                Log.e("$TAG [Company Profile Model]", "Error in fetching data")
             }
         })
     }
-    fun searchStocks(input: String) {
+    private fun searchStocks(input: String) {
         searchModel.makeApiCall(input)
+    }
+    private fun getCompanyProfile(ticker: String) {
+        companyProfileModel.makeApiCall(ticker)
     }
     fun filterWithDelay(s: String) {
         latest = System.currentTimeMillis()
@@ -125,18 +141,13 @@ class SearchActivity : AppCompatActivity() {
             (delay + 50).toLong()
         )
     }
-    private fun retrieveList(stock: Stock) {
+    private fun retrieveList(stocks: List<Stock>) {
         // TODO Нужно сделать проверку времени без ответа, потому что если нет ответа, то приложение уходит в бесконечную загрузку
         adapter.apply {
             mShimmerViewContainer.stopShimmerAnimation()
             mShimmerViewContainer.visibility = View.GONE
             miniRecyclerView.visibility = View.VISIBLE
-            if(stocks.size == 6) return
-            stocks.forEach {
-                if(it.symbol == stock.symbol) return
-            }
-            stocks.add(stock)
-
+            this.addStocks(stocks)
             notifyDataSetChanged()
         }
     }

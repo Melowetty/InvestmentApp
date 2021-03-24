@@ -14,8 +14,8 @@ interface RetrofitService {
     fun getExchangeRate(@Query("base") base: String): Observable<ExchangeRateModel>
     @GET("company-news")
     fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<List<CompanyNewsModel>>
-    @GET("symbol_search")
-    fun searchStocks(@QueryMap filters: Map<String, String>): Observable<SearchModel>
     @GET("profile/{tickers}")
     fun getCompaniesProfile(@Path("tickers") tickers: String, @Query("apikey") apikey: String): Observable<List<CompanyProfileModel>>
+    @GET("tickers")
+    fun searchStock(@QueryMap filters: Map<String, String>): Observable<FindStockModel>
 }

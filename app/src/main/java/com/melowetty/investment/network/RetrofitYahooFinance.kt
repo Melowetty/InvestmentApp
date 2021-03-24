@@ -4,9 +4,9 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitFinancialModelingInstance {
+class RetrofitYahooFinance {
     companion object {
-        private const val baseURL = "https://financialmodelingprep.com/api/v3/"
+        private const val baseURL = "https://query2.finance.yahoo.com/"
 
         fun getRetrofitInstance() : Retrofit {
 
