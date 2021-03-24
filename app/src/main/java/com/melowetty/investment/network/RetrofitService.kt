@@ -8,14 +8,14 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface RetrofitService {
-    @GET("v10/finance/quoteSummary/{ticker}?modules=price")
-    fun getCompanyInfo(@Path("ticker") ticker: String): Observable<CompanyInfoModel>
     @GET("index/constituents")
     fun getIndexConstituens(@Query("symbol") symbol: String): Observable<IndicesConstituensModel>
     @GET("forex/rates")
     fun getExchangeRate(@Query("base") base: String): Observable<ExchangeRateModel>
     @GET("company-news")
-    fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<CompanyNewsModel>
+    fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<List<CompanyNewsModel>>
     @GET("symbol_search")
     fun searchStocks(@QueryMap filters: Map<String, String>): Observable<SearchModel>
+    @GET("profile/{tickers}")
+    fun getCompaniesProfile(@Path("tickers") tickers: String, @Query("apikey") apikey: String): Observable<List<CompanyProfileModel>>
 }

@@ -20,11 +20,12 @@ class StockAdapter(val stocks: ArrayList<Stock>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = stocks[position]
         if (position % 2 != 0) holder.itemView.setBackgroundResource(R.drawable.stock_outline_white)
+        else holder.itemView.setBackgroundResource(R.drawable.stock_outline)
         holder.title.text = item.symbol
         holder.subtitle.text = item.company
         Helper.formatChangePrice(holder.difference, item.stockPrice)
         holder.cost.text = item.stockPrice.currency.format(item.stockPrice.price)
-        Helper.pasteImage(item.symbol, holder.logo)
+        Helper.pasteImagefromURL(item.logo, holder.logo)
         holder.logo.clipToOutline = true
     }
 

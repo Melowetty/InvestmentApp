@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.models.*
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodel.CompanyInfoViewModel
 import com.melowetty.investment.viewmodel.CompanyNewsViewModel
+import com.melowetty.investment.viewmodel.CompanyProfileViewModel
 import com.melowetty.investment.viewmodel.ExchangeRateViewModel
 import com.melowetty.investment.viewmodel.IndicesConstituenceViewModel
 
@@ -31,10 +31,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: StockAdapter
 
-    private lateinit var companyInfoModel: CompanyInfoViewModel
-    private lateinit var incideConstituensModel: IndicesConstituenceViewModel
+    private lateinit var indiceConstituensModel: IndicesConstituenceViewModel
     private lateinit var exchangeRateModel: ExchangeRateViewModel
     private lateinit var companyNewsModel: CompanyNewsViewModel
+    private lateinit var companyProfileModel: CompanyProfileViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -65,28 +66,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         initModels()
+
         mShimmerViewContainer.startShimmerAnimation();
+
         getIndexConstituens(Indices.NASDAQ_100)
         getCompanyNews("TSLA", "2021-03-15", "2021-03-21")
         getExchangeRate(Currency.USD)
     }
-    fun initModels() {
-        companyInfoModel = ViewModelProvider(this).get(CompanyInfoViewModel::class.java)
-        companyInfoModel.getCompanyInfoObserver().observe(this, Observer<CompanyInfoModel> { it ->
+    private fun initModels() {
+        indiceConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
+        indiceConstituensModel.getConstituenceObserver().observe(this, Observer<IndicesConstituensModel> { it ->
             if(it != null) {
-                Helper.companyInfoToStock(it)?.let { it1 -> stockList.add(it1) }
-                Helper.companyInfoToStock(it)?.let { it1 -> retrieveList(it1) }
-            }
-            else {
-                Log.e("$TAG [Company Info Model]", "Error in fetching data")
-            }
-        })
-        incideConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
-        incideConstituensModel.getConstituenceObserver().observe(this, Observer<IndicesConstituensModel> { it ->
-            if(it != null) {
-                it.constituents.forEach {
-                    getCompanyInfo(it)
-                }
+                getCompanyProfile(it.constituents.joinToString(separator = ","))
             }
             else {
                 Log.e("$TAG [Indice Constituens Model]", "Error in fetching data")
@@ -102,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         companyNewsModel = ViewModelProvider(this).get(CompanyNewsViewModel::class.java)
-        companyNewsModel.getNewsListObserver().observe(this, Observer<CompanyNewsModel> {
+        companyNewsModel.getNewsListObserver().observe(this, Observer<List<CompanyNewsModel>> {
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -110,25 +101,34 @@ class MainActivity : AppCompatActivity() {
                 Log.e("$TAG [Company News Model]", "Error in fetching data")
             }
         })
+        companyProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        companyProfileModel.getCompanyProfileObserver().observe(this, Observer<List<CompanyProfileModel>> {
+            if(it != null) {
+                retrieveList(Helper.convertModelListToStockList(it))
+            }
+            else {
+                Log.e("$TAG [Company Profile Model]", "Error in fetching data")
+            }
+        })
     }
-    fun getCompanyInfo(ticker: String) {
-        companyInfoModel.makeApiCall(ticker)
+    private fun getIndexConstituens(indice: Indices) {
+        indiceConstituensModel.makeApiCall(indice.code)
     }
-    fun getIndexConstituens(indice: Indices) {
-        incideConstituensModel.makeApiCall(indice.code)
-    }
-    fun getExchangeRate(exchange: Currency) {
+    private fun getExchangeRate(exchange: Currency) {
         exchangeRateModel.makeApiCall(exchange.name)
     }
-    fun getCompanyNews(ticker: String, from: String, to: String) {
+    private fun getCompanyNews(ticker: String, from: String, to: String) {
         // TODO("Выдает Error in fetching data")
         companyNewsModel.makeApiCall(ticker, from, to)
     }
-    private fun retrieveList(stock: Stock) {
+    private fun getCompanyProfile(ticker: String) {
+        companyProfileModel.makeApiCall(ticker)
+    }
+    private fun retrieveList(stocks: List<Stock>) {
         adapter.apply {
-            stocks.add(stock)
+            this.addStocks(stocks)
             mShimmerViewContainer.stopShimmerAnimation()
-            mShimmerViewContainer.setVisibility(View.GONE);
+            mShimmerViewContainer.visibility = View.GONE;
             recyclerView.visibility = View.VISIBLE
             notifyDataSetChanged()
         }

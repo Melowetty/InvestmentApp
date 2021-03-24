@@ -11,9 +11,9 @@ import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class CompanyNewsViewModel: ViewModel() {
-    var newsList: MutableLiveData<CompanyNewsModel> = MutableLiveData()
+    var newsList: MutableLiveData<List<CompanyNewsModel>> = MutableLiveData()
 
-    fun getNewsListObserver(): MutableLiveData<CompanyNewsModel> {
+    fun getNewsListObserver(): MutableLiveData<List<CompanyNewsModel>> {
         return newsList
     }
 
@@ -25,8 +25,8 @@ class CompanyNewsViewModel: ViewModel() {
             .subscribe(getNewsListObserverRx())
     }
 
-    private fun getNewsListObserverRx(): Observer<CompanyNewsModel> {
-        return object : Observer<CompanyNewsModel> {
+    private fun getNewsListObserverRx(): Observer<List<CompanyNewsModel>> {
+        return object : Observer<List<CompanyNewsModel>> {
             override fun onComplete() {
                 // Hide progress bar
             }
@@ -35,7 +35,7 @@ class CompanyNewsViewModel: ViewModel() {
                 newsList.postValue(null)
             }
 
-            override fun onNext(t: CompanyNewsModel?) {
+            override fun onNext(t: List<CompanyNewsModel>?) {
                 newsList.postValue(t)
             }
 
