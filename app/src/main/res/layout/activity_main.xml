@@ -97,13 +97,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_white_shimmer_layout" />
             <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_white_shimmer_layout" />
             <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_white_shimmer_layout" />
             <include layout="@layout/stock_shimmer_layout" />
-            <include layout="@layout/stock_shimmer_layout" />
-            <include layout="@layout/stock_shimmer_layout" />
-            <include layout="@layout/stock_shimmer_layout" />
-            <include layout="@layout/stock_shimmer_layout" />
+            <include layout="@layout/stock_white_shimmer_layout" />
             <include layout="@layout/stock_shimmer_layout" />
         </LinearLayout>
 

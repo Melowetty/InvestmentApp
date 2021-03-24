@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 
+
 class StockAdapter(val stocks: ArrayList<Stock>) :
     RecyclerView.Adapter<StockAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -18,6 +19,7 @@ class StockAdapter(val stocks: ArrayList<Stock>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = stocks[position]
+        if (position % 2 != 0) holder.itemView.setBackgroundResource(R.drawable.stock_outline_white)
         holder.title.text = item.symbol
         holder.subtitle.text = item.company
         Helper.formatChangePrice(holder.difference, item.stockPrice)
