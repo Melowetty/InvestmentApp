@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StockInfoActivity">
+    tools:context=".StockActivity">
 
     <ImageView
         android:id="@+id/back"
@@ -66,10 +66,12 @@
             style="@style/StockButtonActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:text="@string/chart"
             app:layout_constraintBottom_toBottomOf="@id/summary"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/summary"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/menu" />
 
         <TextView
@@ -77,11 +79,12 @@
             style="@style/StockButtonNotActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_toEndOf="@+id/chart"
             android:text="@string/summary"
             app:layout_constraintBottom_toBottomOf="@id/chart"
-            app:layout_constraintLeft_toRightOf="@id/chart"
+            app:layout_constraintEnd_toStartOf="@+id/news"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/chart"
             app:layout_constraintTop_toTopOf="@id/menu" />
 
         <TextView
@@ -89,11 +92,12 @@
             style="@style/StockButtonNotActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_toEndOf="@+id/chart"
             android:text="@string/news"
             app:layout_constraintBottom_toBottomOf="@id/summary"
-            app:layout_constraintLeft_toRightOf="@id/summary"
+            app:layout_constraintEnd_toStartOf="@+id/forecasts"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/summary"
             app:layout_constraintTop_toTopOf="@id/menu" />
 
         <TextView
@@ -101,11 +105,12 @@
             style="@style/StockButtonNotActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_toEndOf="@+id/chart"
             android:text="@string/forecasts"
             app:layout_constraintBottom_toBottomOf="@id/news"
-            app:layout_constraintLeft_toRightOf="@id/news"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/news"
             app:layout_constraintTop_toTopOf="@id/menu" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <View
@@ -165,14 +170,13 @@
         android:layout_marginBottom="52dp"
         app:layout_constraintBottom_toTopOf="@id/buy"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
             android:background="@drawable/btn_interval"
             android:fontFamily="@font/montserrat"
             android:paddingLeft="16dp"
@@ -183,7 +187,10 @@
             android:textColor="@color/colorBlack"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/week"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/intervals" />
 
         <TextView
@@ -201,7 +208,9 @@
             android:textColor="@color/colorBlack"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/day"
+            app:layout_constraintEnd_toStartOf="@+id/month"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/day"
             app:layout_constraintTop_toTopOf="@id/intervals" />
 
         <TextView
@@ -219,7 +228,9 @@
             android:textColor="@color/colorBlack"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/week"
+            app:layout_constraintEnd_toStartOf="@+id/sixmonth"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/week"
             app:layout_constraintTop_toTopOf="@id/intervals" />
 
         <TextView
@@ -237,7 +248,9 @@
             android:textColor="@color/colorBlack"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/month"
+            app:layout_constraintEnd_toStartOf="@+id/year"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/month"
             app:layout_constraintTop_toTopOf="@id/intervals" />
 
         <TextView
@@ -255,14 +268,15 @@
             android:textColor="@color/colorBlack"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/sixmonth"
+            app:layout_constraintEnd_toStartOf="@+id/all"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/sixmonth"
             app:layout_constraintTop_toTopOf="@id/intervals" />
 
         <TextView
             android:id="@+id/all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
             android:background="@drawable/btn_interval_active"
             android:fontFamily="@font/montserrat"
             android:paddingLeft="16dp"
@@ -270,10 +284,13 @@
             android:paddingRight="16dp"
             android:paddingBottom="14dp"
             android:text="@string/interval_all"
+            android:layout_marginLeft="16dp"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             android:textStyle="bold"
-            app:layout_constraintLeft_toRightOf="@id/year"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/year"
             app:layout_constraintTop_toTopOf="@id/intervals" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

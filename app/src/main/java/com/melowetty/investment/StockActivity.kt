@@ -12,7 +12,7 @@ import com.db.williamchart.view.LineChartView
 import com.melowetty.investment.models.Stock
 
 
-class StockInfoActivity : AppCompatActivity() {
+class StockActivity : AppCompatActivity() {
 
     private lateinit var lineChart: LineChartView
     private lateinit var lineChartValue: TextView
@@ -23,7 +23,7 @@ class StockInfoActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stock_view)
+        setContentView(R.layout.activity_stock)
 
         val back = findViewById<ImageView>(R.id.back)
         lineChart = findViewById(R.id.lineChart)

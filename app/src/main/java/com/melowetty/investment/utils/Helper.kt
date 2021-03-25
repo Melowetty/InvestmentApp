@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.melowetty.investment.Activities
 import com.melowetty.investment.Currency
 import com.melowetty.investment.R
-import com.melowetty.investment.StockInfoActivity
+import com.melowetty.investment.StockActivity
 import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock
@@ -139,7 +139,7 @@ class Helper {
             else company
         }
         fun getStockInfoIntent(context: Context, stock: Stock, from: Activities): Intent {
-            val intent = Intent(context, StockInfoActivity::class.java)
+            val intent = Intent(context, StockActivity::class.java)
             intent.putExtra("stock", stock)
             intent.putExtra("from", from)
             return intent
