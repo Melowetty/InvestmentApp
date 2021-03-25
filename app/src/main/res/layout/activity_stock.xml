@@ -284,7 +284,7 @@
             android:paddingRight="16dp"
             android:paddingBottom="14dp"
             android:text="@string/interval_all"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:textColor="@android:color/white"
             android:textSize="12sp"
             android:textStyle="bold"

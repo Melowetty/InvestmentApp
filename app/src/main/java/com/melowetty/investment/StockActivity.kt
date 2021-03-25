@@ -1,26 +1,33 @@
 package com.melowetty.investment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.db.williamchart.slidertooltip.SliderTooltip
 import com.db.williamchart.view.LineChartView
 import com.melowetty.investment.models.Stock
+import com.melowetty.investment.utils.Helper
 
 
 class StockActivity : AppCompatActivity() {
 
     private lateinit var lineChart: LineChartView
+
     private lateinit var lineChartValue: TextView
+    private lateinit var name: TextView
+    private lateinit var company: TextView
+    private lateinit var cost: TextView
+    private lateinit var change: TextView
+
+    private lateinit var buy: Button
 
     private lateinit var stock: Stock
     private lateinit var from: Activities
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock)
@@ -31,27 +38,48 @@ class StockActivity : AppCompatActivity() {
         stock = intent.getSerializableExtra("stock") as Stock
         from = intent.getSerializableExtra("from") as Activities
 
+        name = findViewById(R.id.name)
+        company = findViewById(R.id.company)
+        cost = findViewById(R.id.cost)
+        change = findViewById(R.id.difference)
+        buy = findViewById(R.id.buy)
+
         //lineChartValue = findViewById(R.id.lineChartValue)
-        lineChart.gradientFillColors =
-                intArrayOf(
-                        Color.parseColor("#81DCDCDC"),
-                        Color.parseColor("#81EBEBEB")
-                )
-        lineChart.animation.duration = animationDuration
-        lineChart.tooltip =
-                SliderTooltip().also {
-                    it.color = Color.BLACK
-                }
-        lineChart.onDataPointTouchListener = { index, _, _ ->
-            //lineChartValue.text =
-              //      lineSet.toList()[index]
-                //            .first + " " + lineSet.toList()[index].second.toString()
-        }
-        lineChart.animate(lineSet)
 
         back.setOnClickListener {
             from.backToOldActivity(this)
         }
+
+        initStock()
+        initGraph()
+
+    }
+    private fun initGraph() {
+        // TODO Осталось настроитть график и выгрузку новостей
+        lineChart.gradientFillColors =
+            intArrayOf(
+                Color.parseColor("#81DCDCDC"),
+                Color.parseColor("#81EBEBEB")
+            )
+        lineChart.animation.duration = animationDuration
+        lineChart.tooltip =
+            SliderTooltip().also {
+                it.color = Color.BLACK
+            }
+        lineChart.onDataPointTouchListener = { index, _, _ ->
+            //lineChartValue.text =
+            //      lineSet.toList()[index]
+            //            .first + " " + lineSet.toList()[index].second.toString()
+        }
+        lineChart.animate(lineSet)
+    }
+    @SuppressLint("SetTextI18n")
+    fun initStock() {
+        name.text = stock.symbol
+        company.text = Helper.checkLengthLargeCompany(stock.company)
+        cost.text = stock.stockPrice.currency.format(stock.stockPrice.price)
+        Helper.formatChangePrice(change, stock.stockPrice)
+        buy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
     }
     companion object {
         private val lineSet = listOf(

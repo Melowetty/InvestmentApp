@@ -13,7 +13,7 @@
     <string name="chart">Chart</string>
     <string name="company_placeholder" translatable="false">Apple Inc.</string>
     <string name="name_placeholder" translatable="false">AAPL</string>
-    <string name="buy_btn">Buy for $132.04</string>
+    <string name="buy_btn">Buy for</string>
     <string name="interval_all">All</string>
     <string name="interval_year">1Y</string>
     <string name="interval_6m">6M</string>

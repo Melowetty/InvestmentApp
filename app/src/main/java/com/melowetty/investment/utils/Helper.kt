@@ -1,5 +1,6 @@
 package com.melowetty.investment.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
@@ -98,7 +99,7 @@ class Helper {
             if(getUpChangeBool(percent)) return percent.substring(0).toDouble()
             else return percent.substring(1).toDouble()
         }
-        fun companyProfileToStock(model: CompanyProfileModel): Stock? {
+        private fun companyProfileToStock(model: CompanyProfileModel): Stock? {
             return try {
                 val currency = Currency.getCardTypeByName(model.currency)
                 val changePercent = formatCost(abs((model.changes/model.price)*100))
@@ -109,6 +110,7 @@ class Helper {
                 null
             }
         }
+        @SuppressLint("SetTextI18n")
         fun formatChangePrice(textView: TextView, price: StockPrice) {
             val symbol = if (price.up) "+" else "-"
             val style = if (price.up) R.style.StockPriceUp else R.style.StockPriceDown
@@ -136,6 +138,10 @@ class Helper {
         }
         fun checkLengthCompany(company: String): String {
             return if (company.length > 32) company.substring(0, 32) + "..."
+            else company
+        }
+        fun checkLengthLargeCompany(company: String): String {
+            return if (company.length > 50) company.substring(0, 50) + "..."
             else company
         }
         fun getStockInfoIntent(context: Context, stock: Stock, from: Activities): Intent {
