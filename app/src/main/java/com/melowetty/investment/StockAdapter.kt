@@ -10,7 +10,9 @@ import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 
 
-class StockAdapter(val stocks: ArrayList<Stock>) :
+class StockAdapter(
+    val stocks: ArrayList<Stock>,
+    private val stockClickListener: StockClickListener) :
     RecyclerView.Adapter<StockAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.stock_item, parent, false)
@@ -22,11 +24,15 @@ class StockAdapter(val stocks: ArrayList<Stock>) :
         if (position % 2 != 0) holder.itemView.setBackgroundResource(R.drawable.stock_outline_white)
         else holder.itemView.setBackgroundResource(R.drawable.stock_outline)
         holder.title.text = item.symbol
-        holder.subtitle.text = item.company
+        holder.subtitle.text = Helper.checkLengthCompany(item.company)
         Helper.formatChangePrice(holder.difference, item.stockPrice)
         holder.cost.text = item.stockPrice.currency.format(item.stockPrice.price)
         Helper.pasteImagefromURL(item.logo, holder.logo)
         holder.logo.clipToOutline = true
+
+        holder.itemView.setOnClickListener {
+            stockClickListener.onStockClick(item)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -46,6 +52,5 @@ class StockAdapter(val stocks: ArrayList<Stock>) :
         var cost: TextView = view.findViewById<View>(R.id.cost) as TextView
         var difference: TextView = view.findViewById<View>(R.id.growth) as TextView
         var logo: ImageView = view.findViewById<View>(R.id.logo) as ImageView
-
     }
 }

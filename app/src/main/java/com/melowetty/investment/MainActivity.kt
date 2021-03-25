@@ -18,7 +18,7 @@ import com.melowetty.investment.viewmodel.CompanyProfileViewModel
 import com.melowetty.investment.viewmodel.ExchangeRateViewModel
 import com.melowetty.investment.viewmodel.IndicesConstituenceViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), StockClickListener {
     private val TAG = this::class.java.simpleName
 
     private lateinit var favourite: TextView
@@ -26,8 +26,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchBar: TextView
     private lateinit var mShimmerViewContainer: ShimmerFrameLayout
-
-    private var stockList: ArrayList<Stock> = ArrayList()
 
     private lateinit var adapter: StockAdapter
 
@@ -43,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        adapter = StockAdapter(arrayListOf())
+        adapter = StockAdapter(arrayListOf(), this)
         recyclerView.adapter = adapter
 
         favourite = findViewById(R.id.favourite)
@@ -58,7 +56,6 @@ class MainActivity : AppCompatActivity() {
         stocks.setOnClickListener {
             Helper.changeCondition(favourite, false)
             Helper.changeCondition(stocks, true)
-            Log.d(TAG, stockList.size.toString())
         }
         searchBar.setOnClickListener {
             val stockView = Intent(this, SearchActivity::class.java)
@@ -132,5 +129,9 @@ class MainActivity : AppCompatActivity() {
             recyclerView.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
+    }
+
+    override fun onStockClick(stock: Stock) {
+        Log.d("$TAG [Stock Click]", stock.toString())
     }
 }

@@ -130,5 +130,9 @@ class Helper {
             }
             return stocks
         }
+        fun checkLengthCompany(company: String): String {
+            return if (company.length > 32) company.substring(0, 32) + "..."
+            else company
+        }
     }
 }

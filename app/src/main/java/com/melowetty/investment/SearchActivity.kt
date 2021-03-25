@@ -25,7 +25,7 @@ import com.melowetty.investment.utils.Helper
 import com.melowetty.investment.viewmodel.CompanyProfileViewModel
 import com.melowetty.investment.viewmodel.FindStockViewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), StockClickListener {
 
     private val TAG = this::class.java.simpleName
 
@@ -48,7 +48,7 @@ class SearchActivity : AppCompatActivity() {
         miniRecyclerView = findViewById(R.id.mini_recycler_view)
 
         miniRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        adapter = StockAdapter(arrayListOf())
+        adapter = StockAdapter(arrayListOf(), this)
         miniRecyclerView.adapter = adapter
 
         initViewModels()
@@ -156,5 +156,9 @@ class SearchActivity : AppCompatActivity() {
             stocks.clear()
             notifyDataSetChanged()
         }
+    }
+
+    override fun onStockClick(stock: Stock) {
+        Log.d("$TAG [Stock Click]", stock.toString())
     }
 }
