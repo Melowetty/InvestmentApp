@@ -9,11 +9,17 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.db.williamchart.slidertooltip.SliderTooltip
 import com.db.williamchart.view.LineChartView
+import com.melowetty.investment.models.Stock
 
 
-class StockView : AppCompatActivity() {
+class StockInfoActivity : AppCompatActivity() {
+
     private lateinit var lineChart: LineChartView
     private lateinit var lineChartValue: TextView
+
+    private lateinit var stock: Stock
+    private lateinit var from: Activities
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +27,10 @@ class StockView : AppCompatActivity() {
 
         val back = findViewById<ImageView>(R.id.back)
         lineChart = findViewById(R.id.lineChart)
+
+        stock = intent.getSerializableExtra("stock") as Stock
+        from = intent.getSerializableExtra("from") as Activities
+
         //lineChartValue = findViewById(R.id.lineChartValue)
         lineChart.gradientFillColors =
                 intArrayOf(
@@ -40,8 +50,7 @@ class StockView : AppCompatActivity() {
         lineChart.animate(lineSet)
 
         back.setOnClickListener {
-            val stockView = Intent(this, MainActivity::class.java)
-            startActivity(stockView)
+            from.backToOldActivity(this)
         }
     }
     companion object {
@@ -62,4 +71,5 @@ class StockView : AppCompatActivity() {
 
         private const val animationDuration = 1000L
     }
+
 }

@@ -101,7 +101,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
             clear.visibility = View.GONE
         }
     }
-    fun initViewModels() {
+    private fun initViewModels() {
         searchModel = ViewModelProvider(this).get(FindStockViewModel::class.java)
         searchModel.getFindStocksObserver().observe(this, Observer<FindStockModel> {
             if (it != null) {
@@ -159,6 +159,6 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
     }
 
     override fun onStockClick(stock: Stock) {
-        Log.d("$TAG [Stock Click]", stock.toString())
+        startActivity(Helper.getStockInfoIntent(this, stock, Activities.SEARCH))
     }
 }

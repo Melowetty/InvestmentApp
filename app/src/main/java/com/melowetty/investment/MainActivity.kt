@@ -34,6 +34,8 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private lateinit var companyNewsModel: CompanyNewsViewModel
     private lateinit var companyProfileModel: CompanyProfileViewModel
 
+    private var target: Activities? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -48,6 +50,15 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         stocks = findViewById(R.id.stocks)
         searchBar = findViewById(R.id.search_bar)
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
+
+        target = intent.getSerializableExtra("target") as? Activities
+
+        if(target != null) {
+            if(target == Activities.FAVOURITE) {
+                Helper.changeCondition(favourite, true)
+                Helper.changeCondition(stocks, false)
+            }
+        }
 
         favourite.setOnClickListener {
             Helper.changeCondition(favourite, true)
@@ -132,6 +143,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
 
     override fun onStockClick(stock: Stock) {
-        Log.d("$TAG [Stock Click]", stock.toString())
+        startActivity(Helper.getStockInfoIntent(this, stock, Activities.MAIN))
     }
 }

@@ -1,9 +1,13 @@
 package com.melowetty.investment.utils
 
+import android.content.Context
+import android.content.Intent
 import android.widget.ImageView
 import android.widget.TextView
+import com.melowetty.investment.Activities
 import com.melowetty.investment.Currency
 import com.melowetty.investment.R
+import com.melowetty.investment.StockInfoActivity
 import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock
@@ -133,6 +137,12 @@ class Helper {
         fun checkLengthCompany(company: String): String {
             return if (company.length > 32) company.substring(0, 32) + "..."
             else company
+        }
+        fun getStockInfoIntent(context: Context, stock: Stock, from: Activities): Intent {
+            val intent = Intent(context, StockInfoActivity::class.java)
+            intent.putExtra("stock", stock)
+            intent.putExtra("from", from)
+            return intent
         }
     }
 }
