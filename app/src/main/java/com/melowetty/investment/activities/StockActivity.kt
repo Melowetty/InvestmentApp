@@ -10,8 +10,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.db.williamchart.slidertooltip.SliderTooltip
 import com.db.williamchart.view.LineChartView
-import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.R
+import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 

@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
 import android.widget.TextView
-import com.melowetty.investment.enums.Activities
-import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.R
 import com.melowetty.investment.activities.StockActivity
+import com.melowetty.investment.enums.Activities
+import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock

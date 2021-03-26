@@ -18,9 +18,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.R
 import com.melowetty.investment.adapters.StockAdapter
+import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.FindStockModel
