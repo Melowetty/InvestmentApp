@@ -1,4 +1,4 @@
-package com.melowetty.investment
+package com.melowetty.investment.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -11,12 +11,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.melowetty.investment.*
+import com.melowetty.investment.adapters.StockAdapter
+import com.melowetty.investment.enums.Activities
+import com.melowetty.investment.enums.Currency
+import com.melowetty.investment.enums.Indices
+import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.*
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodel.CompanyNewsViewModel
-import com.melowetty.investment.viewmodel.CompanyProfileViewModel
-import com.melowetty.investment.viewmodel.ExchangeRateViewModel
-import com.melowetty.investment.viewmodel.IndicesConstituenceViewModel
+import com.melowetty.investment.viewmodels.CompanyNewsViewModel
+import com.melowetty.investment.viewmodels.CompanyProfileViewModel
+import com.melowetty.investment.viewmodels.ExchangeRateViewModel
+import com.melowetty.investment.viewmodels.IndicesConstituenceViewModel
 
 class MainActivity : AppCompatActivity(), StockClickListener {
     private val TAG = this::class.java.simpleName
@@ -42,7 +48,8 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         recyclerView = findViewById(R.id.recyclerView)
 
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = StockAdapter(arrayListOf(), this)
         recyclerView.adapter = adapter
 
@@ -82,8 +89,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         getExchangeRate(Currency.USD)
     }
     private fun initModels() {
-        indiceConstituensModel = ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
-        indiceConstituensModel.getConstituenceObserver().observe(this, Observer<IndicesConstituensModel> { it ->
+        indiceConstituensModel =
+            ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
+        indiceConstituensModel
+            .getConstituenceObserver()
+            .observe(this, Observer<IndicesConstituensModel> { it ->
             if(it != null) {
                 getCompanyProfile(it.constituents.joinToString(separator = ","))
             }
@@ -91,8 +101,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                 Log.e("$TAG [Indice Constituens Model]", "Error in fetching data")
             }
         })
-        exchangeRateModel = ViewModelProvider(this).get(ExchangeRateViewModel::class.java)
-        exchangeRateModel.getExchangeRateObserver().observe(this, Observer<ExchangeRateModel> { it ->
+        exchangeRateModel =
+            ViewModelProvider(this).get(ExchangeRateViewModel::class.java)
+        exchangeRateModel
+            .getExchangeRateObserver()
+            .observe(this, Observer<ExchangeRateModel> { it ->
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -100,8 +113,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                 Log.e("$TAG [Exchange Rate Model]", "Error in fetching data")
             }
         })
-        companyNewsModel = ViewModelProvider(this).get(CompanyNewsViewModel::class.java)
-        companyNewsModel.getNewsListObserver().observe(this, Observer<List<CompanyNewsModel>> {
+        companyNewsModel =
+            ViewModelProvider(this).get(CompanyNewsViewModel::class.java)
+        companyNewsModel
+            .getNewsListObserver()
+            .observe(this, Observer<List<CompanyNewsModel>> {
             if(it != null) {
                 Log.d(TAG, it.toString())
             }
@@ -109,8 +125,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                 Log.e("$TAG [Company News Model]", "Error in fetching data")
             }
         })
-        companyProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
-        companyProfileModel.getCompanyProfileObserver().observe(this, Observer<List<CompanyProfileModel>> {
+        companyProfileModel =
+            ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        companyProfileModel
+            .getCompanyProfileObserver()
+            .observe(this, Observer<List<CompanyProfileModel>> {
             if(it != null) {
                 retrieveList(Helper.convertModelListToStockList(it))
             }
@@ -143,6 +162,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
 
     override fun onStockClick(stock: Stock) {
-        startActivity(Helper.getStockInfoIntent(this, stock, Activities.MAIN))
+        startActivity(
+            Helper.getStockInfoIntent(this, stock, Activities.MAIN))
     }
 }

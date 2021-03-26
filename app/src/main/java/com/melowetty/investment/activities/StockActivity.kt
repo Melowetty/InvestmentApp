@@ -1,23 +1,27 @@
-package com.melowetty.investment
+package com.melowetty.investment.activities
 
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.db.williamchart.slidertooltip.SliderTooltip
 import com.db.williamchart.view.LineChartView
+import com.melowetty.investment.enums.Activities
+import com.melowetty.investment.R
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 
 
 class StockActivity : AppCompatActivity() {
 
+    private val TAG = this::class.java.simpleName
+
     private lateinit var lineChart: LineChartView
 
-    private lateinit var lineChartValue: TextView
     private lateinit var name: TextView
     private lateinit var company: TextView
     private lateinit var cost: TextView
@@ -44,8 +48,6 @@ class StockActivity : AppCompatActivity() {
         change = findViewById(R.id.difference)
         buy = findViewById(R.id.buy)
 
-        //lineChartValue = findViewById(R.id.lineChartValue)
-
         back.setOnClickListener {
             from.backToOldActivity(this)
         }
@@ -59,14 +61,15 @@ class StockActivity : AppCompatActivity() {
         lineChart.gradientFillColors =
             intArrayOf(
                 Color.parseColor("#81DCDCDC"),
-                Color.parseColor("#81EBEBEB")
+                Color.WHITE
             )
         lineChart.animation.duration = animationDuration
         lineChart.tooltip =
             SliderTooltip().also {
                 it.color = Color.BLACK
             }
-        lineChart.onDataPointTouchListener = { index, _, _ ->
+        lineChart.onDataPointTouchListener = { index, x, y ->
+            Log.d(TAG, "Coords: $x $y | Index: $index")
             //lineChartValue.text =
             //      lineSet.toList()[index]
             //            .first + " " + lineSet.toList()[index].second.toString()
@@ -76,25 +79,28 @@ class StockActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     fun initStock() {
         name.text = stock.symbol
+
         company.text = Helper.checkLengthLargeCompany(stock.company)
+
         cost.text = stock.stockPrice.currency.format(stock.stockPrice.price)
         Helper.formatChangePrice(change, stock.stockPrice)
         buy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
     }
+
     companion object {
         private val lineSet = listOf(
-                "label1" to 5f,
-                "label2" to 4.5f,
-                "label3" to 4.7f,
-                "label4" to 3.5f,
-                "label5" to 3.6f,
-                "label6" to 7.5f,
-                "label7" to 7.5f,
-                "label8" to 10f,
-                "label9" to 5f,
-                "label10" to 6.5f,
-                "label11" to 3f,
-                "label12" to 4f
+            "label1" to 5f,
+            "label2" to 4.5f,
+            "label3" to 4.7f,
+            "label4" to 3.5f,
+            "label5" to 3.6f,
+            "label6" to 7.5f,
+            "label7" to 7.5f,
+            "label8" to 10f,
+            "label9" to 5f,
+            "label10" to 6.5f,
+            "label11" to 3f,
+            "label12" to 4f
         )
 
         private const val animationDuration = 1000L

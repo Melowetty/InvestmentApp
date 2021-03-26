@@ -1,6 +1,6 @@
 package com.melowetty.investment.models
 
-import com.melowetty.investment.Currency
+import com.melowetty.investment.enums.Currency
 import java.io.Serializable
 
 data class StockPrice(

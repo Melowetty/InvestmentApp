@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
 import android.widget.TextView
-import com.melowetty.investment.Activities
-import com.melowetty.investment.Currency
+import com.melowetty.investment.enums.Activities
+import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.R
-import com.melowetty.investment.StockActivity
+import com.melowetty.investment.activities.StockActivity
 import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock
@@ -105,7 +105,7 @@ class Helper {
                 val changePercent = formatCost(abs((model.changes/model.price)*100))
                 val up = getUpChangeBool(model.changes.toString())
                 val stockPrice = StockPrice(currency, model.price, model.changes, changePercent, up)
-                Stock(model.symbol, model.companyName, model.image, stockPrice)
+                Stock(model.symbol, model.companyName, model.image, false, stockPrice)
             } catch (e: Exception) {
                 null
             }
@@ -149,6 +149,9 @@ class Helper {
             intent.putExtra("stock", stock)
             intent.putExtra("from", from)
             return intent
+        }
+        fun setFavouriteColor(context: Context, imageView: ImageView) {
+            imageView.setColorFilter(context.resources.getColor(R.color.favourite))
         }
     }
 }

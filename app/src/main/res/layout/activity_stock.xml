@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StockActivity">
+    android:background="@android:color/white"
+    tools:context=".activities.StockActivity">
 
     <ImageView
         android:id="@+id/back"
@@ -137,7 +138,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/montserrat"
+        android:textStyle="bold"
         android:gravity="center"
         android:text="@string/stock_difference"
         android:textColor="@color/colorUp"
@@ -161,7 +163,8 @@
         app:layout_constraintBottom_toTopOf="@+id/intervals"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/difference" />
+        app:layout_constraintTop_toBottomOf="@id/difference" >
+    </com.db.williamchart.view.LineChartView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/intervals"

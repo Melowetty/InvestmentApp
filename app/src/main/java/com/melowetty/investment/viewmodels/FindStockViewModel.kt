@@ -1,4 +1,4 @@
-package com.melowetty.investment.viewmodel
+package com.melowetty.investment.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

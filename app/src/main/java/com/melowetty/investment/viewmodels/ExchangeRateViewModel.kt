@@ -1,8 +1,8 @@
-package com.melowetty.investment.viewmodel
+package com.melowetty.investment.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.melowetty.investment.models.IndicesConstituensModel
+import com.melowetty.investment.models.ExchangeRateModel
 import com.melowetty.investment.network.RetrofitFinhub
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -10,34 +10,34 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class IndicesConstituenceViewModel: ViewModel() {
-    var constituenceList: MutableLiveData<IndicesConstituensModel> = MutableLiveData()
+class ExchangeRateViewModel: ViewModel() {
+    var exchangeRate: MutableLiveData<ExchangeRateModel> = MutableLiveData()
 
-    fun getConstituenceObserver(): MutableLiveData<IndicesConstituensModel> {
-        return constituenceList
+    fun getExchangeRateObserver(): MutableLiveData<ExchangeRateModel> {
+        return exchangeRate
     }
 
-    fun makeApiCall(ticker: String) {
+    fun makeApiCall(base: String) {
         val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
             RetrofitService::class.java)
-        retrofitInstance.getIndexConstituens(ticker)
+        retrofitInstance.getExchangeRate(base)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getPriceObserverRx())
+            .subscribe(getExchangeRateObserverRx())
     }
 
-    private fun getPriceObserverRx(): Observer<IndicesConstituensModel> {
-        return object : Observer<IndicesConstituensModel> {
+    private fun getExchangeRateObserverRx(): Observer<ExchangeRateModel> {
+        return object : Observer<ExchangeRateModel> {
             override fun onComplete() {
                 // Hide progress bar
             }
 
             override fun onError(e: Throwable?) {
-                constituenceList.postValue(null)
+                exchangeRate.postValue(null)
             }
 
-            override fun onNext(t: IndicesConstituensModel?) {
-                constituenceList.postValue(t)
+            override fun onNext(t: ExchangeRateModel?) {
+                exchangeRate.postValue(t)
             }
 
             override fun onSubscribe(d: Disposable?) {

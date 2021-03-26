@@ -1,4 +1,4 @@
-package com.melowetty.investment
+package com.melowetty.investment.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,12 +18,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.melowetty.investment.enums.Activities
+import com.melowetty.investment.R
+import com.melowetty.investment.adapters.StockAdapter
+import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.CompanyProfileModel
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodel.CompanyProfileViewModel
-import com.melowetty.investment.viewmodel.FindStockViewModel
+import com.melowetty.investment.viewmodels.CompanyProfileViewModel
+import com.melowetty.investment.viewmodels.FindStockViewModel
 
 class SearchActivity : AppCompatActivity(), StockClickListener {
 
@@ -47,7 +51,8 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
 
         miniRecyclerView = findViewById(R.id.mini_recycler_view)
 
-        miniRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        miniRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = StockAdapter(arrayListOf(), this)
         miniRecyclerView.adapter = adapter
 
@@ -102,19 +107,26 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
         }
     }
     private fun initViewModels() {
-        searchModel = ViewModelProvider(this).get(FindStockViewModel::class.java)
-        searchModel.getFindStocksObserver().observe(this, Observer<FindStockModel> {
+        searchModel =
+            ViewModelProvider(this).get(FindStockViewModel::class.java)
+        searchModel
+            .getFindStocksObserver()
+            .observe(this, Observer<FindStockModel> {
             if (it != null) {
                 clearResultList()
-                getCompanyProfile(Helper.convertModelListToStringList(it).joinToString(separator = ","))
+                getCompanyProfile(
+                    Helper.convertModelListToStringList(it).joinToString(separator = ","))
 
             } else {
                 Log.e("$TAG [Search Model]", "Error in fetching data")
             }
         })
 
-        companyProfileModel = ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
-        companyProfileModel.getCompanyProfileObserver().observe(this, Observer<List<CompanyProfileModel>> {
+        companyProfileModel =
+            ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+        companyProfileModel
+            .getCompanyProfileObserver()
+            .observe(this, Observer<List<CompanyProfileModel>> {
             if(it != null) {
                 retrieveList(Helper.convertModelListToStockList(it))
             }
@@ -159,6 +171,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
     }
 
     override fun onStockClick(stock: Stock) {
-        startActivity(Helper.getStockInfoIntent(this, stock, Activities.SEARCH))
+        startActivity(
+            Helper.getStockInfoIntent(this, stock, Activities.SEARCH))
     }
 }

@@ -1,4 +1,4 @@
-package com.melowetty.investment
+package com.melowetty.investment.enums
 
 import com.melowetty.investment.utils.Helper
 import java.util.*
