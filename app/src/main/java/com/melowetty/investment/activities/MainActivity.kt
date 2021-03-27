@@ -6,23 +6,23 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
 import com.melowetty.investment.adapters.StockAdapter
+import com.melowetty.investment.database.AppDatabase
+import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.enums.Indices
 import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.*
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodels.CompanyNewsViewModel
-import com.melowetty.investment.viewmodels.CompanyProfileViewModel
-import com.melowetty.investment.viewmodels.ExchangeRateViewModel
-import com.melowetty.investment.viewmodels.IndicesConstituenceViewModel
+import com.melowetty.investment.viewmodels.*
+
 
 class MainActivity : AppCompatActivity(), StockClickListener {
     private val TAG = this::class.java.simpleName
@@ -35,10 +35,24 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
     private lateinit var adapter: StockAdapter
 
-    private lateinit var indiceConstituensModel: IndicesConstituenceViewModel
-    private lateinit var exchangeRateModel: ExchangeRateViewModel
-    private lateinit var companyNewsModel: CompanyNewsViewModel
-    private lateinit var companyProfileModel: CompanyProfileViewModel
+    private val indicesConstituentsModel by lazy { ViewModelProviders.of(this)
+        .get(IndicesConstituentsViewModel::class.java)}
+
+    private val exchangeRateModel by lazy { ViewModelProviders.of(this)
+        .get(ExchangeRateViewModel::class.java)}
+
+    private val companyNewsModel by lazy { ViewModelProviders.of(this)
+        .get(CompanyNewsViewModel::class.java)}
+
+    private val companyProfileModel by lazy { ViewModelProviders.of(this)
+        .get(CompanyProfileViewModel::class.java)}
+
+    private val favouriteStocksViewModel by lazy { ViewModelProviders.of(this)
+        .get(FavouriteStocksViewModel::class.java)}
+
+    private var favouriteStocks: List<FavouriteStock> = ArrayList()
+
+    private var db: AppDatabase? = null
 
     private var target: Activities? = null
 
@@ -52,6 +66,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         adapter = StockAdapter(arrayListOf(), this)
         recyclerView.adapter = adapter
+
 
         favourite = findViewById(R.id.favourite)
         stocks = findViewById(R.id.stocks)
@@ -70,6 +85,10 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         favourite.setOnClickListener {
             Helper.changeCondition(favourite, true)
             Helper.changeCondition(stocks, false)
+            getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
+            mShimmerViewContainer.startShimmer()
+            mShimmerViewContainer.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
         }
         stocks.setOnClickListener {
             Helper.changeCondition(favourite, false)
@@ -82,70 +101,75 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         initModels()
 
-        mShimmerViewContainer.startShimmerAnimation();
+        mShimmerViewContainer.startShimmer();
 
-        getIndexConstituens(Indices.NASDAQ_100)
-        getCompanyNews("TSLA", "2021-03-15", "2021-03-21")
+        getIndexConstituents(Indices.SP_500)
         getExchangeRate(Currency.USD)
+
+        initDatabase()
+
+    }
+    private fun initDatabase() {
+        db = AppActivity.getDatabase()
     }
     private fun initModels() {
-        indiceConstituensModel =
-            ViewModelProvider(this).get(IndicesConstituenceViewModel::class.java)
-        indiceConstituensModel
-            .getConstituenceObserver()
-            .observe(this, Observer<IndicesConstituensModel> { it ->
-            if(it != null) {
-                getCompanyProfile(it.constituents.joinToString(separator = ","))
-            }
-            else {
-                Log.e("$TAG [Indice Constituens Model]", "Error in fetching data")
+        favouriteStocksViewModel.favouriteStocks.observe(this, {
+            it?.let {
+                favouriteStocks = it
             }
         })
-        exchangeRateModel =
-            ViewModelProvider(this).get(ExchangeRateViewModel::class.java)
+
+        indicesConstituentsModel
+            .getConstituentsObserver()
+            .observe(this, { it ->
+                if (it != null) {
+                    getCompanyProfile(it.constituents.joinToString(separator = ","))
+                } else {
+                    Log.e("$TAG [Indices Constituents Model]", "Error in fetching data")
+                }
+            })
+
         exchangeRateModel
             .getExchangeRateObserver()
-            .observe(this, Observer<ExchangeRateModel> { it ->
-            if(it != null) {
-                Log.d(TAG, it.toString())
-            }
-            else {
-                Log.e("$TAG [Exchange Rate Model]", "Error in fetching data")
-            }
-        })
-        companyNewsModel =
-            ViewModelProvider(this).get(CompanyNewsViewModel::class.java)
+            .observe(this, { it ->
+                if (it != null) {
+                    Log.d(TAG, it.toString())
+                } else {
+                    Log.e("$TAG [Exchange Rate Model]", "Error in fetching data")
+                }
+            })
+
         companyNewsModel
             .getNewsListObserver()
-            .observe(this, Observer<List<CompanyNewsModel>> {
-            if(it != null) {
-                Log.d(TAG, it.toString())
-            }
-            else {
-                Log.e("$TAG [Company News Model]", "Error in fetching data")
-            }
-        })
-        companyProfileModel =
-            ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+            .observe(this, {
+                if (it != null) {
+                    Log.d(TAG, it.toString())
+                } else {
+                    Log.e("$TAG [Company News Model]", "Error in fetching data")
+                }
+            })
+
         companyProfileModel
             .getCompanyProfileObserver()
-            .observe(this, Observer<List<CompanyProfileModel>> {
-            if(it != null) {
-                retrieveList(Helper.convertModelListToStockList(it))
-            }
-            else {
-                Log.e("$TAG [Company Profile Model]", "Error in fetching data")
-            }
-        })
+            .observe(this, {
+                if (it != null) {
+                    retrieveList(Helper.convertModelListToStockList(it,
+                        favouriteStocks))
+                } else {
+                    Log.e("$TAG [Company Profile Model]", "Error in fetching data")
+                }
+            })
     }
-    private fun getIndexConstituens(indice: Indices) {
-        indiceConstituensModel.makeApiCall(indice.code)
+    private fun getFavouriteCompanyProfile(favourites: List<String>) {
+        getCompanyProfile(favourites.joinToString(","))
+    }
+    private fun getIndexConstituents(indice: Indices) {
+        indicesConstituentsModel.makeApiCall(indice.code)
     }
     private fun getExchangeRate(exchange: Currency) {
         exchangeRateModel.makeApiCall(exchange.name)
     }
     private fun getCompanyNews(ticker: String, from: String, to: String) {
-        // TODO("Выдает Error in fetching data")
         companyNewsModel.makeApiCall(ticker, from, to)
     }
     private fun getCompanyProfile(ticker: String) {
@@ -154,8 +178,8 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private fun retrieveList(stocks: List<Stock>) {
         adapter.apply {
             this.addStocks(stocks)
-            mShimmerViewContainer.stopShimmerAnimation()
-            mShimmerViewContainer.visibility = View.GONE;
+            mShimmerViewContainer.stopShimmer()
+            mShimmerViewContainer.visibility = View.GONE
             recyclerView.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
@@ -163,6 +187,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
     override fun onStockClick(stock: Stock) {
         startActivity(
-            Helper.getStockInfoIntent(this, stock, Activities.MAIN))
+            Helper.getStockInfoIntent(this, stock, Activities.MAIN)
+        )
     }
 }

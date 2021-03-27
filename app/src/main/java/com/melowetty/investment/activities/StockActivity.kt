@@ -8,12 +8,16 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProviders
 import com.db.williamchart.slidertooltip.SliderTooltip
 import com.db.williamchart.view.LineChartView
+import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
+import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
+import com.melowetty.investment.viewmodels.FavouriteStocksViewModel
 
 
 class StockActivity : AppCompatActivity() {
@@ -27,16 +31,22 @@ class StockActivity : AppCompatActivity() {
     private lateinit var cost: TextView
     private lateinit var change: TextView
 
+    private lateinit var favourite: ImageView
+
     private lateinit var buy: Button
 
     private lateinit var stock: Stock
     private lateinit var from: Activities
+
+    private val favouriteStocksViewModel by lazy { ViewModelProviders.of(this)
+        .get(FavouriteStocksViewModel::class.java)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock)
 
         val back = findViewById<ImageView>(R.id.back)
+        favourite = findViewById(R.id.favourite_btn)
         lineChart = findViewById(R.id.lineChart)
 
         stock = intent.getSerializableExtra("stock") as Stock
@@ -50,6 +60,21 @@ class StockActivity : AppCompatActivity() {
 
         back.setOnClickListener {
             from.backToOldActivity(this)
+        }
+
+        favourite.setOnClickListener {
+            val db = AppActivity.getDatabase()
+            if (!stock.isFavourite) {
+                db?.favouriteStockDao()?.insert(FavouriteStock(stock.symbol, stock.company))
+                stock.isFavourite = true
+                favourite.setImageResource(R.drawable.ic_favourite)
+            }
+            else {
+                db?.favouriteStockDao()?.delete(FavouriteStock(stock.symbol, stock.company))
+                stock.isFavourite = false
+                favourite.setImageResource(R.drawable.ic_not_favourite)
+            }
+            favouriteStocksViewModel.updateFavouriteStocks()
         }
 
         initStock()
@@ -85,6 +110,7 @@ class StockActivity : AppCompatActivity() {
         cost.text = stock.stockPrice.currency.format(stock.stockPrice.price)
         Helper.formatChangePrice(change, stock.stockPrice)
         buy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
+        if(stock.isFavourite) favourite.setImageResource(R.drawable.ic_favourite)
     }
 
     companion object {

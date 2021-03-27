@@ -9,6 +9,7 @@
     <color name="colorDown">#B22424</color>
     <color name="colorBlack">#1A1A1A</color>
     <color name="favourite">#FFCA1C</color>
+    <color name="notFavourite">#BABABA</color>
     <color name="colorSearchItem">#F0F4F7</color>
     <color name="shimmerBackground">#dddddd</color>
 </resources>

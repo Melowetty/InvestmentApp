@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.melowetty.investment.R
 import com.melowetty.investment.activities.StockActivity
+import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.models.CompanyProfileModel
@@ -30,18 +31,6 @@ class Helper {
             val format = SimpleDateFormat("dd.MM.yyyy HH:mm")
             return format.format(date)
         }
-        fun pasteImage(ticker: String, imageView: ImageView) {
-            try {
-                Picasso.get()
-                    .load("https://financialmodelingprep.com/image-stock/$ticker.jpg")
-                    .into(imageView)
-            }
-            catch (e: Exception) {
-                Picasso.get()
-                    .load("https://yastatic.net/s3/fintech-icons/1/i/$ticker.svg")
-                    .into(imageView)
-            }
-        }
         fun pasteImagefromURL(url: String, imageView: ImageView) {
             try {
                 Picasso.get()
@@ -49,6 +38,9 @@ class Helper {
                     .into(imageView)
             }
             catch (e: Exception) {
+                Picasso.get()
+                    .load(R.drawable.placeholder_background)
+                    .into(imageView)
             }
         }
         fun formatCost(cost: Double?): Double = DecimalFormat("#0.00").format(cost).replace(
@@ -99,16 +91,23 @@ class Helper {
             if(getUpChangeBool(percent)) return percent.substring(0).toDouble()
             else return percent.substring(1).toDouble()
         }
-        private fun companyProfileToStock(model: CompanyProfileModel): Stock? {
+        private fun companyProfileToStock(model: CompanyProfileModel, favourites: List<FavouriteStock>): Stock? {
             return try {
                 val currency = Currency.getCardTypeByName(model.currency)
                 val changePercent = formatCost(abs((model.changes/model.price)*100))
                 val up = getUpChangeBool(model.changes.toString())
                 val stockPrice = StockPrice(currency, model.price, model.changes, changePercent, up)
-                Stock(model.symbol, model.companyName, model.image, false, stockPrice)
+                val isFavourite = isFavorite(model.symbol, favourites)
+                Stock(model.symbol, model.companyName, model.image, isFavourite, stockPrice)
             } catch (e: Exception) {
                 null
             }
+        }
+        private fun isFavorite(ticker: String, favourites: List<FavouriteStock>): Boolean {
+            favourites.forEach {
+                if(ticker == it.ticker) return true
+            }
+            return false
         }
         @SuppressLint("SetTextI18n")
         fun formatChangePrice(textView: TextView, price: StockPrice) {
@@ -118,11 +117,11 @@ class Helper {
             textView.setTextAppearance(style)
             textView.text = "$symbol${price.currency.format(price.change)} ($percent%)"
         }
-        fun convertModelListToStockList(array: List<CompanyProfileModel>): List<Stock> {
+        fun convertModelListToStockList(array: List<CompanyProfileModel>, favourites: List<FavouriteStock>): List<Stock> {
             val stocks: ArrayList<Stock> = ArrayList()
             stocks.apply {
                 array.forEach {
-                    companyProfileToStock(it)?.let { it1 -> this.add(it1) }
+                    companyProfileToStock(it, favourites)?.let { it1 -> this.add(it1) }
                 }
             }
             return stocks
@@ -152,6 +151,16 @@ class Helper {
         }
         fun setFavouriteColor(context: Context, imageView: ImageView) {
             imageView.setColorFilter(context.resources.getColor(R.color.favourite))
+        }
+        fun setNotFavouriteColor(context: Context, imageView: ImageView) {
+            imageView.setColorFilter(context.resources.getColor(R.color.notFavourite))
+        }
+        fun favouriteStocksToString(stocks: List<FavouriteStock>): List<String> {
+            val output: ArrayList<String> = ArrayList()
+            stocks.forEach {
+                output.add(it.ticker)
+            }
+            return output
         }
     }
 }

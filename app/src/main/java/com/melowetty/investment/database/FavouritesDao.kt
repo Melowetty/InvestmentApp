@@ -11,7 +11,7 @@ interface FavouritesDao {
     @Query("SELECT * FROM favouriteStock WHERE ticker = :ticker")
     fun getBy(ticker: String): FavouriteStock
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(favouriteStock: FavouriteStock)
 
     @Delete

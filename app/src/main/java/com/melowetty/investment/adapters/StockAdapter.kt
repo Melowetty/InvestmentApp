@@ -41,6 +41,8 @@ class StockAdapter(
 
         if(item.isFavourite)
             Helper.setFavouriteColor(holder.itemView.context, holder.favourite)
+        else
+            Helper.setNotFavouriteColor(holder.itemView.context, holder.favourite)
 
         holder.itemView.setOnClickListener {
             stockClickListener.onStockClick(item)
@@ -55,7 +57,7 @@ class StockAdapter(
     }
     fun addStocks(stocks: List<Stock>) {
         this.stocks.apply {
-            //clear()
+            clear()
             addAll(stocks)
         }
     }

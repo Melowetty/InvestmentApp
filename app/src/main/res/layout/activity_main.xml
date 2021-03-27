@@ -87,6 +87,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:orientation="vertical"
+        app:shimmer_duration="5000"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

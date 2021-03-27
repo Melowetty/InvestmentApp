@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -55,21 +56,24 @@ dependencies {
     def room_version = "2.2.6"
 
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     implementation 'com.diogobernardino:williamchart:3.10.1' // Графики
-    implementation 'com.squareup.picasso:picasso:2.8' // Библиотека для работы с изображениями
+    implementation 'com.squareup.picasso:picasso:2.71828' // Библиотека для работы с изображениями
 
     // Дополнения к чартам
     implementation 'com.diogobernardino.williamchart:tooltip-slider:3.10.1'
     implementation 'com.diogobernardino.williamchart:tooltip-points:3.10.1'
 
     // Шиммер эффект
-    implementation 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0@aar'
+
+    // AppMetrica SDK.
+    implementation 'com.yandex.android:mobmetricalib:3.18.0'
 
 
 }

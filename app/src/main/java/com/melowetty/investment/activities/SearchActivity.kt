@@ -78,7 +78,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
                     menu.visibility = View.VISIBLE
                     searchInfo.visibility = View.GONE
                     mShimmerViewContainer.visibility = View.VISIBLE
-                    mShimmerViewContainer.startShimmerAnimation();
+                    mShimmerViewContainer.startShimmer();
 
                 }
                 else {
@@ -86,7 +86,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
                     menu.visibility = View.GONE
                     searchInfo.visibility = View.VISIBLE
                     miniRecyclerView.visibility = View.GONE
-                    mShimmerViewContainer.stopShimmerAnimation()
+                    mShimmerViewContainer.stopShimmer()
                     mShimmerViewContainer.visibility = View.GONE
                     clearResultList()
                 }
@@ -128,7 +128,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
             .getCompanyProfileObserver()
             .observe(this, Observer<List<CompanyProfileModel>> {
             if(it != null) {
-                retrieveList(Helper.convertModelListToStockList(it))
+                retrieveList(Helper.convertModelListToStockList(it, arrayListOf()))
             }
             else {
                 Log.e("$TAG [Company Profile Model]", "Error in fetching data")
@@ -156,7 +156,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener {
     private fun retrieveList(stocks: List<Stock>) {
         // TODO Нужно сделать проверку времени без ответа, потому что если нет ответа, то приложение уходит в бесконечную загрузку
         adapter.apply {
-            mShimmerViewContainer.stopShimmerAnimation()
+            mShimmerViewContainer.stopShimmer()
             mShimmerViewContainer.visibility = View.GONE
             miniRecyclerView.visibility = View.VISIBLE
             this.addStocks(stocks)
