@@ -13,9 +13,11 @@ interface RetrofitService {
     @GET("forex/rates")
     fun getExchangeRate(@Query("base") base: String): Observable<ExchangeRateModel>
     @GET("stock_news")
-    fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<List<CompanyNewsModel>>
+    fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<List<NewsModel>>
     @GET("profile/{tickers}")
-    fun getCompaniesProfile(@Path("tickers") tickers: String, @Query("apikey") apikey: String): Observable<List<CompanyProfileModel>>
+    fun getCompaniesProfile(@Path("tickers") tickers: String, @Query("apikey") apikey: String): Observable<List<ProfileModel>>
     @GET("tickers")
     fun searchStock(@QueryMap filters: Map<String, String>): Observable<FindStockModel>
+    @GET("stock/candle")
+    fun getCandles(@QueryMap filters: Map<String, String>): Observable<CandlesModel>
 }

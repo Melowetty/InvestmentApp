@@ -2,6 +2,7 @@ package com.melowetty.investment
 
 import android.app.Application
 import androidx.room.Room
+import com.jakewharton.threetenabp.AndroidThreeTen
 import com.melowetty.investment.database.AppDatabase
 import com.yandex.metrica.YandexMetrica
 import com.yandex.metrica.YandexMetricaConfig
@@ -22,6 +23,7 @@ class AppActivity: Application() {
         val config: YandexMetricaConfig = YandexMetricaConfig.newConfigBuilder("b5c7ba7c-4ed3-42a1-a570-187f9a1031d7").build()
         YandexMetrica.activate(applicationContext, config)
         YandexMetrica.enableActivityAutoTracking(this)
+        AndroidThreeTen.init(this);
     }
     companion object {
         private var db: AppDatabase? = null

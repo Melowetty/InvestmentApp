@@ -30,9 +30,10 @@ import com.melowetty.investment.listeners.ItemClickListener
 import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodels.CompanyProfileViewModel
 import com.melowetty.investment.viewmodels.FindStockViewModel
+import com.melowetty.investment.viewmodels.ProfileViewModel
 import com.melowetty.investment.viewmodels.SearchHistoryViewModel
+
 
 class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListener {
 
@@ -49,7 +50,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private lateinit var mRequestsAdapter: RequestsAdapter
 
     private lateinit var searchModel: FindStockViewModel
-    private lateinit var companyProfileModel: CompanyProfileViewModel
+    private lateinit var companyProfileModel: ProfileViewModel
     private lateinit var searchHistoryModel: SearchHistoryViewModel
 
     private var db: AppDatabase? = null
@@ -113,8 +114,9 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearResultList()
             }
+
             override fun afterTextChanged(s: Editable) {
-                if(s.toString().isNotEmpty()) filterWithDelay(s.toString())
+                if (s.toString().isNotEmpty()) filterWithDelay(s.toString())
             }
         })
         mClear.setOnClickListener {
@@ -129,7 +131,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     }
     fun initModels() {
         companyProfileModel =
-            ViewModelProvider(this).get(CompanyProfileViewModel::class.java)
+            ViewModelProvider(this).get(ProfileViewModel::class.java)
         searchModel =
             ViewModelProvider(this).get(FindStockViewModel::class.java)
         searchHistoryModel =
@@ -139,31 +141,30 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         searchModel
             .getFindStocksObserver()
             .observe(this, {
-            if (it != null) {
-                clearResultList()
-                getCompanyProfile(
-                    Helper.convertModelListToStringList(it).joinToString(separator = ","))
+                if (it != null) {
+                    clearResultList()
+                    getCompanyProfile(
+                        Helper.convertModelListToStringList(it).joinToString(separator = ",")
+                    )
 
-            } else {
-                Log.e("$TAG [Search Model]", "Error in fetching data")
-            }
-        })
+                } else {
+                    Log.e("$TAG [Search Model]", "Error in fetching data")
+                }
+            })
 
         companyProfileModel
             .getCompanyProfileObserver()
             .observe(this, {
-            if(it != null) {
-                retrieveList(Helper.convertModelListToStockList(it, arrayListOf()))
-            }
-            else {
-                Log.e("$TAG [Company Profile Model]", "Error in fetching data")
-            }
-        })
+                if (it != null) {
+                    retrieveList(Helper.convertModelListToStockList(it, arrayListOf()))
+                } else {
+                    Log.e("$TAG [Company Profile Model]", "Error in fetching data")
+                }
+            })
         searchHistoryModel.historySearch.observe(this, {
             it?.let {
                 historySearches = it
                 updateSearchedRecycler()
-                Log.d(TAG, historySearches.toString())
             }
         })
     }
@@ -232,7 +233,8 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     override fun onStockClick(stock: Stock) {
         // TODO Нужно сделать сохранение найденных акций
         startActivity(
-            Helper.getStockInfoIntent(this, stock, Activities.SEARCH))
+            Helper.getStockInfoIntent(this, stock, Activities.SEARCH)
+        )
     }
 
     override fun onItemClick(ticker: SearchedItem) {

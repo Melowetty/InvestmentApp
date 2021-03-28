@@ -15,8 +15,10 @@ import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
 import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
+import com.melowetty.investment.enums.Resolution
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
+import com.melowetty.investment.viewmodels.CandlesViewModel
 import com.melowetty.investment.viewmodels.FavouriteStocksViewModel
 
 
@@ -40,6 +42,7 @@ class StockActivity : AppCompatActivity() {
 
     private val favouriteStocksViewModel by lazy { ViewModelProviders.of(this)
         .get(FavouriteStocksViewModel::class.java)}
+    private lateinit var candlesViewModel: CandlesViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,8 +82,25 @@ class StockActivity : AppCompatActivity() {
         }
 
         initStock()
+        initModels()
+        initObservers()
         initGraph()
 
+    }
+    private fun initModels() {
+        candlesViewModel =
+            ViewModelProviders.of(this).get(CandlesViewModel::class.java)
+    }
+    private fun initObservers() {
+        candlesViewModel
+            .getCandlesObserver()
+            .observe(this, {
+                if (it != null) {
+                    lineChart.animate(Helper.zipCandles(it.t, it.c, Resolution.PER_HOUR, this))
+                } else {
+                    Log.e("$TAG [Candles Model]", "Error in fetching data")
+                }
+            })
     }
     private fun initGraph() {
         // TODO Осталось настроитть график и выгрузку новостей

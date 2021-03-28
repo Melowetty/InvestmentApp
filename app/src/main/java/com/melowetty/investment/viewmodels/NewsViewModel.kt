@@ -2,19 +2,18 @@ package com.melowetty.investment.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.melowetty.investment.models.CompanyNewsModel
+import com.melowetty.investment.models.NewsModel
 import com.melowetty.investment.network.RetrofitFinancialModeling
-import com.melowetty.investment.network.RetrofitFinhub
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class CompanyNewsViewModel: ViewModel() {
-    var newsList: MutableLiveData<List<CompanyNewsModel>> = MutableLiveData()
+class NewsViewModel: ViewModel() {
+    var newsList: MutableLiveData<List<NewsModel>> = MutableLiveData()
 
-    fun getNewsListObserver(): MutableLiveData<List<CompanyNewsModel>> {
+    fun getNewsListObserver(): MutableLiveData<List<NewsModel>> {
         return newsList
     }
 
@@ -26,8 +25,8 @@ class CompanyNewsViewModel: ViewModel() {
             .subscribe(getNewsListObserverRx())
     }
 
-    private fun getNewsListObserverRx(): Observer<List<CompanyNewsModel>> {
-        return object : Observer<List<CompanyNewsModel>> {
+    private fun getNewsListObserverRx(): Observer<List<NewsModel>> {
+        return object : Observer<List<NewsModel>> {
             override fun onComplete() {
                 // Hide progress bar
             }
@@ -36,7 +35,7 @@ class CompanyNewsViewModel: ViewModel() {
                 newsList.postValue(null)
             }
 
-            override fun onNext(t: List<CompanyNewsModel>?) {
+            override fun onNext(t: List<NewsModel>?) {
                 newsList.postValue(t)
             }
 

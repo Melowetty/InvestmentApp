@@ -2,7 +2,7 @@ package com.melowetty.investment.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.models.ProfileModel
 import com.melowetty.investment.network.RetrofitFinancialModeling
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -10,10 +10,10 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
-class CompanyProfileViewModel: ViewModel() {
-    var price: MutableLiveData<List<CompanyProfileModel>> = MutableLiveData()
+class ProfileViewModel: ViewModel() {
+    var price: MutableLiveData<List<ProfileModel>> = MutableLiveData()
 
-    fun getCompanyProfileObserver(): MutableLiveData<List<CompanyProfileModel>> {
+    fun getCompanyProfileObserver(): MutableLiveData<List<ProfileModel>> {
         return price
     }
 
@@ -26,8 +26,8 @@ class CompanyProfileViewModel: ViewModel() {
             .subscribe(getCompanyProfileObserverRx())
     }
 
-    private fun getCompanyProfileObserverRx(): Observer<List<CompanyProfileModel>> {
-        return object : Observer<List<CompanyProfileModel>> {
+    private fun getCompanyProfileObserverRx(): Observer<List<ProfileModel>> {
+        return object : Observer<List<ProfileModel>> {
             override fun onComplete() {
                 // Hide progress bar
             }
@@ -36,7 +36,7 @@ class CompanyProfileViewModel: ViewModel() {
                 price.postValue(null)
             }
 
-            override fun onNext(t: List<CompanyProfileModel>?) {
+            override fun onNext(t: List<ProfileModel>?) {
                 price.postValue(t)
             }
 

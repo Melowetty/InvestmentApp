@@ -1,6 +1,7 @@
 package com.melowetty.investment.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.widget.ImageView
@@ -10,26 +11,65 @@ import com.melowetty.investment.activities.StockActivity
 import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
-import com.melowetty.investment.models.CompanyProfileModel
+import com.melowetty.investment.enums.Resolution
 import com.melowetty.investment.models.FindStockModel
+import com.melowetty.investment.models.ProfileModel
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.models.StockPrice
 import com.squareup.picasso.Picasso
-import okhttp3.OkHttpClient
+import org.threeten.bp.LocalDate
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
-
 class Helper {
     companion object {
-        private var httpClient: OkHttpClient? = null
-        fun convertLongToTime(time: Long): String {
+        const val year: Long = 31536000
+        const val month: Long = 2629743
+        const val week: Long = 604800
+        const val day: Long = 86400
+        fun getUnixTime(): Long {
+            val calendar = Calendar.getInstance()
+            val now = calendar.timeInMillis
+            return (now / 1000)
+        }
+        fun convertLongToTime(time: Long, resolution: Resolution, activity: Activity): String {
+
             val date = Date(time * 1000)
-            val format = SimpleDateFormat("dd.MM.yyyy HH:mm")
-            return format.format(date)
+            val format = SimpleDateFormat("yyyy-MM-dd")
+            val localDate = LocalDate.parse(format.format(date))
+            when(resolution) {
+                Resolution.PER_HOUR -> return "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_DAY -> return "${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
+            }
+            return ""
+        }
+        fun zipCandles(times: List<Long>, prices: List<Double>, resolution: Resolution, activity: Activity): Map<String, Float> {
+            var output = mutableMapOf<String, Float>()
+            for(index in times.indices) {
+                val str = convertLongToTime(times[index], resolution, activity)
+                output[str] = formatCost(prices[index]).toFloat()
+            }
+            return output
+        }
+        private fun getStringMonth(number: Int, activity: Activity): String {
+            when(number) {
+                1 -> return activity.getString(R.string.january)
+                2 -> return activity.getString(R.string.february)
+                3 -> return activity.getString(R.string.march)
+                4 -> return activity.getString(R.string.april)
+                5 -> return activity.getString(R.string.may)
+                6 -> return activity.getString(R.string.june)
+                7 -> return activity.getString(R.string.july)
+                8 -> return activity.getString(R.string.august)
+                9 -> return activity.getString(R.string.september)
+                10 -> return activity.getString(R.string.october)
+                11 -> return activity.getString(R.string.november)
+                12 -> return activity.getString(R.string.december)
+            }
+            return ""
         }
         fun pasteImagefromURL(url: String, imageView: ImageView) {
             try {
@@ -91,10 +131,10 @@ class Helper {
             if(getUpChangeBool(percent)) return percent.substring(0).toDouble()
             else return percent.substring(1).toDouble()
         }
-        private fun companyProfileToStock(model: CompanyProfileModel, favourites: List<FavouriteStock>): Stock? {
+        private fun companyProfileToStock(model: ProfileModel, favourites: List<FavouriteStock>): Stock? {
             return try {
                 val currency = Currency.getCardTypeByName(model.currency)
-                val changePercent = formatCost(abs((model.changes/model.price)*100))
+                val changePercent = formatCost(abs((model.changes / model.price) * 100))
                 val up = getUpChangeBool(model.changes.toString())
                 val stockPrice = StockPrice(currency, model.price, model.changes, changePercent, up)
                 val isFavourite = isFavorite(model.symbol, favourites)
@@ -117,7 +157,7 @@ class Helper {
             textView.setTextAppearance(style)
             textView.text = "$symbol${price.currency.format(price.change)} ($percent%)"
         }
-        fun convertModelListToStockList(array: List<CompanyProfileModel>, favourites: List<FavouriteStock>): List<Stock> {
+        fun convertModelListToStockList(array: List<ProfileModel>, favourites: List<FavouriteStock>): List<Stock> {
             val stocks: ArrayList<Stock> = ArrayList()
             stocks.apply {
                 array.forEach {

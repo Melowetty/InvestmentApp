@@ -44,7 +44,9 @@
             android:cursorVisible="true"
             android:importantForAutofill="no"
             android:inputType="text"
-            tools:ignore="LabelFor" />
+            tools:ignore="LabelFor"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
         <ImageView
             android:id="@+id/clear"
             android:layout_width="wrap_content"

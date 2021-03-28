@@ -19,4 +19,16 @@
     <string name="you_ve_searched_for_this">Вы искали это</string>
     <string name="show_more">Показать больше</string>
     <string name="results_not_found">Ничего не найдено</string>
+    <string name="january">янв.</string>
+    <string name="february">фев.</string>
+    <string name="march">мар.</string>
+    <string name="april">апр.</string>
+    <string name="may">мая</string>
+    <string name="june">июня</string>
+    <string name="july">июля</string>
+    <string name="august">авг.</string>
+    <string name="september">сент.</string>
+    <string name="november">нояб.</string>
+    <string name="december">дек.</string>
+    <string name="october">окт.</string>
 </resources>

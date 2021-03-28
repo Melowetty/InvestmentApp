@@ -18,8 +18,9 @@ import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.enums.Indices
+import com.melowetty.investment.enums.Resolution
 import com.melowetty.investment.listeners.StockClickListener
-import com.melowetty.investment.models.*
+import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 import com.melowetty.investment.viewmodels.*
 
@@ -37,9 +38,10 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
     private lateinit var indicesConstituentsModel: IndicesConstituentsViewModel
     private lateinit var exchangeRateModel: ExchangeRateViewModel
-    private lateinit var companyNewsModel: CompanyNewsViewModel
-    private lateinit var companyProfileModel: CompanyProfileViewModel
+    private lateinit var companyNewsModel: NewsViewModel
+    private lateinit var companyProfileModel: ProfileViewModel
     private lateinit var favouriteStocksViewModel: FavouriteStocksViewModel
+    private lateinit var candlesViewModel: CandlesViewModel
 
     private var favouriteStocks: List<FavouriteStock> = ArrayList()
     private var stocks: ArrayList<Stock> = ArrayList()
@@ -107,13 +109,15 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         getExchangeRate(Currency.USD)
 
 
+        getCandles("AAPL")
+
     }
     private fun initDatabase() {
         db = AppActivity.getDatabase()
     }
     fun initModels() {
         companyProfileModel =
-            ViewModelProviders.of(this).get(CompanyProfileViewModel::class.java)
+            ViewModelProviders.of(this).get(ProfileViewModel::class.java)
 
         indicesConstituentsModel =
             ViewModelProviders.of(this).get(IndicesConstituentsViewModel::class.java)
@@ -122,10 +126,13 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             ViewModelProviders.of(this).get(ExchangeRateViewModel::class.java)
 
         companyNewsModel =
-            ViewModelProviders.of(this).get(CompanyNewsViewModel::class.java)
+            ViewModelProviders.of(this).get(NewsViewModel::class.java)
 
         favouriteStocksViewModel =
             ViewModelProviders.of(this).get(FavouriteStocksViewModel::class.java)
+
+        candlesViewModel =
+            ViewModelProviders.of(this).get(CandlesViewModel::class.java)
     }
     private fun initObservers() {
         favouriteStocksViewModel.favouriteStocks.observe(this, {
@@ -174,6 +181,15 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                     Log.e("$TAG [Company Profile Model]", "Error in fetching data")
                 }
             })
+        candlesViewModel
+            .getCandlesObserver()
+            .observe(this, {
+                if (it != null) {
+                    Log.d(TAG, Helper.zipCandles(it.t, it.c, Resolution.PER_HOUR, this).toString())
+                } else {
+                    Log.e("$TAG [Candles Model]", "Error in fetching data")
+                }
+            })
     }
     private fun getFavouriteCompanyProfile(favourites: List<String>) {
         getCompanyProfile(favourites.joinToString(","))
@@ -189,6 +205,9 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
     private fun getCompanyProfile(ticker: String) {
         companyProfileModel.makeApiCall(ticker)
+    }
+    private fun getCandles(ticker: String) {
+        candlesViewModel.getCandlesFromDay(ticker)
     }
     private fun retrieveList(stocks: List<Stock>) {
         mAdapter.apply {
