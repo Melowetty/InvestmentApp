@@ -27,92 +27,107 @@ import com.melowetty.investment.viewmodels.*
 class MainActivity : AppCompatActivity(), StockClickListener {
     private val TAG = this::class.java.simpleName
 
-    private lateinit var favourite: TextView
-    private lateinit var stocks: TextView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var searchBar: TextView
+    private lateinit var mFavourite: TextView
+    private lateinit var mStocks: TextView
+    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mSearchBar: TextView
     private lateinit var mShimmerViewContainer: ShimmerFrameLayout
 
-    private lateinit var adapter: StockAdapter
+    private lateinit var mAdapter: StockAdapter
 
-    private val indicesConstituentsModel by lazy { ViewModelProviders.of(this)
-        .get(IndicesConstituentsViewModel::class.java)}
-
-    private val exchangeRateModel by lazy { ViewModelProviders.of(this)
-        .get(ExchangeRateViewModel::class.java)}
-
-    private val companyNewsModel by lazy { ViewModelProviders.of(this)
-        .get(CompanyNewsViewModel::class.java)}
-
-    private val companyProfileModel by lazy { ViewModelProviders.of(this)
-        .get(CompanyProfileViewModel::class.java)}
-
-    private val favouriteStocksViewModel by lazy { ViewModelProviders.of(this)
-        .get(FavouriteStocksViewModel::class.java)}
+    private lateinit var indicesConstituentsModel: IndicesConstituentsViewModel
+    private lateinit var exchangeRateModel: ExchangeRateViewModel
+    private lateinit var companyNewsModel: CompanyNewsViewModel
+    private lateinit var companyProfileModel: CompanyProfileViewModel
+    private lateinit var favouriteStocksViewModel: FavouriteStocksViewModel
 
     private var favouriteStocks: List<FavouriteStock> = ArrayList()
+    private var stocks: ArrayList<Stock> = ArrayList()
 
     private var db: AppDatabase? = null
 
     private var target: Activities? = null
 
+    private val index = Indices.NASDAQ_100
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        recyclerView = findViewById(R.id.recyclerView)
+        mRecyclerView = findViewById(R.id.recyclerView)
 
-        recyclerView.layoutManager =
+        mRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        adapter = StockAdapter(arrayListOf(), this)
-        recyclerView.adapter = adapter
+        mAdapter = StockAdapter(arrayListOf(), this)
+        mRecyclerView.adapter = mAdapter
 
 
-        favourite = findViewById(R.id.favourite)
-        stocks = findViewById(R.id.stocks)
-        searchBar = findViewById(R.id.search_bar)
+        mFavourite = findViewById(R.id.favourite)
+        mStocks = findViewById(R.id.stocks)
+        mSearchBar = findViewById(R.id.search_bar)
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
 
         target = intent.getSerializableExtra("target") as? Activities
 
         if(target != null) {
             if(target == Activities.FAVOURITE) {
-                Helper.changeCondition(favourite, true)
-                Helper.changeCondition(stocks, false)
+                Helper.changeCondition(mFavourite, true)
+                Helper.changeCondition(mStocks, false)
             }
         }
 
-        favourite.setOnClickListener {
-            Helper.changeCondition(favourite, true)
-            Helper.changeCondition(stocks, false)
+        mFavourite.setOnClickListener {
+            Helper.changeCondition(mFavourite, true)
+            Helper.changeCondition(mStocks, false)
             getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
             mShimmerViewContainer.startShimmer()
             mShimmerViewContainer.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
+            mRecyclerView.visibility = View.GONE
         }
-        stocks.setOnClickListener {
-            Helper.changeCondition(favourite, false)
-            Helper.changeCondition(stocks, true)
+        mStocks.setOnClickListener {
+            Helper.changeCondition(mFavourite, false)
+            Helper.changeCondition(mStocks, true)
+            mShimmerViewContainer.startShimmer()
+            mShimmerViewContainer.visibility = View.VISIBLE
+            mRecyclerView.visibility = View.GONE
+            getIndexConstituents(index)
         }
-        searchBar.setOnClickListener {
+        mSearchBar.setOnClickListener {
             val stockView = Intent(this, SearchActivity::class.java)
             startActivity(stockView)
         }
 
+        initDatabase()
         initModels()
+        initObservers()
 
         mShimmerViewContainer.startShimmer();
 
-        getIndexConstituents(Indices.SP_500)
+        getIndexConstituents(index)
         getExchangeRate(Currency.USD)
 
-        initDatabase()
 
     }
     private fun initDatabase() {
         db = AppActivity.getDatabase()
     }
-    private fun initModels() {
+    fun initModels() {
+        companyProfileModel =
+            ViewModelProviders.of(this).get(CompanyProfileViewModel::class.java)
+
+        indicesConstituentsModel =
+            ViewModelProviders.of(this).get(IndicesConstituentsViewModel::class.java)
+
+        exchangeRateModel =
+            ViewModelProviders.of(this).get(ExchangeRateViewModel::class.java)
+
+        companyNewsModel =
+            ViewModelProviders.of(this).get(CompanyNewsViewModel::class.java)
+
+        favouriteStocksViewModel =
+            ViewModelProviders.of(this).get(FavouriteStocksViewModel::class.java)
+    }
+    private fun initObservers() {
         favouriteStocksViewModel.favouriteStocks.observe(this, {
             it?.let {
                 favouriteStocks = it
@@ -169,23 +184,24 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private fun getExchangeRate(exchange: Currency) {
         exchangeRateModel.makeApiCall(exchange.name)
     }
-    private fun getCompanyNews(ticker: String, from: String, to: String) {
-        companyNewsModel.makeApiCall(ticker, from, to)
+    private fun getCompanyNews(ticker: String) {
+        companyNewsModel.makeApiCall(ticker)
     }
     private fun getCompanyProfile(ticker: String) {
         companyProfileModel.makeApiCall(ticker)
     }
     private fun retrieveList(stocks: List<Stock>) {
-        adapter.apply {
+        mAdapter.apply {
             this.addStocks(stocks)
             mShimmerViewContainer.stopShimmer()
             mShimmerViewContainer.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+            mRecyclerView.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
     }
 
     override fun onStockClick(stock: Stock) {
+        // TODO Нужно сделать сохранение выгруженных акций
         startActivity(
             Helper.getStockInfoIntent(this, stock, Activities.MAIN)
         )

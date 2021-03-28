@@ -25,4 +25,5 @@
     <string name="popular_requests">Popular requests</string>
     <string name="you_ve_searched_for_this">You’ve searched for this</string>
     <string name="show_more">Show more</string>
+    <string name="results_not_found">Results not found</string>
 </resources>

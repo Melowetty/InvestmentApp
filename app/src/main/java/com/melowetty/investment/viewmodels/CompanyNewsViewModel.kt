@@ -3,6 +3,7 @@ package com.melowetty.investment.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.melowetty.investment.models.CompanyNewsModel
+import com.melowetty.investment.network.RetrofitFinancialModeling
 import com.melowetty.investment.network.RetrofitFinhub
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -17,9 +18,9 @@ class CompanyNewsViewModel: ViewModel() {
         return newsList
     }
 
-    fun makeApiCall(ticker: String, from: String, to: String) {
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(RetrofitService::class.java)
-        retrofitInstance.getCompanyNews(mapOf("symbol" to ticker, "from" to from, "to" to to))
+    fun makeApiCall(ticker: String) {
+        val retrofitInstance = RetrofitFinancialModeling.getRetrofitInstance().create(RetrofitService::class.java)
+        retrofitInstance.getCompanyNews(mapOf("tickers" to ticker, "limit" to "15", "apikey" to "bb2a76dacd02fc18fadde7dc58bff592"))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getNewsListObserverRx())

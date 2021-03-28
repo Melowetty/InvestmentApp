@@ -18,4 +18,5 @@
     <string name="popular_requests">Популярные запросы</string>
     <string name="you_ve_searched_for_this">Вы искали это</string>
     <string name="show_more">Показать больше</string>
+    <string name="results_not_found">Ничего не найдено</string>
 </resources>

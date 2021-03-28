@@ -15,6 +15,7 @@ class AppActivity: Application() {
             applicationContext,
             AppDatabase::class.java, "database"
         )
+            .fallbackToDestructiveMigration()
             .allowMainThreadQueries()
             .build()
 

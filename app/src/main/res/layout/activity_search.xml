@@ -113,6 +113,19 @@
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/result_not_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/results_not_found"
+        android:fontFamily="@font/montserrat"
+        android:textSize="20sp"
+        android:textColor="@color/colorBlack"
+        android:gravity="center"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/bar"
+        android:layout_marginTop="50dp"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/menu"
         android:layout_width="match_parent"

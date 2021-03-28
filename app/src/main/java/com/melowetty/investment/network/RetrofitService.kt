@@ -12,7 +12,7 @@ interface RetrofitService {
     fun getIndexConstituents(@Query("symbol") symbol: String): Observable<IndicesConstituentsModel>
     @GET("forex/rates")
     fun getExchangeRate(@Query("base") base: String): Observable<ExchangeRateModel>
-    @GET("company-news")
+    @GET("stock_news")
     fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<List<CompanyNewsModel>>
     @GET("profile/{tickers}")
     fun getCompaniesProfile(@Path("tickers") tickers: String, @Query("apikey") apikey: String): Observable<List<CompanyProfileModel>>

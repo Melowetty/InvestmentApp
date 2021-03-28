@@ -26,14 +26,14 @@ class StockActivity : AppCompatActivity() {
 
     private lateinit var lineChart: LineChartView
 
-    private lateinit var name: TextView
-    private lateinit var company: TextView
-    private lateinit var cost: TextView
-    private lateinit var change: TextView
+    private lateinit var mName: TextView
+    private lateinit var mCompany: TextView
+    private lateinit var mCost: TextView
+    private lateinit var mChange: TextView
 
-    private lateinit var favourite: ImageView
+    private lateinit var mFavourite: ImageView
 
-    private lateinit var buy: Button
+    private lateinit var mBuy: Button
 
     private lateinit var stock: Stock
     private lateinit var from: Activities
@@ -45,34 +45,35 @@ class StockActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock)
 
-        val back = findViewById<ImageView>(R.id.back)
-        favourite = findViewById(R.id.favourite_btn)
+        val mBack = findViewById<ImageView>(R.id.back)
+        mFavourite = findViewById(R.id.favourite_btn)
         lineChart = findViewById(R.id.lineChart)
 
         stock = intent.getSerializableExtra("stock") as Stock
         from = intent.getSerializableExtra("from") as Activities
 
-        name = findViewById(R.id.name)
-        company = findViewById(R.id.company)
-        cost = findViewById(R.id.cost)
-        change = findViewById(R.id.difference)
-        buy = findViewById(R.id.buy)
+        mName = findViewById(R.id.name)
+        mCompany = findViewById(R.id.company)
+        mCost = findViewById(R.id.cost)
+        mChange = findViewById(R.id.difference)
+        mBuy = findViewById(R.id.buy)
 
-        back.setOnClickListener {
+        mBack.setOnClickListener {
             from.backToOldActivity(this)
         }
 
-        favourite.setOnClickListener {
-            val db = AppActivity.getDatabase()
+        val db = AppActivity.getDatabase()
+
+        mFavourite.setOnClickListener {
             if (!stock.isFavourite) {
                 db?.favouriteStockDao()?.insert(FavouriteStock(stock.symbol, stock.company))
                 stock.isFavourite = true
-                favourite.setImageResource(R.drawable.ic_favourite)
+                mFavourite.setImageResource(R.drawable.ic_favourite)
             }
             else {
                 db?.favouriteStockDao()?.delete(FavouriteStock(stock.symbol, stock.company))
                 stock.isFavourite = false
-                favourite.setImageResource(R.drawable.ic_not_favourite)
+                mFavourite.setImageResource(R.drawable.ic_not_favourite)
             }
             favouriteStocksViewModel.updateFavouriteStocks()
         }
@@ -103,14 +104,14 @@ class StockActivity : AppCompatActivity() {
     }
     @SuppressLint("SetTextI18n")
     fun initStock() {
-        name.text = stock.symbol
+        mName.text = stock.symbol
 
-        company.text = Helper.checkLengthLargeCompany(stock.company)
+        mCompany.text = Helper.checkLengthLargeCompany(stock.company)
 
-        cost.text = stock.stockPrice.currency.format(stock.stockPrice.price)
-        Helper.formatChangePrice(change, stock.stockPrice)
-        buy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
-        if(stock.isFavourite) favourite.setImageResource(R.drawable.ic_favourite)
+        mCost.text = stock.stockPrice.currency.format(stock.stockPrice.price)
+        Helper.formatChangePrice(mChange, stock.stockPrice)
+        mBuy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
+        if(stock.isFavourite) mFavourite.setImageResource(R.drawable.ic_favourite)
     }
 
     companion object {
