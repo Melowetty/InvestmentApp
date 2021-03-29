@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private val index = Indices.NASDAQ_100
 
     private var isShowError = false
+    private var isFavourite = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,17 +72,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         target = intent.getSerializableExtra("target") as? Activities
 
-        if(target != null) {
-            if(target == Activities.FAVOURITE) {
-                Helper.changeCondition(mFavourite, true)
-                Helper.changeCondition(mStocks, false)
-                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
-                mShimmerViewContainer.startShimmer()
-                mShimmerViewContainer.visibility = View.VISIBLE
-                mRecyclerView.visibility = View.GONE
-            }
-        }
-
         mFavourite.setOnClickListener {
             Helper.changeCondition(mFavourite, true)
             Helper.changeCondition(mStocks, false)
@@ -89,6 +79,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             mShimmerViewContainer.startShimmer()
             mShimmerViewContainer.visibility = View.VISIBLE
             mRecyclerView.visibility = View.GONE
+            isFavourite = true
         }
         mStocks.setOnClickListener {
             Helper.changeCondition(mFavourite, false)
@@ -97,6 +88,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             mShimmerViewContainer.visibility = View.VISIBLE
             mRecyclerView.visibility = View.GONE
             getIndexConstituents(index)
+            isFavourite = false
         }
         mSearchBar.setOnClickListener {
             val stockView = Intent(this, SearchActivity::class.java)
@@ -109,7 +101,18 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         mShimmerViewContainer.startShimmer();
 
-        getIndexConstituents(index)
+        if(target != null) {
+            if(target == Activities.FAVOURITE) {
+                Helper.changeCondition(mFavourite, true)
+                Helper.changeCondition(mStocks, false)
+                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
+                mRecyclerView.visibility = View.GONE
+                isFavourite = true
+            }
+            if(target == Activities.MAIN)
+                getIndexConstituents(index)
+        }
+        else getIndexConstituents(index)
 
     }
     private fun initDatabase() {
@@ -187,8 +190,9 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
 
     override fun onStockClick(stock: Stock) {
-        startActivity(
-            Helper.getStockInfoIntent(this, stock, Activities.MAIN)
-        )
+        if(isFavourite) startActivity(
+            Helper.getStockInfoIntent(this, stock, Activities.FAVOURITE))
+        else startActivity(
+            Helper.getStockInfoIntent(this, stock, Activities.MAIN))
     }
 }
