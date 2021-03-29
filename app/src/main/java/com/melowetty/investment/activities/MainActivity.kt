@@ -2,7 +2,6 @@ package com.melowetty.investment.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,13 +15,13 @@ import com.melowetty.investment.adapters.StockAdapter
 import com.melowetty.investment.database.AppDatabase
 import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
-import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.enums.Indices
-import com.melowetty.investment.enums.Resolution
 import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodels.*
+import com.melowetty.investment.viewmodels.FavouriteStocksViewModel
+import com.melowetty.investment.viewmodels.IndicesConstituentsViewModel
+import com.melowetty.investment.viewmodels.ProfileViewModel
 
 
 class MainActivity : AppCompatActivity(), StockClickListener {
@@ -33,23 +32,24 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mSearchBar: TextView
     private lateinit var mShimmerViewContainer: ShimmerFrameLayout
+    private lateinit var mError: TextView
 
     private lateinit var mAdapter: StockAdapter
 
     private lateinit var indicesConstituentsModel: IndicesConstituentsViewModel
-    private lateinit var exchangeRateModel: ExchangeRateViewModel
-    private lateinit var companyNewsModel: NewsViewModel
     private lateinit var companyProfileModel: ProfileViewModel
     private lateinit var favouriteStocksViewModel: FavouriteStocksViewModel
 
     private var favouriteStocks: List<FavouriteStock> = ArrayList()
-    private var stocks: ArrayList<Stock> = ArrayList()
+    private var stocks: List<Stock> = ArrayList()
 
     private var db: AppDatabase? = null
 
     private var target: Activities? = null
 
     private val index = Indices.NASDAQ_100
+
+    private var isShowError = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         mStocks = findViewById(R.id.stocks)
         mSearchBar = findViewById(R.id.search_bar)
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
+        mError = findViewById(R.id.main_error)
 
         target = intent.getSerializableExtra("target") as? Activities
 
@@ -74,6 +75,10 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             if(target == Activities.FAVOURITE) {
                 Helper.changeCondition(mFavourite, true)
                 Helper.changeCondition(mStocks, false)
+                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
+                mShimmerViewContainer.startShimmer()
+                mShimmerViewContainer.visibility = View.VISIBLE
+                mRecyclerView.visibility = View.GONE
             }
         }
 
@@ -105,8 +110,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         mShimmerViewContainer.startShimmer();
 
         getIndexConstituents(index)
-        getExchangeRate(Currency.USD)
-
 
     }
     private fun initDatabase() {
@@ -118,12 +121,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         indicesConstituentsModel =
             ViewModelProviders.of(this).get(IndicesConstituentsViewModel::class.java)
-
-        exchangeRateModel =
-            ViewModelProviders.of(this).get(ExchangeRateViewModel::class.java)
-
-        companyNewsModel =
-            ViewModelProviders.of(this).get(NewsViewModel::class.java)
 
         favouriteStocksViewModel =
             ViewModelProviders.of(this).get(FavouriteStocksViewModel::class.java)
@@ -139,29 +136,10 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             .getConstituentsObserver()
             .observe(this, { it ->
                 if (it != null) {
+                    if(isShowError) hideErrorMessage()
                     getCompanyProfile(it.constituents.joinToString(separator = ","))
                 } else {
-                    Log.e("$TAG [Indices Constituents Model]", "Error in fetching data")
-                }
-            })
-
-        exchangeRateModel
-            .getExchangeRateObserver()
-            .observe(this, { it ->
-                if (it != null) {
-                    Log.d(TAG, it.toString())
-                } else {
-                    Log.e("$TAG [Exchange Rate Model]", "Error in fetching data")
-                }
-            })
-
-        companyNewsModel
-            .getNewsListObserver()
-            .observe(this, {
-                if (it != null) {
-                    Log.d(TAG, it.toString())
-                } else {
-                    Log.e("$TAG [Company News Model]", "Error in fetching data")
+                    showErrorMessage()
                 }
             })
 
@@ -169,12 +147,24 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             .getCompanyProfileObserver()
             .observe(this, {
                 if (it != null) {
+                    if(isShowError) hideErrorMessage()
                     retrieveList(Helper.convertModelListToStockList(it,
                         favouriteStocks))
                 } else {
-                    Log.e("$TAG [Company Profile Model]", "Error in fetching data")
+                    showErrorMessage()
                 }
             })
+    }
+    private fun showErrorMessage() {
+        isShowError = true
+        mError.visibility = View.VISIBLE
+        mRecyclerView.visibility = View.GONE
+        mShimmerViewContainer.stopShimmer()
+        mShimmerViewContainer.visibility = View.GONE
+    }
+    private fun hideErrorMessage() {
+        isShowError = false
+        mError.visibility = View.GONE
     }
     private fun getFavouriteCompanyProfile(favourites: List<String>) {
         getCompanyProfile(favourites.joinToString(","))
@@ -182,16 +172,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private fun getIndexConstituents(indice: Indices) {
         indicesConstituentsModel.makeApiCall(indice.code)
     }
-    private fun getExchangeRate(exchange: Currency) {
-        exchangeRateModel.makeApiCall(exchange.name)
-    }
-    private fun getCompanyNews(ticker: String) {
-        companyNewsModel.makeApiCall(ticker)
-    }
     private fun getCompanyProfile(ticker: String) {
         companyProfileModel.makeApiCall(ticker)
     }
     private fun retrieveList(stocks: List<Stock>) {
+        this.stocks = stocks
         mAdapter.apply {
             this.addStocks(stocks)
             mShimmerViewContainer.stopShimmer()
@@ -202,7 +187,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
 
     override fun onStockClick(stock: Stock) {
-        // TODO Нужно сделать сохранение выгруженных акций
         startActivity(
             Helper.getStockInfoIntent(this, stock, Activities.MAIN)
         )

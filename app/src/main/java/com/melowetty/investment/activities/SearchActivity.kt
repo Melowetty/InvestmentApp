@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -42,9 +41,11 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private lateinit var mSearch: EditText
     private lateinit var mMiniRecyclerView: RecyclerView
     private lateinit var mSearchRecyclerView: RecyclerView
+    private lateinit var mPopularityRecyclerView: RecyclerView
     private lateinit var mShimmerViewContainer: ShimmerFrameLayout
     private lateinit var mNotFound: TextView
     private lateinit var mMenu: ConstraintLayout
+    private lateinit var mError: TextView
 
     private lateinit var mAdapter: StockAdapter
     private lateinit var mRequestsAdapter: RequestsAdapter
@@ -57,7 +58,9 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private var historySearches: List<SearchedItem> = ArrayList()
 
     private var latest = 0L
-    private var delay = 2000
+    private var delay = 2500
+
+    private var isShowError = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,10 +68,12 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
 
         mMiniRecyclerView = findViewById(R.id.mini_recycler_view)
         mSearchRecyclerView = findViewById(R.id.searched_recycler)
+        mPopularityRecyclerView = findViewById(R.id.popular_recycler)
         mMenu = findViewById(R.id.menu)
         mSearch = findViewById(R.id.search_label)
         mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
         mNotFound = findViewById(R.id.result_not_found)
+        mError = findViewById(R.id.search_error)
 
         val mSearchInfo = findViewById<ConstraintLayout>(R.id.search_info)
         val mClear = findViewById<ImageView>(R.id.clear)
@@ -79,6 +84,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         initModels()
         initObservers()
 
+        initPopularityRecyclerView()
         initSearchedRecyclerView()
         initMiniRecyclerView()
 
@@ -126,6 +132,28 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         }
 
     }
+    fun initPopularityRecyclerView() {
+        mPopularityRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val list = Helper.convertStringListToSearchedItem(
+            arrayListOf("Yandex", "Nvidia", "Microsoft", "Tesla", "Apple", "McDonalds", "MasterCard", "Facebook", "Visa", "Amazon", "AMD", "Intel", "Ebay", "Google", "Netflix"))
+        mRequestsAdapter = RequestsAdapter(list, this)
+        mPopularityRecyclerView.adapter = mRequestsAdapter
+    }
+    private fun showErrorMessage() {
+        isShowError = true
+        mError.visibility = View.VISIBLE
+        mMiniRecyclerView.visibility = View.GONE
+        mSearchRecyclerView.visibility = View.GONE
+        mPopularityRecyclerView.visibility = View.GONE
+        mShimmerViewContainer.stopShimmer()
+        mShimmerViewContainer.visibility = View.GONE
+        mMenu.visibility = View.GONE
+    }
+    private fun hideErrorMessage() {
+        isShowError = false
+        mError.visibility = View.GONE
+    }
     fun initDatabse() {
         db = AppActivity.getDatabase()
     }
@@ -142,13 +170,14 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             .getFindStocksObserver()
             .observe(this, {
                 if (it != null) {
+                    if(isShowError) hideErrorMessage()
                     clearResultList()
                     getCompanyProfile(
                         Helper.convertModelListToStringList(it).joinToString(separator = ",")
                     )
 
                 } else {
-                    Log.e("$TAG [Search Model]", "Error in fetching data")
+                    showErrorMessage()
                 }
             })
 
@@ -156,9 +185,10 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             .getCompanyProfileObserver()
             .observe(this, {
                 if (it != null) {
+                    if(isShowError) hideErrorMessage()
                     retrieveList(Helper.convertModelListToStockList(it, arrayListOf()))
                 } else {
-                    Log.e("$TAG [Company Profile Model]", "Error in fetching data")
+                    showErrorMessage()
                 }
             })
         searchHistoryModel.historySearch.observe(this, {
@@ -201,7 +231,6 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         )
     }
     private fun retrieveList(stocks: List<Stock>) {
-        // TODO Нужно сделать проверку времени без ответа, потому что если нет ответа, то приложение уходит в бесконечную загрузку
 
         if(stocks.isNullOrEmpty()) {
             mNotFound.visibility = View.VISIBLE
@@ -231,7 +260,6 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     }
 
     override fun onStockClick(stock: Stock) {
-        // TODO Нужно сделать сохранение найденных акций
         startActivity(
             Helper.getStockInfoIntent(this, stock, Activities.SEARCH)
         )

@@ -188,6 +188,19 @@
             android:textStyle="bold"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/stock_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/dynamic"
+        android:gravity="center"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:text="@string/error_loading_data_ncheck_your_connection_or_try_again_later"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"/>
     <com.db.williamchart.view.LineChartView
         android:id="@+id/lineChart"
         android:layout_width="match_parent"
@@ -357,4 +370,53 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent" />
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:visibility="gone"
+        android:id="@+id/news_shimmer_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:shimmer_duration="5000"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/menu">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+        <include layout="@layout/news_shimmer_layout" />
+    </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@id/menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/news_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/constraint"
+            tools:listitem="@layout/news_item"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:paddingBottom="60dp"/>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

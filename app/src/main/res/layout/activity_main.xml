@@ -80,6 +80,20 @@
         android:background="@color/colorBlack"
         android:alpha="0.05"
         android:visibility="gone"/>
+    <TextView
+        android:id="@+id/main_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/line"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/error_loading_data_ncheck_your_connection_or_try_again_later"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"/>
+
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_view_container"
         android:layout_width="match_parent"

@@ -31,4 +31,5 @@
     <string name="november">нояб.</string>
     <string name="december">дек.</string>
     <string name="october">окт.</string>
+    <string name="error_loading_data_ncheck_your_connection_or_try_again_later">Ошибка загрузки данных. Проверьте подключение к интернету или попробуйте позже.</string>
 </resources>

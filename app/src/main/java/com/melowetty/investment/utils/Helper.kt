@@ -9,9 +9,9 @@ import android.widget.TextView
 import com.melowetty.investment.R
 import com.melowetty.investment.activities.StockActivity
 import com.melowetty.investment.database.models.FavouriteStock
+import com.melowetty.investment.database.models.SearchedItem
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
-import com.melowetty.investment.enums.Interval
 import com.melowetty.investment.enums.Resolution
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.ProfileModel
@@ -203,6 +203,13 @@ class Helper {
             val output: ArrayList<String> = ArrayList()
             stocks.forEach {
                 output.add(it.ticker)
+            }
+            return output
+        }
+        fun convertStringListToSearchedItem(target: List<String>): ArrayList<SearchedItem> {
+            var output = arrayListOf<SearchedItem>()
+            target.forEach {
+                output.add(SearchedItem(it))
             }
             return output
         }
