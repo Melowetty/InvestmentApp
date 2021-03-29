@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private lateinit var companyNewsModel: NewsViewModel
     private lateinit var companyProfileModel: ProfileViewModel
     private lateinit var favouriteStocksViewModel: FavouriteStocksViewModel
-    private lateinit var candlesViewModel: CandlesViewModel
 
     private var favouriteStocks: List<FavouriteStock> = ArrayList()
     private var stocks: ArrayList<Stock> = ArrayList()
@@ -109,8 +108,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         getExchangeRate(Currency.USD)
 
 
-        getCandles("AAPL")
-
     }
     private fun initDatabase() {
         db = AppActivity.getDatabase()
@@ -130,9 +127,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         favouriteStocksViewModel =
             ViewModelProviders.of(this).get(FavouriteStocksViewModel::class.java)
-
-        candlesViewModel =
-            ViewModelProviders.of(this).get(CandlesViewModel::class.java)
     }
     private fun initObservers() {
         favouriteStocksViewModel.favouriteStocks.observe(this, {
@@ -181,15 +175,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                     Log.e("$TAG [Company Profile Model]", "Error in fetching data")
                 }
             })
-        candlesViewModel
-            .getCandlesObserver()
-            .observe(this, {
-                if (it != null) {
-                    Log.d(TAG, Helper.zipCandles(it.t, it.c, Resolution.PER_HOUR, this).toString())
-                } else {
-                    Log.e("$TAG [Candles Model]", "Error in fetching data")
-                }
-            })
     }
     private fun getFavouriteCompanyProfile(favourites: List<String>) {
         getCompanyProfile(favourites.joinToString(","))
@@ -205,9 +190,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
     private fun getCompanyProfile(ticker: String) {
         companyProfileModel.makeApiCall(ticker)
-    }
-    private fun getCandles(ticker: String) {
-        candlesViewModel.getCandlesFromDay(ticker)
     }
     private fun retrieveList(stocks: List<Stock>) {
         mAdapter.apply {

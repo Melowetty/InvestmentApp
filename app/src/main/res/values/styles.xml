@@ -36,5 +36,11 @@
     <style name="StockPriceDown">
         <item name="android:textColor">@color/colorDown</item>
     </style>
+    <style name="intervalActive">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="intervalNotActive">
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
 
 </resources>

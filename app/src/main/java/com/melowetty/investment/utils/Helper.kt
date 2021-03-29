@@ -11,6 +11,7 @@ import com.melowetty.investment.activities.StockActivity
 import com.melowetty.investment.database.models.FavouriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
+import com.melowetty.investment.enums.Interval
 import com.melowetty.investment.enums.Resolution
 import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.ProfileModel
@@ -35,16 +36,19 @@ class Helper {
             val now = calendar.timeInMillis
             return (now / 1000)
         }
-        fun convertLongToTime(time: Long, resolution: Resolution, activity: Activity): String {
+        private fun convertLongToTime(time: Long, resolution: Resolution, activity: Activity): String {
 
             val date = Date(time * 1000)
             val format = SimpleDateFormat("yyyy-MM-dd")
             val localDate = LocalDate.parse(format.format(date))
-            when(resolution) {
-                Resolution.PER_HOUR -> return "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
-                Resolution.PER_DAY -> return "${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
+            return when(resolution) {
+                Resolution.PER_15MIN -> "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_30MIN -> "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_HOUR -> "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_DAY -> "${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
+                Resolution.PER_WEEK -> "${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
+                Resolution.PER_MONTH -> "${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
             }
-            return ""
         }
         fun zipCandles(times: List<Long>, prices: List<Double>, resolution: Resolution, activity: Activity): Map<String, Float> {
             var output = mutableMapOf<String, Float>()

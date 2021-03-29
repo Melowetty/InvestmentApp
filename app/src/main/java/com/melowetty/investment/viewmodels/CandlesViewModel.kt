@@ -35,7 +35,7 @@ class CandlesViewModel: ViewModel() {
         val to = Helper.getUnixTime()
         val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
             RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_DAY.resolution, "from" to from.toString(), "to" to to.toString()))
+        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_WEEK.resolution, "from" to from.toString(), "to" to to.toString()))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getCandlesObserverRx())
@@ -46,7 +46,7 @@ class CandlesViewModel: ViewModel() {
         val to = Helper.getUnixTime()
         val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
             RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_HOUR.resolution, "from" to from.toString(), "to" to to.toString()))
+        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_15MIN.resolution, "from" to from.toString(), "to" to to.toString()))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getCandlesObserverRx())
@@ -65,6 +65,16 @@ class CandlesViewModel: ViewModel() {
 
     fun getCandlesFromMonth(ticker: String) {
         val from = Helper.getUnixTime() - Helper.month
+        val to = Helper.getUnixTime()
+        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
+            RetrofitService::class.java)
+        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_HOUR.resolution, "from" to from.toString(), "to" to to.toString()))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(getCandlesObserverRx())
+    }
+    fun getCandlesFromSixMonth(ticker: String) {
+        val from = Helper.getUnixTime() - Helper.month*6
         val to = Helper.getUnixTime()
         val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
             RetrofitService::class.java)
