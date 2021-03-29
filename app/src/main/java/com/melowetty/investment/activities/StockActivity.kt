@@ -199,6 +199,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         mChange.visibility = View.GONE
         mIntervalsLayout.visibility = View.GONE
         mNewsShimmerContainer.visibility = View.VISIBLE
+        mCostLayout.visibility = View.INVISIBLE
         mNewsShimmerContainer.startShimmer()
         getCompanyNews(stock.symbol)
     }
