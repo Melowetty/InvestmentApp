@@ -86,8 +86,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             isFavourite = false
         }
         tvSearchBar.setOnClickListener {
-            val stockView = Intent(this, SearchActivity::class.java)
-            startActivity(stockView)
+            Helper.transferToActivity(this, SearchActivity::class.java)
         }
 
         initDatabase()
@@ -149,9 +148,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                     retrieveList(
                         Helper.convertModelListToStockList(
                             it,
-                            favoriteStocks
-                        )
-                    )
+                            favoriteStocks))
                 } else {
                     showErrorMessage()
                 }

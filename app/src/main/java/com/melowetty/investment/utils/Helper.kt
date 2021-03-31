@@ -26,10 +26,10 @@ import kotlin.math.abs
 
 class Helper {
     companion object {
-        const val year: Long = 31536000
-        const val month: Long = 2629743
-        const val week: Long = 604800
-        const val day: Long = 86400
+        const val YEAR: Long = 31536000
+        const val MONTH: Long = 2629743
+        const val WEEK: Long = 604800
+        const val DAY: Long = 86400
         fun getUnixTime(): Long {
             val calendar = Calendar.getInstance()
             val now = calendar.timeInMillis
@@ -208,6 +208,10 @@ class Helper {
                 output.add(FoundTicker(it))
             }
             return output
+        }
+        fun transferToActivity(activity: Activity, cls: Class<*>?) {
+            val intent = Intent(activity, cls)
+            activity.startActivity(intent)
         }
     }
 }

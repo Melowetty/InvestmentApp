@@ -22,12 +22,14 @@ import com.melowetty.investment.R
 import com.melowetty.investment.adapters.RequestsAdapter
 import com.melowetty.investment.adapters.StocksAdapter
 import com.melowetty.investment.database.AppDatabase
+import com.melowetty.investment.database.models.FavoriteStock
 import com.melowetty.investment.database.models.FoundTicker
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.listeners.ItemClickListener
 import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
+import com.melowetty.investment.viewmodels.FavoriteStocksViewModel
 import com.melowetty.investment.viewmodels.FindStockViewModel
 import com.melowetty.investment.viewmodels.ProfileViewModel
 import com.melowetty.investment.viewmodels.SearchHistoryViewModel
@@ -50,9 +52,11 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private lateinit var searchModel: FindStockViewModel
     private lateinit var companyProfileModel: ProfileViewModel
     private lateinit var searchHistoryModel: SearchHistoryViewModel
+    private lateinit var favoriteStocksViewModel: FavoriteStocksViewModel
 
     private var db: AppDatabase? = null
     private var searchHistory: List<FoundTicker> = ArrayList()
+    private var favoriteStocks: List<FavoriteStock> = ArrayList()
 
     private var latest = 0L
     private var delay = 2500
@@ -86,8 +90,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         initMiniRecyclerView()
 
         ivBack.setOnClickListener {
-            val stockView = Intent(this, MainActivity::class.java)
-            startActivity(stockView)
+            Helper.transferToActivity(this, MainActivity::class.java)
         }
 
         etSearch.addTextChangedListener {
@@ -161,6 +164,8 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             ViewModelProvider(this).get(FindStockViewModel::class.java)
         searchHistoryModel =
             ViewModelProvider(this).get(SearchHistoryViewModel::class.java)
+        favoriteStocksViewModel =
+            ViewModelProvider(this).get(FavoriteStocksViewModel::class.java)
     }
     private fun initObservers() {
         searchModel
@@ -183,7 +188,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             .observe(this) {
                 if (it != null) {
                     if (isShowError) hideErrorMessage()
-                    retrieveList(Helper.convertModelListToStockList(it, arrayListOf()))
+                    retrieveList(Helper.convertModelListToStockList(it, favoriteStocks))
                 } else {
                     showErrorMessage()
                 }
@@ -192,6 +197,11 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             it?.let {
                 searchHistory = it
                 updateSearchedRecycler()
+            }
+        }
+        favoriteStocksViewModel.favoriteStocks.observe(this) {
+            it?.let {
+                favoriteStocks = it
             }
         }
     }
