@@ -3,7 +3,7 @@ package com.melowetty.investment.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.melowetty.investment.models.IndicesConstituentsModel
-import com.melowetty.investment.network.RetrofitFinhub
+import com.melowetty.investment.network.RetrofitFinnhub
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observer
@@ -18,7 +18,7 @@ class IndicesConstituentsViewModel: ViewModel() {
     }
 
     fun makeApiCall(ticker: String) {
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
+        val retrofitInstance = RetrofitFinnhub.getRetrofitInstance().create(
             RetrofitService::class.java)
         retrofitInstance.getIndexConstituents(ticker)
             .subscribeOn(Schedulers.io())

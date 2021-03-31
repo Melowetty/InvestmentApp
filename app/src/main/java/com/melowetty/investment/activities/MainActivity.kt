@@ -5,48 +5,43 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
-import com.melowetty.investment.adapters.StockAdapter
+import com.melowetty.investment.adapters.StocksAdapter
 import com.melowetty.investment.database.AppDatabase
-import com.melowetty.investment.database.models.FavouriteStock
+import com.melowetty.investment.database.models.FavoriteStock
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Indices
 import com.melowetty.investment.listeners.StockClickListener
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
-import com.melowetty.investment.viewmodels.FavouriteStocksViewModel
+import com.melowetty.investment.viewmodels.FavoriteStocksViewModel
 import com.melowetty.investment.viewmodels.IndicesConstituentsViewModel
 import com.melowetty.investment.viewmodels.ProfileViewModel
 
 
 class MainActivity : AppCompatActivity(), StockClickListener {
-    private val TAG = this::class.java.simpleName
 
-    private lateinit var mFavourite: TextView
-    private lateinit var mStocks: TextView
-    private lateinit var mRecyclerView: RecyclerView
-    private lateinit var mSearchBar: TextView
-    private lateinit var mShimmerViewContainer: ShimmerFrameLayout
-    private lateinit var mError: TextView
+    private lateinit var tvFavourite: TextView
+    private lateinit var tvStocks: TextView
+    private lateinit var tvError: TextView
+    private lateinit var tvSearchBar: TextView
+    private lateinit var rv: RecyclerView
+    private lateinit var sfl: ShimmerFrameLayout
 
-    private lateinit var mAdapter: StockAdapter
-
+    private lateinit var adapter: StocksAdapter
     private lateinit var indicesConstituentsModel: IndicesConstituentsViewModel
     private lateinit var companyProfileModel: ProfileViewModel
-    private lateinit var favouriteStocksViewModel: FavouriteStocksViewModel
+    private lateinit var favoriteStocksViewModel: FavoriteStocksViewModel
 
-    private var favouriteStocks: List<FavouriteStock> = ArrayList()
+    private var favoriteStocks: List<FavoriteStock> = ArrayList()
     private var stocks: List<Stock> = ArrayList()
-
     private var db: AppDatabase? = null
-
     private var target: Activities? = null
-
     private val index = Indices.NASDAQ_100
 
     private var isShowError = false
@@ -56,41 +51,41 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mRecyclerView = findViewById(R.id.recyclerView)
+        rv = findViewById(R.id.recyclerView)
 
-        mRecyclerView.layoutManager =
+        rv.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        mAdapter = StockAdapter(arrayListOf(), this)
-        mRecyclerView.adapter = mAdapter
+        adapter = StocksAdapter(arrayListOf(), this)
+        rv.adapter = adapter
 
 
-        mFavourite = findViewById(R.id.favourite)
-        mStocks = findViewById(R.id.stocks)
-        mSearchBar = findViewById(R.id.search_bar)
-        mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
-        mError = findViewById(R.id.main_error)
+        tvFavourite = findViewById(R.id.favourite)
+        tvStocks = findViewById(R.id.stocks)
+        tvSearchBar = findViewById(R.id.search_bar)
+        sfl = findViewById(R.id.shimmer_view_container)
+        tvError = findViewById(R.id.main_error)
 
         target = intent.getSerializableExtra("target") as? Activities
 
-        mFavourite.setOnClickListener {
-            Helper.changeCondition(mFavourite, true)
-            Helper.changeCondition(mStocks, false)
-            getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
-            mShimmerViewContainer.startShimmer()
-            mShimmerViewContainer.visibility = View.VISIBLE
-            mRecyclerView.visibility = View.GONE
+        tvFavourite.setOnClickListener {
+            Helper.changeCondition(tvFavourite, true)
+            Helper.changeCondition(tvStocks, false)
+            getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
+            sfl.startShimmer()
+            sfl.visibility = View.VISIBLE
+            rv.visibility = View.GONE
             isFavourite = true
         }
-        mStocks.setOnClickListener {
-            Helper.changeCondition(mFavourite, false)
-            Helper.changeCondition(mStocks, true)
-            mShimmerViewContainer.startShimmer()
-            mShimmerViewContainer.visibility = View.VISIBLE
-            mRecyclerView.visibility = View.GONE
+        tvStocks.setOnClickListener {
+            Helper.changeCondition(tvFavourite, false)
+            Helper.changeCondition(tvStocks, true)
+            sfl.startShimmer()
+            sfl.visibility = View.VISIBLE
+            rv.visibility = View.GONE
             getIndexConstituents(index)
             isFavourite = false
         }
-        mSearchBar.setOnClickListener {
+        tvSearchBar.setOnClickListener {
             val stockView = Intent(this, SearchActivity::class.java)
             startActivity(stockView)
         }
@@ -99,14 +94,14 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         initModels()
         initObservers()
 
-        mShimmerViewContainer.startShimmer();
+        sfl.startShimmer();
 
         if(target != null) {
             if(target == Activities.FAVOURITE) {
-                Helper.changeCondition(mFavourite, true)
-                Helper.changeCondition(mStocks, false)
-                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favouriteStocks))
-                mRecyclerView.visibility = View.GONE
+                Helper.changeCondition(tvFavourite, true)
+                Helper.changeCondition(tvStocks, false)
+                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
+                rv.visibility = View.GONE
                 isFavourite = true
             }
             if(target == Activities.MAIN)
@@ -118,56 +113,60 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private fun initDatabase() {
         db = AppActivity.getDatabase()
     }
-    fun initModels() {
+    private fun initModels() {
         companyProfileModel =
-            ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+            ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         indicesConstituentsModel =
-            ViewModelProviders.of(this).get(IndicesConstituentsViewModel::class.java)
+            ViewModelProvider(this).get(IndicesConstituentsViewModel::class.java)
 
-        favouriteStocksViewModel =
-            ViewModelProviders.of(this).get(FavouriteStocksViewModel::class.java)
+        favoriteStocksViewModel =
+            ViewModelProvider(this).get(FavoriteStocksViewModel::class.java)
     }
     private fun initObservers() {
-        favouriteStocksViewModel.favouriteStocks.observe(this, {
+        favoriteStocksViewModel.favoriteStocks.observe(this) {
             it?.let {
-                favouriteStocks = it
+                favoriteStocks = it
             }
-        })
+        }
 
         indicesConstituentsModel
             .getConstituentsObserver()
-            .observe(this, { it ->
+            .observe(this) {
                 if (it != null) {
-                    if(isShowError) hideErrorMessage()
+                    if (isShowError) hideErrorMessage()
                     getCompanyProfile(it.constituents.joinToString(separator = ","))
                 } else {
                     showErrorMessage()
                 }
-            })
+            }
 
         companyProfileModel
             .getCompanyProfileObserver()
-            .observe(this, {
+            .observe(this) {
                 if (it != null) {
-                    if(isShowError) hideErrorMessage()
-                    retrieveList(Helper.convertModelListToStockList(it,
-                        favouriteStocks))
+                    if (isShowError) hideErrorMessage()
+                    retrieveList(
+                        Helper.convertModelListToStockList(
+                            it,
+                            favoriteStocks
+                        )
+                    )
                 } else {
                     showErrorMessage()
                 }
-            })
+            }
     }
     private fun showErrorMessage() {
         isShowError = true
-        mError.visibility = View.VISIBLE
-        mRecyclerView.visibility = View.GONE
-        mShimmerViewContainer.stopShimmer()
-        mShimmerViewContainer.visibility = View.GONE
+        tvError.visibility = View.VISIBLE
+        rv.visibility = View.GONE
+        sfl.stopShimmer()
+        sfl.visibility = View.GONE
     }
     private fun hideErrorMessage() {
         isShowError = false
-        mError.visibility = View.GONE
+        tvError.visibility = View.GONE
     }
     private fun getFavouriteCompanyProfile(favourites: List<String>) {
         getCompanyProfile(favourites.joinToString(","))
@@ -180,11 +179,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     }
     private fun retrieveList(stocks: List<Stock>) {
         this.stocks = stocks
-        mAdapter.apply {
+        adapter.apply {
             this.addStocks(stocks)
-            mShimmerViewContainer.stopShimmer()
-            mShimmerViewContainer.visibility = View.GONE
-            mRecyclerView.visibility = View.VISIBLE
+            sfl.stopShimmer()
+            sfl.visibility = View.GONE
+            rv.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
     }

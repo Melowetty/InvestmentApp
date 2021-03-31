@@ -2,9 +2,9 @@ package com.melowetty.investment.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.melowetty.investment.enums.Resolution
+import com.melowetty.investment.enums.Interval
 import com.melowetty.investment.models.CandlesModel
-import com.melowetty.investment.network.RetrofitFinhub
+import com.melowetty.investment.network.RetrofitFinnhub
 import com.melowetty.investment.network.RetrofitService
 import com.melowetty.investment.utils.Helper
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -19,66 +19,15 @@ class CandlesViewModel: ViewModel() {
         return candles
     }
 
-    fun getCandlesFromYear(ticker: String) {
-        val from = Helper.getUnixTime() - Helper.year
-        val to = Helper.getUnixTime()
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
+    fun getCandles(ticker: String, interval: Interval) {
+        val to = Helper.getUnixTime().toString()
+        val retrofitInstance = RetrofitFinnhub.getRetrofitInstance().create(
             RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_DAY.resolution, "from" to from.toString(), "to" to to.toString()))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getCandlesObserverRx())
-    }
-
-    fun getCandlesFrom5Year(ticker: String) {
-        val from = Helper.getUnixTime() - (Helper.year) * 5
-        val to = Helper.getUnixTime()
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
-            RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_WEEK.resolution, "from" to from.toString(), "to" to to.toString()))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getCandlesObserverRx())
-    }
-
-    fun getCandlesFromDay(ticker: String) {
-        val from = Helper.getUnixTime() - Helper.day*3
-        val to = Helper.getUnixTime()
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
-            RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_15MIN.resolution, "from" to from.toString(), "to" to to.toString()))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getCandlesObserverRx())
-    }
-
-    fun getCandlesFromWeek(ticker: String) {
-        val from = Helper.getUnixTime() - Helper.week
-        val to = Helper.getUnixTime()
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
-            RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_HOUR.resolution, "from" to from.toString(), "to" to to.toString()))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getCandlesObserverRx())
-    }
-
-    fun getCandlesFromMonth(ticker: String) {
-        val from = Helper.getUnixTime() - Helper.month
-        val to = Helper.getUnixTime()
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
-            RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_HOUR.resolution, "from" to from.toString(), "to" to to.toString()))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(getCandlesObserverRx())
-    }
-    fun getCandlesFromSixMonth(ticker: String) {
-        val from = Helper.getUnixTime() - Helper.month*6
-        val to = Helper.getUnixTime()
-        val retrofitInstance = RetrofitFinhub.getRetrofitInstance().create(
-            RetrofitService::class.java)
-        retrofitInstance.getCandles(mapOf("symbol" to ticker, "resolution" to Resolution.PER_DAY.resolution, "from" to from.toString(), "to" to to.toString()))
+        retrofitInstance.getCandles(
+            mapOf("symbol" to ticker,
+                "resolution" to interval.resolution.string,
+                "from" to interval.from.toString(),
+                "to" to to))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getCandlesObserverRx())

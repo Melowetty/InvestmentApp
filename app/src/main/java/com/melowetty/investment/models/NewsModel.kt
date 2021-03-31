@@ -5,5 +5,4 @@ data class NewsModel(
     val text: String,
     val url: String,
     val site: String,
-    val publishedDate: String
-    )
+    val publishedDate: String)

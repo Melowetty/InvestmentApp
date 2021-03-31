@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.melowetty.investment.R
 import com.melowetty.investment.activities.StockActivity
-import com.melowetty.investment.database.models.FavouriteStock
-import com.melowetty.investment.database.models.SearchedItem
+import com.melowetty.investment.database.models.FavoriteStock
+import com.melowetty.investment.database.models.FoundTicker
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.enums.Currency
 import com.melowetty.investment.enums.Resolution
@@ -22,7 +22,6 @@ import org.threeten.bp.LocalDate
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class Helper {
@@ -51,7 +50,7 @@ class Helper {
             }
         }
         fun zipCandles(times: List<Long>, prices: List<Double>, resolution: Resolution, activity: Activity): Map<String, Float> {
-            var output = mutableMapOf<String, Float>()
+            val output = mutableMapOf<String, Float>()
             for(index in times.indices) {
                 val str = convertLongToTime(times[index], resolution, activity)
                 output[str] = formatCost(prices[index]).toFloat()
@@ -131,24 +130,21 @@ class Helper {
         private fun getUpChangeBool(percent: String): Boolean {
             return percent[0] != '-'
         }
-        private fun getDoublePercentChange(percent: String): Double {
-            if(getUpChangeBool(percent)) return percent.substring(0).toDouble()
-            else return percent.substring(1).toDouble()
-        }
-        private fun companyProfileToStock(model: ProfileModel, favourites: List<FavouriteStock>): Stock? {
+
+        private fun companyProfileToStock(model: ProfileModel, favorites: List<FavoriteStock>): Stock? {
             return try {
                 val currency = Currency.getCardTypeByName(model.currency)
                 val changePercent = formatCost(abs((model.changes / model.price) * 100))
                 val up = getUpChangeBool(model.changes.toString())
                 val stockPrice = StockPrice(currency, model.price, model.changes, changePercent, up)
-                val isFavourite = isFavorite(model.symbol, favourites)
+                val isFavourite = isFavorite(model.symbol, favorites)
                 Stock(model.symbol, model.companyName, model.image, isFavourite, stockPrice)
             } catch (e: Exception) {
                 null
             }
         }
-        private fun isFavorite(ticker: String, favourites: List<FavouriteStock>): Boolean {
-            favourites.forEach {
+        private fun isFavorite(ticker: String, favorites: List<FavoriteStock>): Boolean {
+            favorites.forEach {
                 if(ticker == it.ticker) return true
             }
             return false
@@ -161,11 +157,11 @@ class Helper {
             textView.setTextAppearance(style)
             textView.text = "$symbol${price.currency.format(price.change)} ($percent%)"
         }
-        fun convertModelListToStockList(array: List<ProfileModel>, favourites: List<FavouriteStock>): List<Stock> {
+        fun convertModelListToStockList(array: List<ProfileModel>, favorites: List<FavoriteStock>): List<Stock> {
             val stocks: ArrayList<Stock> = ArrayList()
             stocks.apply {
                 array.forEach {
-                    companyProfileToStock(it, favourites)?.let { it1 -> this.add(it1) }
+                    companyProfileToStock(it, favorites)?.let { it1 -> this.add(it1) }
                 }
             }
             return stocks
@@ -199,17 +195,17 @@ class Helper {
         fun setNotFavouriteColor(context: Context, imageView: ImageView) {
             imageView.setColorFilter(context.resources.getColor(R.color.notFavourite))
         }
-        fun favouriteStocksToString(stocks: List<FavouriteStock>): List<String> {
+        fun favouriteStocksToString(stocks: List<FavoriteStock>): List<String> {
             val output: ArrayList<String> = ArrayList()
             stocks.forEach {
                 output.add(it.ticker)
             }
             return output
         }
-        fun convertStringListToSearchedItem(target: List<String>): ArrayList<SearchedItem> {
-            var output = arrayListOf<SearchedItem>()
+        fun convertStringListToSearchedItem(target: List<String>): ArrayList<FoundTicker> {
+            var output = arrayListOf<FoundTicker>()
             target.forEach {
-                output.add(SearchedItem(it))
+                output.add(FoundTicker(it))
             }
             return output
         }

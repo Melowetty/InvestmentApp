@@ -12,11 +12,11 @@ import com.melowetty.investment.models.Stock
 import com.melowetty.investment.utils.Helper
 
 
-class StockAdapter(
+class StocksAdapter(
     val stocks: ArrayList<Stock>,
     private val stockClickListener: StockClickListener
 ) :
-    RecyclerView.Adapter<StockAdapter.ViewHolder>() {
+    RecyclerView.Adapter<StocksAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater
             .from(parent.context)

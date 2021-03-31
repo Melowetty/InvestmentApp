@@ -14,16 +14,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
 import com.melowetty.investment.adapters.RequestsAdapter
-import com.melowetty.investment.adapters.StockAdapter
+import com.melowetty.investment.adapters.StocksAdapter
 import com.melowetty.investment.database.AppDatabase
-import com.melowetty.investment.database.models.SearchedItem
+import com.melowetty.investment.database.models.FoundTicker
 import com.melowetty.investment.enums.Activities
 import com.melowetty.investment.listeners.ItemClickListener
 import com.melowetty.investment.listeners.StockClickListener
@@ -36,26 +35,24 @@ import com.melowetty.investment.viewmodels.SearchHistoryViewModel
 
 class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListener {
 
-    private val TAG = this::class.java.simpleName
+    private lateinit var tvError: TextView
+    private lateinit var tvNotFound: TextView
+    private lateinit var etSearch: EditText
+    private lateinit var rvStocks: RecyclerView
+    private lateinit var rvSearchHistory: RecyclerView
+    private lateinit var rvPopularity: RecyclerView
+    private lateinit var clMenu: ConstraintLayout
+    private lateinit var sfl: ShimmerFrameLayout
 
-    private lateinit var mSearch: EditText
-    private lateinit var mMiniRecyclerView: RecyclerView
-    private lateinit var mSearchRecyclerView: RecyclerView
-    private lateinit var mPopularityRecyclerView: RecyclerView
-    private lateinit var mShimmerViewContainer: ShimmerFrameLayout
-    private lateinit var mNotFound: TextView
-    private lateinit var mMenu: ConstraintLayout
-    private lateinit var mError: TextView
-
-    private lateinit var mAdapter: StockAdapter
-    private lateinit var mRequestsAdapter: RequestsAdapter
+    private lateinit var stocksAdapter: StocksAdapter
+    private lateinit var requestsAdapter: RequestsAdapter
 
     private lateinit var searchModel: FindStockViewModel
     private lateinit var companyProfileModel: ProfileViewModel
     private lateinit var searchHistoryModel: SearchHistoryViewModel
 
     private var db: AppDatabase? = null
-    private var historySearches: List<SearchedItem> = ArrayList()
+    private var searchHistory: List<FoundTicker> = ArrayList()
 
     private var latest = 0L
     private var delay = 2500
@@ -66,18 +63,18 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        mMiniRecyclerView = findViewById(R.id.mini_recycler_view)
-        mSearchRecyclerView = findViewById(R.id.searched_recycler)
-        mPopularityRecyclerView = findViewById(R.id.popular_recycler)
-        mMenu = findViewById(R.id.menu)
-        mSearch = findViewById(R.id.search_label)
-        mShimmerViewContainer = findViewById(R.id.shimmer_view_container)
-        mNotFound = findViewById(R.id.result_not_found)
-        mError = findViewById(R.id.search_error)
+        rvStocks = findViewById(R.id.mini_recycler_view)
+        rvSearchHistory = findViewById(R.id.searched_recycler)
+        rvPopularity = findViewById(R.id.popular_recycler)
+        clMenu = findViewById(R.id.menu)
+        etSearch = findViewById(R.id.search_label)
+        sfl = findViewById(R.id.shimmer_view_container)
+        tvNotFound = findViewById(R.id.result_not_found)
+        tvError = findViewById(R.id.search_error)
 
-        val mSearchInfo = findViewById<ConstraintLayout>(R.id.search_info)
-        val mClear = findViewById<ImageView>(R.id.clear)
-        val mBack = findViewById<ImageView>(R.id.search_back)
+        val clSearchInfo = findViewById<ConstraintLayout>(R.id.search_info)
+        val ivClear = findViewById<ImageView>(R.id.clear)
+        val ivBack = findViewById<ImageView>(R.id.search_back)
 
         initDatabse()
 
@@ -88,34 +85,34 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         initSearchedRecyclerView()
         initMiniRecyclerView()
 
-        mBack.setOnClickListener {
+        ivBack.setOnClickListener {
             val stockView = Intent(this, MainActivity::class.java)
             startActivity(stockView)
         }
 
-        mSearch.addTextChangedListener {
+        etSearch.addTextChangedListener {
             if (it != null) {
                 if (it.isNotEmpty())  {
-                    mClear.visibility = View.VISIBLE
-                    mMenu.visibility = View.VISIBLE
-                    mSearchInfo.visibility = View.GONE
-                    mShimmerViewContainer.visibility = View.VISIBLE
-                    mShimmerViewContainer.startShimmer();
+                    ivClear.visibility = View.VISIBLE
+                    clMenu.visibility = View.VISIBLE
+                    clSearchInfo.visibility = View.GONE
+                    sfl.visibility = View.VISIBLE
+                    sfl.startShimmer();
 
                 }
                 else {
-                    mClear.visibility = View.GONE
-                    mMenu.visibility = View.GONE
-                    mSearchInfo.visibility = View.VISIBLE
-                    mMiniRecyclerView.visibility = View.GONE
-                    mShimmerViewContainer.stopShimmer()
-                    mShimmerViewContainer.visibility = View.GONE
-                    mNotFound.visibility = View.GONE
+                    ivClear.visibility = View.GONE
+                    clMenu.visibility = View.GONE
+                    clSearchInfo.visibility = View.VISIBLE
+                    rvStocks.visibility = View.GONE
+                    sfl.stopShimmer()
+                    sfl.visibility = View.GONE
+                    tvNotFound.visibility = View.GONE
                     clearResultList()
                 }
             }
         }
-        mSearch.addTextChangedListener(object : TextWatcher {
+        etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearResultList()
@@ -125,52 +122,52 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
                 if (s.toString().isNotEmpty()) filterWithDelay(s.toString())
             }
         })
-        mClear.setOnClickListener {
-            mSearch.text = null
-            mClear.visibility = View.GONE
-            mNotFound.visibility = View.GONE
+        ivClear.setOnClickListener {
+            etSearch.text = null
+            ivClear.visibility = View.GONE
+            tvNotFound.visibility = View.GONE
         }
 
     }
-    fun initPopularityRecyclerView() {
-        mPopularityRecyclerView.layoutManager =
+    private fun initPopularityRecyclerView() {
+        rvPopularity.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val list = Helper.convertStringListToSearchedItem(
             arrayListOf("Yandex", "Nvidia", "Microsoft", "Tesla", "Apple", "McDonalds", "MasterCard", "Facebook", "Visa", "Amazon", "AMD", "Intel", "Ebay", "Google", "Netflix"))
-        mRequestsAdapter = RequestsAdapter(list, this)
-        mPopularityRecyclerView.adapter = mRequestsAdapter
+        requestsAdapter = RequestsAdapter(list, this)
+        rvPopularity.adapter = requestsAdapter
     }
     private fun showErrorMessage() {
         isShowError = true
-        mError.visibility = View.VISIBLE
-        mMiniRecyclerView.visibility = View.GONE
-        mSearchRecyclerView.visibility = View.GONE
-        mPopularityRecyclerView.visibility = View.GONE
-        mShimmerViewContainer.stopShimmer()
-        mShimmerViewContainer.visibility = View.GONE
-        mMenu.visibility = View.GONE
+        tvError.visibility = View.VISIBLE
+        rvStocks.visibility = View.GONE
+        rvSearchHistory.visibility = View.GONE
+        rvPopularity.visibility = View.GONE
+        sfl.stopShimmer()
+        sfl.visibility = View.GONE
+        clMenu.visibility = View.GONE
     }
     private fun hideErrorMessage() {
         isShowError = false
-        mError.visibility = View.GONE
+        tvError.visibility = View.GONE
     }
-    fun initDatabse() {
+    private fun initDatabse() {
         db = AppActivity.getDatabase()
     }
-    fun initModels() {
+    private fun initModels() {
         companyProfileModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
         searchModel =
             ViewModelProvider(this).get(FindStockViewModel::class.java)
         searchHistoryModel =
-            ViewModelProviders.of(this).get(SearchHistoryViewModel::class.java)
+            ViewModelProvider(this).get(SearchHistoryViewModel::class.java)
     }
     private fun initObservers() {
         searchModel
             .getFindStocksObserver()
-            .observe(this, {
+            .observe(this) {
                 if (it != null) {
-                    if(isShowError) hideErrorMessage()
+                    if (isShowError) hideErrorMessage()
                     clearResultList()
                     getCompanyProfile(
                         Helper.convertModelListToStringList(it).joinToString(separator = ",")
@@ -179,40 +176,40 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
                 } else {
                     showErrorMessage()
                 }
-            })
+            }
 
         companyProfileModel
             .getCompanyProfileObserver()
-            .observe(this, {
+            .observe(this) {
                 if (it != null) {
-                    if(isShowError) hideErrorMessage()
+                    if (isShowError) hideErrorMessage()
                     retrieveList(Helper.convertModelListToStockList(it, arrayListOf()))
                 } else {
                     showErrorMessage()
                 }
-            })
-        searchHistoryModel.historySearch.observe(this, {
+            }
+        searchHistoryModel.historySearch.observe(this) {
             it?.let {
-                historySearches = it
+                searchHistory = it
                 updateSearchedRecycler()
             }
-        })
+        }
     }
-    fun initMiniRecyclerView() {
-        mMiniRecyclerView.layoutManager =
+    private fun initMiniRecyclerView() {
+        rvStocks.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        mAdapter = StockAdapter(arrayListOf(), this)
-        mMiniRecyclerView.adapter = mAdapter
+        stocksAdapter = StocksAdapter(arrayListOf(), this)
+        rvStocks.adapter = stocksAdapter
     }
-    fun initSearchedRecyclerView() {
-        mSearchRecyclerView.layoutManager =
+    private fun initSearchedRecyclerView() {
+        rvSearchHistory.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        mRequestsAdapter = RequestsAdapter(arrayListOf(), this)
-        mSearchRecyclerView.adapter = mRequestsAdapter
+        requestsAdapter = RequestsAdapter(arrayListOf(), this)
+        rvSearchHistory.adapter = requestsAdapter
     }
     private fun searchStocks(input: String) {
         searchModel.makeApiCall(input)
-        db?.historySearchDao()?.insert(SearchedItem(input))
+        db?.foundTickersDao()?.insert(FoundTicker(input))
         searchHistoryModel.updateSearchedStocks()
     }
     private fun getCompanyProfile(ticker: String) {
@@ -233,27 +230,27 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private fun retrieveList(stocks: List<Stock>) {
 
         if(stocks.isNullOrEmpty()) {
-            mNotFound.visibility = View.VISIBLE
-            mShimmerViewContainer.visibility = View.GONE
-            mMenu.visibility = View.GONE
-            mShimmerViewContainer.stopShimmer()
+            tvNotFound.visibility = View.VISIBLE
+            sfl.visibility = View.GONE
+            clMenu.visibility = View.GONE
+            sfl.stopShimmer()
         }
-        else mAdapter.apply {
-            mShimmerViewContainer.stopShimmer()
-            mShimmerViewContainer.visibility = View.GONE
-            mMiniRecyclerView.visibility = View.VISIBLE
+        else stocksAdapter.apply {
+            sfl.stopShimmer()
+            sfl.visibility = View.GONE
+            rvStocks.visibility = View.VISIBLE
             this.addStocks(stocks)
             notifyDataSetChanged()
         }
     }
     private fun updateSearchedRecycler() {
-        mRequestsAdapter.apply {
-            addTickers(historySearches)
+        requestsAdapter.apply {
+            addTickers(searchHistory)
             notifyDataSetChanged()
         }
     }
     private fun clearResultList() {
-        mAdapter.apply {
+        stocksAdapter.apply {
             stocks.clear()
             notifyDataSetChanged()
         }
@@ -265,7 +262,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         )
     }
 
-    override fun onItemClick(ticker: SearchedItem) {
-        mSearch.setText(ticker.ticker)
+    override fun onItemClick(ticker: FoundTicker) {
+        etSearch.setText(ticker.ticker)
     }
 }

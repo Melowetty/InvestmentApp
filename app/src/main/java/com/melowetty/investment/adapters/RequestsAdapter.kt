@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.melowetty.investment.R
-import com.melowetty.investment.database.models.SearchedItem
+import com.melowetty.investment.database.models.FoundTicker
 import com.melowetty.investment.listeners.ItemClickListener
 
 class RequestsAdapter(
-    private val tickers: ArrayList<SearchedItem>,
+    private val tickers: ArrayList<FoundTicker>,
     private val itemClickListener: ItemClickListener
     ) :
     RecyclerView.Adapter<RequestsAdapter.ViewHolder>() {
@@ -35,7 +35,7 @@ class RequestsAdapter(
         return tickers.size
     }
 
-    fun addTickers(tickers: List<SearchedItem>) {
+    fun addTickers(tickers: List<FoundTicker>) {
         this.tickers.apply {
             clear()
             addAll(tickers)

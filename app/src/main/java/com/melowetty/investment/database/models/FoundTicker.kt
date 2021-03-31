@@ -3,8 +3,7 @@ package com.melowetty.investment.database.models
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
-data class FavouriteStock(
+@Entity(tableName = "search_history")
+data class FoundTicker(
     @PrimaryKey
-    val ticker: String,
-    val company: String)
+    val ticker: String)

@@ -129,8 +129,8 @@
         />
     </androidx.constraintlayout.widget.ConstraintLayout>
     <TextView
-        android:visibility="gone"
         android:id="@+id/result_not_found"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/results_not_found"
