@@ -32,4 +32,5 @@
     <string name="december">дек.</string>
     <string name="october">окт.</string>
     <string name="error_loading_data_ncheck_your_connection_or_try_again_later">Ошибка загрузки данных. Проверьте подключение к интернету или попробуйте позже.</string>
+    <string name="you_don_t_have_any_favorite_stocks_add_your_first_stock">У вас нет избранных акций. Добавьте свою первую акцию</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.melowetty.investment.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -30,6 +29,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private lateinit var tvStocks: TextView
     private lateinit var tvError: TextView
     private lateinit var tvSearchBar: TextView
+    private lateinit var tvNotFoundFavorites: TextView
     private lateinit var rv: RecyclerView
     private lateinit var sfl: ShimmerFrameLayout
 
@@ -45,7 +45,10 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private val index = Indices.NASDAQ_100
 
     private var isShowError = false
-    private var isFavourite = true
+    private var isFavourite = false
+
+    private var waitingFavorites = false
+    private var initFavorite = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,23 +67,24 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         tvSearchBar = findViewById(R.id.search_bar)
         sfl = findViewById(R.id.shimmer_view_container)
         tvError = findViewById(R.id.main_error)
+        tvNotFoundFavorites = findViewById(R.id.not_found_favorites)
 
         target = intent.getSerializableExtra("target") as? Activities
 
         tvFavourite.setOnClickListener {
+            hideNotFoundFavoritesMessage()
             Helper.changeCondition(tvFavourite, true)
             Helper.changeCondition(tvStocks, false)
-            getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
-            sfl.startShimmer()
-            sfl.visibility = View.VISIBLE
+            Helper.startShimmer(sfl)
             rv.visibility = View.GONE
             isFavourite = true
+            getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
         }
         tvStocks.setOnClickListener {
+            hideNotFoundFavoritesMessage()
             Helper.changeCondition(tvFavourite, false)
             Helper.changeCondition(tvStocks, true)
-            sfl.startShimmer()
-            sfl.visibility = View.VISIBLE
+            Helper.startShimmer(sfl)
             rv.visibility = View.GONE
             getIndexConstituents(index)
             isFavourite = false
@@ -126,6 +130,12 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         favoriteStocksViewModel.favoriteStocks.observe(this) {
             it?.let {
                 favoriteStocks = it
+                initFavorite = true
+                if (waitingFavorites && it.isNotEmpty()) {
+                    getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
+                } else if(waitingFavorites && it.isEmpty())
+                    showNotFoundFavoritesMessage()
+                waitingFavorites = false
             }
         }
 
@@ -154,6 +164,15 @@ class MainActivity : AppCompatActivity(), StockClickListener {
                 }
             }
     }
+    private fun showNotFoundFavoritesMessage() {
+        tvNotFoundFavorites.visibility = View.VISIBLE
+        rv.visibility = View.GONE
+        sfl.stopShimmer()
+        sfl.visibility = View.GONE
+    }
+    private fun hideNotFoundFavoritesMessage() {
+        tvNotFoundFavorites.visibility = View.GONE
+    }
     private fun showErrorMessage() {
         isShowError = true
         tvError.visibility = View.VISIBLE
@@ -166,7 +185,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         tvError.visibility = View.GONE
     }
     private fun getFavouriteCompanyProfile(favourites: List<String>) {
-        getCompanyProfile(favourites.joinToString(","))
+        if(initFavorite)
+            showNotFoundFavoritesMessage()
+        else if(favoriteStocks.isNullOrEmpty() && !initFavorite)
+            waitingFavorites = true
+        else getCompanyProfile(favourites.joinToString(","))
     }
     private fun getIndexConstituents(indice: Indices) {
         indicesConstituentsModel.makeApiCall(indice.code)

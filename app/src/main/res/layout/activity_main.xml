@@ -93,6 +93,19 @@
         android:fontFamily="@font/montserrat"
         android:textColor="@color/colorBlack"
         android:textSize="20sp"/>
+    <TextView
+        android:id="@+id/not_found_favorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/line"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/you_don_t_have_any_favorite_stocks_add_your_first_stock"
+        android:fontFamily="@font/montserrat"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"/>
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/shimmer_view_container"

@@ -1,6 +1,5 @@
 package com.melowetty.investment.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -80,7 +79,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         val ivClear = findViewById<ImageView>(R.id.clear)
         val ivBack = findViewById<ImageView>(R.id.search_back)
 
-        initDatabse()
+        initDatabase()
 
         initModels()
         initObservers()
@@ -99,8 +98,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
                     ivClear.visibility = View.VISIBLE
                     clMenu.visibility = View.VISIBLE
                     clSearchInfo.visibility = View.GONE
-                    sfl.visibility = View.VISIBLE
-                    sfl.startShimmer();
+                    Helper.startShimmer(sfl)
 
                 }
                 else {
@@ -108,8 +106,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
                     clMenu.visibility = View.GONE
                     clSearchInfo.visibility = View.VISIBLE
                     rvStocks.visibility = View.GONE
-                    sfl.stopShimmer()
-                    sfl.visibility = View.GONE
+                    Helper.stopShimmer(sfl)
                     tvNotFound.visibility = View.GONE
                     clearResultList()
                 }
@@ -146,15 +143,14 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         rvStocks.visibility = View.GONE
         rvSearchHistory.visibility = View.GONE
         rvPopularity.visibility = View.GONE
-        sfl.stopShimmer()
-        sfl.visibility = View.GONE
         clMenu.visibility = View.GONE
+        Helper.stopShimmer(sfl)
     }
     private fun hideErrorMessage() {
         isShowError = false
         tvError.visibility = View.GONE
     }
-    private fun initDatabse() {
+    private fun initDatabase() {
         db = AppActivity.getDatabase()
     }
     private fun initModels() {
@@ -241,17 +237,14 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
 
         if(stocks.isNullOrEmpty()) {
             tvNotFound.visibility = View.VISIBLE
-            sfl.visibility = View.GONE
             clMenu.visibility = View.GONE
-            sfl.stopShimmer()
         }
         else stocksAdapter.apply {
-            sfl.stopShimmer()
-            sfl.visibility = View.GONE
             rvStocks.visibility = View.VISIBLE
             this.addStocks(stocks)
             notifyDataSetChanged()
         }
+        Helper.stopShimmer(sfl)
     }
     private fun updateSearchedRecycler() {
         requestsAdapter.apply {

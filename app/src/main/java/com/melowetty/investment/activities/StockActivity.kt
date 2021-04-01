@@ -62,7 +62,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
     private lateinit var selectedInterval: TextView
     private lateinit var selectedMenu: TextView
 
-    private val favouriteStocksViewModel by lazy { ViewModelProviders.of(this)
+    private val favouriteStocksViewModel by lazy { ViewModelProvider(this)
         .get(FavoriteStocksViewModel::class.java)}
     private lateinit var candlesViewModel: CandlesViewModel
     private lateinit var companyNewsModel: NewsViewModel
@@ -168,8 +168,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         tvChange.visibility = View.GONE
         clIntervals.visibility = View.GONE
         clCost.visibility = View.INVISIBLE
-        sflNews.visibility = View.VISIBLE
-        sflNews.startShimmer()
+        Helper.startShimmer(sflNews)
         getCompanyNews(stock.symbol)
     }
     private fun showGraph() {
@@ -222,8 +221,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
             rvNews.visibility = View.VISIBLE
             addNews(news)
             notifyDataSetChanged()
-            sflNews.stopShimmer()
-            sflNews.visibility = View.GONE
+            Helper.stopShimmer(sflNews)
         }
     }
     private fun getCompanyNews(ticker: String) {

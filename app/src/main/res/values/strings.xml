@@ -39,5 +39,6 @@
     <string name="november">nov.</string>
     <string name="december">dec.</string>
     <string name="error_loading_data_ncheck_your_connection_or_try_again_later">Error loading data. Check your connection or try again later</string>
+    <string name="you_don_t_have_any_favorite_stocks_add_your_first_stock">You don\'t have any favorite stocks. Add your first stock</string>
 
 </resources>

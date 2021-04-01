@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.R
 import com.melowetty.investment.activities.StockActivity
 import com.melowetty.investment.database.models.FavoriteStock
@@ -212,6 +214,14 @@ class Helper {
         fun transferToActivity(activity: Activity, cls: Class<*>?) {
             val intent = Intent(activity, cls)
             activity.startActivity(intent)
+        }
+        fun stopShimmer(sfl: ShimmerFrameLayout) {
+            sfl.stopShimmer()
+            sfl.visibility = View.GONE
+        }
+        fun startShimmer(sfl: ShimmerFrameLayout) {
+            sfl.visibility = View.VISIBLE
+            sfl.startShimmer()
         }
     }
 }
