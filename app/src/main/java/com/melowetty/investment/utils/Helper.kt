@@ -40,12 +40,12 @@ class Helper {
         private fun convertLongToTime(time: Long, resolution: Resolution, activity: Activity): String {
 
             val date = Date(time * 1000)
-            val format = SimpleDateFormat("yyyy-MM-dd")
+            val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val localDate = LocalDate.parse(format.format(date))
             return when(resolution) {
-                Resolution.PER_15MIN -> "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
-                Resolution.PER_30MIN -> "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
-                Resolution.PER_HOUR -> "${SimpleDateFormat("HH:mm").format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_15MIN -> "${SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_30MIN -> "${SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
+                Resolution.PER_HOUR -> "${SimpleDateFormat("HH:mm", Locale.getDefault()).format(date)} ${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)}"
                 Resolution.PER_DAY -> "${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
                 Resolution.PER_WEEK -> "${localDate.dayOfMonth} ${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
                 Resolution.PER_MONTH -> "${getStringMonth(localDate.monthValue, activity)} ${localDate.year}"
@@ -205,7 +205,7 @@ class Helper {
             return output
         }
         fun convertStringListToSearchedItem(target: List<String>): ArrayList<FoundTicker> {
-            var output = arrayListOf<FoundTicker>()
+            val output = arrayListOf<FoundTicker>()
             target.forEach {
                 output.add(FoundTicker(it))
             }
