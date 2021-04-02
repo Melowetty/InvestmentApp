@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         initModels()
         initObservers()
 
-        sfl.startShimmer();
+        Helper.startShimmer(sfl)
 
         if(target != null) {
             if(target == Activities.FAVOURITE) {
@@ -167,8 +167,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
     private fun showNotFoundFavoritesMessage() {
         tvNotFoundFavorites.visibility = View.VISIBLE
         rv.visibility = View.GONE
-        sfl.stopShimmer()
-        sfl.visibility = View.GONE
+        Helper.stopShimmer(sfl)
     }
     private fun hideNotFoundFavoritesMessage() {
         tvNotFoundFavorites.visibility = View.GONE
@@ -177,15 +176,14 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         isShowError = true
         tvError.visibility = View.VISIBLE
         rv.visibility = View.GONE
-        sfl.stopShimmer()
-        sfl.visibility = View.GONE
+        Helper.stopShimmer(sfl)
     }
     private fun hideErrorMessage() {
         isShowError = false
         tvError.visibility = View.GONE
     }
     private fun getFavouriteCompanyProfile(favourites: List<String>) {
-        if(initFavorite)
+        if(initFavorite && favoriteStocks.isNullOrEmpty())
             showNotFoundFavoritesMessage()
         else if(favoriteStocks.isNullOrEmpty() && !initFavorite)
             waitingFavorites = true
@@ -201,8 +199,7 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         this.stocks = stocks
         adapter.apply {
             this.addStocks(stocks)
-            sfl.stopShimmer()
-            sfl.visibility = View.GONE
+            Helper.stopShimmer(sfl)
             rv.visibility = View.VISIBLE
             notifyDataSetChanged()
         }
