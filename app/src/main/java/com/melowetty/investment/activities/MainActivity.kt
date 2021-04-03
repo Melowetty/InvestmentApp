@@ -1,6 +1,7 @@
 package com.melowetty.investment.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -71,6 +72,10 @@ class MainActivity : AppCompatActivity(), StockClickListener {
 
         target = intent.getSerializableExtra("target") as? Activities
 
+        initDatabase()
+        initModels()
+        initObservers()
+
         tvFavourite.setOnClickListener {
             hideNotFoundFavoritesMessage()
             Helper.changeCondition(tvFavourite, true)
@@ -92,10 +97,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         tvSearchBar.setOnClickListener {
             Helper.transferToActivity(this, SearchActivity::class.java)
         }
-
-        initDatabase()
-        initModels()
-        initObservers()
 
         Helper.startShimmer(sfl)
 

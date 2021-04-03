@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -131,7 +132,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     }
     private fun initPopularityRecyclerView() {
         rvPopularity.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
         val list = Helper.convertStringListToSearchedItem(
             arrayListOf("Yandex", "Nvidia", "Microsoft", "Tesla", "Apple", "McDonalds", "MasterCard", "Facebook", "Visa", "Amazon", "AMD", "Intel", "Ebay", "Google", "Netflix"))
         requestsAdapter = RequestsAdapter(list, this)
@@ -209,7 +210,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     }
     private fun initSearchedRecyclerView() {
         rvSearchHistory.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
         requestsAdapter = RequestsAdapter(arrayListOf(), this)
         rvSearchHistory.adapter = requestsAdapter
     }

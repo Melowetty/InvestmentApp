@@ -110,7 +110,8 @@ class Helper {
         }
         fun spaceEveryThreeNums(num: Double, symbol: Char): String {
             val output = spaceEveryThreeNums(num.toInt())
-            return "$output$symbol${getNumsAfterComma(num)}"
+            return if(checkInteger(num) == num.toInt().toString()) output
+            else "$output$symbol${getNumsAfterComma(num)}"
         }
         private fun getNumsAfterComma(num: Double): String {
             val str = num.toString()
@@ -222,6 +223,10 @@ class Helper {
         fun startShimmer(sfl: ShimmerFrameLayout) {
             sfl.visibility = View.VISIBLE
             sfl.startShimmer()
+        }
+        fun checkInteger(cost: Double): String {
+            return if((cost - cost.toInt()) == 0.0) cost.toInt().toString()
+            else cost.toString()
         }
     }
 }

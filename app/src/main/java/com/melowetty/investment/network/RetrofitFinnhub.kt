@@ -15,7 +15,7 @@ class RetrofitFinnhub {
         fun getRetrofitInstance() : Retrofit {
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
                 val newRequest: Request = chain.request().newBuilder()
-                    .addHeader("X-Finnhub-Token", "c14aug748v6t8t43aqqg")
+                    .addHeader("X-Finnhub-Token", "c1k7qbq37fks18c34u9g")
                     .build()
                 chain.proceed(newRequest)
             }.build()

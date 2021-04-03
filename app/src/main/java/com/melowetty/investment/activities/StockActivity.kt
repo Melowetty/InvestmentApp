@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.db.williamchart.slidertooltip.SliderTooltip
 import com.db.williamchart.view.LineChartView
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
 import com.melowetty.investment.adapters.NewsAdapter
@@ -51,6 +53,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
     private lateinit var clCost: ConstraintLayout
     private lateinit var sflNews: ShimmerFrameLayout
     private lateinit var lcv: LineChartView
+    private lateinit var pb: CircularProgressIndicator
 
 
     private lateinit var stock: Stock
@@ -86,6 +89,8 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         rvNews = findViewById(R.id.news_recyclerView)
         clIntervals = findViewById(R.id.intervals)
         sflNews = findViewById(R.id.news_shimmer_container)
+        pb = findViewById(R.id.progress_bar_chart)
+
 
         stock = intent.getSerializableExtra("stock") as Stock
         from = intent.getSerializableExtra("from") as Activities
@@ -169,6 +174,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         clCost.visibility = View.INVISIBLE
         Helper.startShimmer(sflNews)
         getCompanyNews(stock.symbol)
+        hideErrorMessage(false)
     }
     private fun showGraph() {
         btnBuy.visibility = View.VISIBLE
@@ -177,10 +183,15 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         tvChange.visibility = View.VISIBLE
         clIntervals.visibility = View.VISIBLE
         rvNews.visibility = View.GONE
+        hideErrorMessage(true)
     }
     private fun showErrorMessage() {
         tvError.visibility = View.VISIBLE
         lcv.visibility = View.GONE
+    }
+    private fun hideErrorMessage(bool: Boolean) {
+        tvError.visibility = View.GONE
+        if(bool) lcv.visibility = View.VISIBLE
     }
     private fun initModels() {
         candlesViewModel =
@@ -195,8 +206,10 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
                 if (it != null) {
                     candles = Helper.zipCandles(it.t, it.c, selectedResolution, this).toList()
                     lcv.animate(candles)
+                    stopRefreshGraph(true)
                 } else {
                     showErrorMessage()
+                    stopRefreshGraph(false)
                 }
             }
         companyNewsModel
@@ -226,12 +239,22 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
     private fun getCompanyNews(ticker: String) {
         companyNewsModel.makeApiCall(ticker)
     }
+    private fun startRefreshGraph() {
+        pb.visibility = View.VISIBLE
+        lcv.visibility = View.INVISIBLE
+    }
+    private fun stopRefreshGraph(bool: Boolean) {
+        pb.visibility = View.INVISIBLE
+        if(bool) lcv.visibility = View.VISIBLE
+    }
     private fun getCandles(interval: Interval) {
         selectedResolution = interval.resolution
         candlesViewModel.getCandles(stock.symbol, interval)
+        clCost.visibility = View.INVISIBLE
+        hideErrorMessage(true)
+        startRefreshGraph()
     }
     private fun getCandles(textView: TextView, interval: Interval) {
-
         textView.setTextAppearance(R.style.intervalActive)
         textView.setBackgroundResource(R.drawable.btn_interval_active)
         selectedInterval.setTextAppearance(R.style.intervalNotActive)
@@ -240,6 +263,10 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
 
         selectedResolution = interval.resolution
         candlesViewModel.getCandles(stock.symbol, interval)
+
+        clCost.visibility = View.INVISIBLE
+        hideErrorMessage(true)
+        startRefreshGraph()
     }
     private fun initGraph() {
         lcv.gradientFillColors =
@@ -252,7 +279,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
             SliderTooltip().also {
                 it.color = Color.BLACK
             }
-        lcv.onDataPointTouchListener = { index, x, y ->
+        lcv.onDataPointTouchListener = { index, _, _ ->
             clCost.visibility = View.VISIBLE
             tvDateCost.text = candles.toList()[index].first
             tvLineCost.text = stock.stockPrice.currency.format(candles.toList()[index].second.toDouble())
