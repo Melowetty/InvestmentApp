@@ -39,11 +39,14 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
 
     private lateinit var tvError: TextView
     private lateinit var tvNotFound: TextView
+    private lateinit var ivClear: ImageView
+    private lateinit var ivBack: ImageView
     private lateinit var etSearch: EditText
     private lateinit var rvStocks: RecyclerView
     private lateinit var rvSearchHistory: RecyclerView
     private lateinit var rvPopularity: RecyclerView
     private lateinit var clMenu: ConstraintLayout
+    private lateinit var clSearchInfo: ConstraintLayout
     private lateinit var sfl: ShimmerFrameLayout
 
     private lateinit var stocksAdapter: StocksAdapter
@@ -67,6 +70,18 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+
+        initViews()
+        initListeners()
+        initDatabase()
+        initModels()
+        initObservers()
+        initPopularityRecyclerView()
+        initSearchedRecyclerView()
+        initMiniRecyclerView()
+
+    }
+    private fun initViews() {
         rvStocks = findViewById(R.id.mini_recycler_view)
         rvSearchHistory = findViewById(R.id.searched_recycler)
         rvPopularity = findViewById(R.id.popular_recycler)
@@ -76,23 +91,14 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         tvNotFound = findViewById(R.id.result_not_found)
         tvError = findViewById(R.id.search_error)
 
-        val clSearchInfo = findViewById<ConstraintLayout>(R.id.search_info)
-        val ivClear = findViewById<ImageView>(R.id.clear)
-        val ivBack = findViewById<ImageView>(R.id.search_back)
-
-        initDatabase()
-
-        initModels()
-        initObservers()
-
-        initPopularityRecyclerView()
-        initSearchedRecyclerView()
-        initMiniRecyclerView()
-
+        clSearchInfo = findViewById(R.id.search_info)
+        ivClear = findViewById(R.id.clear)
+        ivBack = findViewById(R.id.search_back)
+    }
+    private fun initListeners() {
         ivBack.setOnClickListener {
             Helper.transferToActivity(this, MainActivity::class.java)
         }
-
         etSearch.addTextChangedListener {
             if (it != null) {
                 if (it.isNotEmpty())  {
@@ -128,7 +134,6 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             ivClear.visibility = View.GONE
             tvNotFound.visibility = View.GONE
         }
-
     }
     private fun initPopularityRecyclerView() {
         rvPopularity.layoutManager =

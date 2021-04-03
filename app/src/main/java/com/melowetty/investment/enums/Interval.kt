@@ -5,7 +5,7 @@ import com.melowetty.investment.utils.Helper
 enum class Interval(
     val from: Long,
     val resolution: Resolution) {
-    DAY(Helper.getUnixTime() - Helper.DAY * 2, Resolution.PER_15MIN),
+    DAY(Helper.getUnixTime() - Helper.DAY * 3, Resolution.PER_15MIN),
     WEEK(Helper.getUnixTime() - Helper.WEEK, Resolution.PER_30MIN),
     MONTH(Helper.getUnixTime() - Helper.MONTH, Resolution.PER_HOUR),
     SIX_MONTH(Helper.getUnixTime() - Helper.MONTH * 6, Resolution.PER_DAY),

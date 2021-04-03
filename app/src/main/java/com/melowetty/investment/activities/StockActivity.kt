@@ -45,7 +45,14 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
     private lateinit var tvError: TextView
     private lateinit var tvChart: TextView
     private lateinit var tvNews: TextView
+    private lateinit var tvDay: TextView
+    private lateinit var tvWeek: TextView
+    private lateinit var tvMonth: TextView
+    private lateinit var tvSixMonth: TextView
+    private lateinit var tvYear: TextView
+    private lateinit var tvFiveYear: TextView
     private lateinit var ivFavourite: ImageView
+    private lateinit var ivBack: ImageView
     private lateinit var btnBuy: Button
     private lateinit var rvNews: RecyclerView
     private lateinit var clIntervals: ConstraintLayout
@@ -62,6 +69,7 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
     private var selectedResolution: Resolution = Resolution.PER_15MIN
     private lateinit var selectedInterval: TextView
     private lateinit var selectedMenu: TextView
+    private val db = AppActivity.getDatabase()
 
     private val favouriteStocksViewModel by lazy { ViewModelProvider(this)
         .get(FavoriteStocksViewModel::class.java)}
@@ -72,14 +80,52 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_stock)
 
-        val ivBack = findViewById<ImageView>(R.id.back)
-        val tvDay = findViewById<TextView>(R.id.day)
-        val tvWeek = findViewById<TextView>(R.id.week)
-        val tvMonth = findViewById<TextView>(R.id.month)
-        val tvSixMonth = findViewById<TextView>(R.id.sixmonth)
-        val tvYear = findViewById<TextView>(R.id.year)
-        val tvFiveYear = findViewById<TextView>(R.id.all)
 
+        stock = intent.getSerializableExtra("stock") as Stock
+        from = intent.getSerializableExtra("from") as Activities
+
+        initViews()
+        initClickListeners()
+
+        selectedInterval = tvDay
+        selectedMenu = tvChart
+
+        initModels()
+        initObservers()
+        initStock()
+        initGraph()
+        initNewsRecyclerView()
+
+    }
+    private fun showNews() {
+        btnBuy.visibility = View.GONE
+        lcv.visibility = View.GONE
+        tvCost.visibility = View.GONE
+        tvChange.visibility = View.GONE
+        clIntervals.visibility = View.GONE
+        clCost.visibility = View.INVISIBLE
+        Helper.startShimmer(sflNews)
+        getCompanyNews(stock.symbol)
+        hideErrorMessage(false)
+    }
+    private fun showGraph() {
+        btnBuy.visibility = View.VISIBLE
+        lcv.visibility = View.VISIBLE
+        tvCost.visibility = View.VISIBLE
+        tvChange.visibility = View.VISIBLE
+        clIntervals.visibility = View.VISIBLE
+        rvNews.visibility = View.GONE
+        hideErrorMessage(true)
+    }
+    private fun showErrorMessage() {
+        tvError.visibility = View.VISIBLE
+        lcv.visibility = View.GONE
+    }
+    private fun hideErrorMessage(bool: Boolean) {
+        tvError.visibility = View.GONE
+        if(bool) lcv.visibility = View.VISIBLE
+    }
+    private fun initViews() {
         ivFavourite = findViewById(R.id.favourite_btn)
         lcv = findViewById(R.id.lineChart)
         tvError = findViewById(R.id.stock_error)
@@ -90,10 +136,6 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         sflNews = findViewById(R.id.news_shimmer_container)
         pb = findViewById(R.id.progress_bar_chart)
 
-
-        stock = intent.getSerializableExtra("stock") as Stock
-        from = intent.getSerializableExtra("from") as Activities
-
         tvName = findViewById(R.id.name)
         tvCompany = findViewById(R.id.company)
         tvCost = findViewById(R.id.cost)
@@ -103,21 +145,15 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         tvDateCost = findViewById(R.id.date)
         tvLineCost = findViewById(R.id.line_cost)
 
-        ivBack.setOnClickListener {
-            from.backToOldActivity(this)
-        }
-
-        val db = AppActivity.getDatabase()
-
-        initModels()
-        initObservers()
-        initGraph()
-        initStock()
-        initNewsRecyclerView()
-
-        selectedInterval = tvDay
-        selectedMenu = tvChart
-
+        ivBack = findViewById(R.id.back)
+        tvDay = findViewById(R.id.day)
+        tvWeek = findViewById(R.id.week)
+        tvMonth = findViewById(R.id.month)
+        tvSixMonth = findViewById(R.id.sixmonth)
+        tvYear = findViewById(R.id.year)
+        tvFiveYear = findViewById(R.id.all)
+    }
+    private fun initClickListeners() {
         tvChart.setOnClickListener {
             Helper.changeCondition(tvChart, true)
             Helper.changeCondition(selectedMenu, false)
@@ -162,35 +198,10 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
         tvFiveYear.setOnClickListener {
             getCandles(tvFiveYear, Interval.FIVE_YEAR)
         }
+        ivBack.setOnClickListener {
+            from.backToOldActivity(this)
+        }
 
-    }
-    private fun showNews() {
-        btnBuy.visibility = View.GONE
-        lcv.visibility = View.GONE
-        tvCost.visibility = View.GONE
-        tvChange.visibility = View.GONE
-        clIntervals.visibility = View.GONE
-        clCost.visibility = View.INVISIBLE
-        Helper.startShimmer(sflNews)
-        getCompanyNews(stock.symbol)
-        hideErrorMessage(false)
-    }
-    private fun showGraph() {
-        btnBuy.visibility = View.VISIBLE
-        lcv.visibility = View.VISIBLE
-        tvCost.visibility = View.VISIBLE
-        tvChange.visibility = View.VISIBLE
-        clIntervals.visibility = View.VISIBLE
-        rvNews.visibility = View.GONE
-        hideErrorMessage(true)
-    }
-    private fun showErrorMessage() {
-        tvError.visibility = View.VISIBLE
-        lcv.visibility = View.GONE
-    }
-    private fun hideErrorMessage(bool: Boolean) {
-        tvError.visibility = View.GONE
-        if(bool) lcv.visibility = View.VISIBLE
     }
     private fun initModels() {
         candlesViewModel =

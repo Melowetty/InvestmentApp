@@ -54,13 +54,33 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        target = intent.getSerializableExtra("target") as? Activities
+
+        initViews()
+        initStocksRecyclerView()
+        initDatabase()
+        initModels()
+        initObservers()
+        initClickListeners()
+
+        Helper.startShimmer(sfl)
+
+        if(target != null) {
+            if(target == Activities.FAVOURITE) {
+                Helper.changeCondition(tvFavourite, true)
+                Helper.changeCondition(tvStocks, false)
+                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
+                rv.visibility = View.GONE
+                isFavourite = true
+            }
+            if(target == Activities.MAIN)
+                getIndexConstituents(index)
+        }
+        else getIndexConstituents(index)
+
+    }
+    private fun initViews() {
         rv = findViewById(R.id.recyclerView)
-
-        rv.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        adapter = StocksAdapter(arrayListOf(), this)
-        rv.adapter = adapter
-
 
         tvFavourite = findViewById(R.id.favourite)
         tvStocks = findViewById(R.id.stocks)
@@ -68,13 +88,14 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         sfl = findViewById(R.id.shimmer_view_container)
         tvError = findViewById(R.id.main_error)
         tvNotFoundFavorites = findViewById(R.id.not_found_favorites)
-
-        target = intent.getSerializableExtra("target") as? Activities
-
-        initDatabase()
-        initModels()
-        initObservers()
-
+    }
+    private fun initStocksRecyclerView() {
+        rv.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        adapter = StocksAdapter(arrayListOf(), this)
+        rv.adapter = adapter
+    }
+    private fun initClickListeners() {
         tvFavourite.setOnClickListener {
             hideNotFoundFavoritesMessage()
             Helper.changeCondition(tvFavourite, true)
@@ -96,22 +117,6 @@ class MainActivity : AppCompatActivity(), StockClickListener {
         tvSearchBar.setOnClickListener {
             Helper.transferToActivity(this, SearchActivity::class.java)
         }
-
-        Helper.startShimmer(sfl)
-
-        if(target != null) {
-            if(target == Activities.FAVOURITE) {
-                Helper.changeCondition(tvFavourite, true)
-                Helper.changeCondition(tvStocks, false)
-                getFavouriteCompanyProfile(Helper.favouriteStocksToString(favoriteStocks))
-                rv.visibility = View.GONE
-                isFavourite = true
-            }
-            if(target == Activities.MAIN)
-                getIndexConstituents(index)
-        }
-        else getIndexConstituents(index)
-
     }
     private fun initDatabase() {
         db = AppActivity.getDatabase()
