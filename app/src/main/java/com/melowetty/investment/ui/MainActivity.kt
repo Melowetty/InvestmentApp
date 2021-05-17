@@ -1,4 +1,4 @@
-package com.melowetty.investment.activities
+package com.melowetty.investment.ui
 
 import android.os.Bundle
 import android.view.View

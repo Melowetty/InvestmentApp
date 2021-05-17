@@ -48,7 +48,7 @@ class StocksAdapter(
             stockClickListener.onStockClick(item)
         }
 
-        Helper.pasteImagefromURL(item.logo, holder.logo)
+        Helper.pasteImageFromURL(item.logo, holder.logo)
         holder.logo.clipToOutline = true
     }
 

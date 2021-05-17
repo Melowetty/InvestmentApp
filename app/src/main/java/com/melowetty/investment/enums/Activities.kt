@@ -2,8 +2,8 @@ package com.melowetty.investment.enums
 
 import android.content.Context
 import android.content.Intent
-import com.melowetty.investment.activities.MainActivity
-import com.melowetty.investment.activities.SearchActivity
+import com.melowetty.investment.ui.MainActivity
+import com.melowetty.investment.ui.SearchActivity
 
 enum class Activities {
     MAIN {

@@ -1,4 +1,4 @@
-package com.melowetty.investment.activities
+package com.melowetty.investment.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -44,7 +44,8 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private lateinit var etSearch: EditText
     private lateinit var rvStocks: RecyclerView
     private lateinit var rvSearchHistory: RecyclerView
-    private lateinit var rvPopularity: RecyclerView
+    private lateinit var rvPopularityEven: RecyclerView
+    private lateinit var rvPopularityOdd: RecyclerView
     private lateinit var clMenu: ConstraintLayout
     private lateinit var clSearchInfo: ConstraintLayout
     private lateinit var sfl: ShimmerFrameLayout
@@ -84,7 +85,8 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private fun initViews() {
         rvStocks = findViewById(R.id.mini_recycler_view)
         rvSearchHistory = findViewById(R.id.searched_recycler)
-        rvPopularity = findViewById(R.id.popular_recycler)
+        rvPopularityOdd = findViewById(R.id.popular_recycler_odd)
+        rvPopularityEven = findViewById(R.id.popular_recycler_even)
         clMenu = findViewById(R.id.menu)
         etSearch = findViewById(R.id.search_label)
         sfl = findViewById(R.id.shimmer_view_container)
@@ -133,28 +135,47 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             etSearch.text = null
             ivClear.visibility = View.GONE
             tvNotFound.visibility = View.GONE
+            hideErrorMessage()
         }
     }
     private fun initPopularityRecyclerView() {
-        rvPopularity.layoutManager =
-            GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
         val list = Helper.convertStringListToSearchedItem(
-            arrayListOf("Yandex", "Nvidia", "Microsoft", "Tesla", "Apple", "McDonalds", "MasterCard", "Facebook", "Visa", "Amazon", "AMD", "Intel", "Ebay", "Google", "Netflix"))
-        requestsAdapter = RequestsAdapter(list, this)
-        rvPopularity.adapter = requestsAdapter
+            arrayListOf("Yandex", "Nvidia", "Microsoft", "Tesla", "Apple", "MasterCard", "Facebook", "Visa", "Amazon", "AMD", "Intel", "Ebay", "Google", "Netflix"))
+        val listEven = ArrayList<FoundTicker>()
+        val listOdd = ArrayList<FoundTicker>()
+        var counter = 1
+        list.forEach {
+            if(counter % 2 != 0) listOdd.add(it)
+            else listEven.add(it)
+            counter++
+        }
+        // Todo Even and Odd нужно разделить
+        rvPopularityEven.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        requestsAdapter = RequestsAdapter(listEven, this)
+        rvPopularityEven.adapter = requestsAdapter
+
+        rvPopularityOdd.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        requestsAdapter = RequestsAdapter(listOdd, this)
+        rvPopularityOdd.adapter = requestsAdapter
     }
     private fun showErrorMessage() {
         isShowError = true
         tvError.visibility = View.VISIBLE
         rvStocks.visibility = View.GONE
         rvSearchHistory.visibility = View.GONE
-        rvPopularity.visibility = View.GONE
+        rvPopularityEven.visibility = View.GONE
+        rvPopularityOdd.visibility = View.GONE
         clMenu.visibility = View.GONE
         Helper.stopShimmer(sfl)
     }
     private fun hideErrorMessage() {
         isShowError = false
         tvError.visibility = View.GONE
+        rvSearchHistory.visibility = View.VISIBLE
+        rvPopularityEven.visibility = View.VISIBLE
+        rvPopularityOdd.visibility = View.VISIBLE
     }
     private fun initDatabase() {
         db = AppActivity.getDatabase()

@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.R
-import com.melowetty.investment.activities.StockActivity
+import com.melowetty.investment.ui.StockActivity
 import com.melowetty.investment.database.models.FavoriteStock
 import com.melowetty.investment.database.models.FoundTicker
 import com.melowetty.investment.enums.Activities
@@ -76,7 +76,7 @@ class Helper {
             }
             return ""
         }
-        fun pasteImagefromURL(url: String, imageView: ImageView) {
+        fun pasteImageFromURL(url: String, imageView: ImageView) {
             try {
                 Picasso.get()
                     .load(url)

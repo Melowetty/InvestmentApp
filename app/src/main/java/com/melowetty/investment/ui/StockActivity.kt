@@ -1,4 +1,4 @@
-package com.melowetty.investment.activities
+package com.melowetty.investment.ui
 
 import android.annotation.SuppressLint
 import android.content.Intent
