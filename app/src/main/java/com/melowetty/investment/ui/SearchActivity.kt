@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.beust.klaxon.Klaxon
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.AppActivity
 import com.melowetty.investment.R
@@ -66,20 +67,36 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
     private var delay = 2500
 
     private var isShowError = false
+    private lateinit var cacheStocks: List<Stock>
+    private lateinit var cacheStock: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
 
-        initViews()
-        initListeners()
+
         initDatabase()
+        initViews()
+        initMiniRecyclerView()
+
+        if(intent.getStringExtra("cache") != null) {
+            cacheStocks = Klaxon().parseArray(intent.getStringExtra("cache")!!)!!
+            cacheStock = intent.getStringExtra("cacheStock")!!
+            etSearch.setText(cacheStock)
+
+            ivClear.visibility = View.VISIBLE
+            clMenu.visibility = View.VISIBLE
+            clSearchInfo.visibility = View.GONE
+
+            retrieveList(cacheStocks)
+        }
+
+        initListeners()
         initModels()
         initObservers()
         initPopularityRecyclerView()
         initSearchedRecyclerView()
-        initMiniRecyclerView()
 
     }
     private fun initViews() {
@@ -124,7 +141,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearResultList()
+                    clearResultList()
             }
 
             override fun afterTextChanged(s: Editable) {
@@ -149,7 +166,6 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
             else listEven.add(it)
             counter++
         }
-        // Todo Even and Odd нужно разделить
         rvPopularityEven.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         requestsAdapter = RequestsAdapter(listEven, this)
@@ -288,7 +304,7 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
 
     override fun onStockClick(stock: Stock) {
         startActivity(
-            Helper.getStockInfoIntent(this, stock, Activities.SEARCH)
+            Helper.getStockInfoIntent(this, stock, stocksAdapter.stocks, etSearch.text.toString(), Activities.SEARCH)
         )
     }
 

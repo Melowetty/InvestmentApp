@@ -64,6 +64,8 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
 
     private lateinit var stock: Stock
     private lateinit var from: Activities
+    private lateinit var cacheStocks: String
+    private lateinit var cacheStock: String
     private lateinit var mNewsAdapter: NewsAdapter
     private lateinit var candles: List<Pair<String, Float>>
     private var selectedResolution: Resolution = Resolution.PER_15MIN
@@ -83,6 +85,10 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
 
         stock = intent.getSerializableExtra("stock") as Stock
         from = intent.getSerializableExtra("from") as Activities
+        if(from == Activities.SEARCH) {
+            cacheStocks = intent.getStringExtra("cache").toString()
+            cacheStock = intent.getStringExtra("cacheStock").toString()
+        }
 
         initViews()
         initClickListeners()
@@ -199,7 +205,10 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
             getCandles(tvFiveYear, Interval.FIVE_YEAR)
         }
         ivBack.setOnClickListener {
-            from.backToOldActivity(this)
+            if(from == Activities.SEARCH) {
+                Activities.SEARCH.back(this, cacheStocks, cacheStock)
+            }
+            else from.backToOldActivity(this)
         }
 
     }

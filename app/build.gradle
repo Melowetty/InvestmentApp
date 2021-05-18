@@ -13,7 +13,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.1"
+        versionName "1.0.2"
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -83,4 +83,7 @@ dependencies {
     // Moshi    
     implementation 'com.squareup.moshi:moshi:1.9.2'
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.9.2'
+
+    // Библиотека для JSON парсинга
+    implementation 'com.beust:klaxon:3.0.4'
 }

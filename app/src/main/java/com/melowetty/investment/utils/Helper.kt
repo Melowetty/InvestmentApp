@@ -7,9 +7,9 @@ import android.content.Intent
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.beust.klaxon.Klaxon
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.melowetty.investment.R
-import com.melowetty.investment.ui.StockActivity
 import com.melowetty.investment.database.models.FavoriteStock
 import com.melowetty.investment.database.models.FoundTicker
 import com.melowetty.investment.enums.Activities
@@ -19,6 +19,7 @@ import com.melowetty.investment.models.FindStockModel
 import com.melowetty.investment.models.ProfileModel
 import com.melowetty.investment.models.Stock
 import com.melowetty.investment.models.StockPrice
+import com.melowetty.investment.ui.StockActivity
 import com.squareup.picasso.Picasso
 import org.threeten.bp.LocalDate
 import java.text.DecimalFormat
@@ -189,6 +190,14 @@ class Helper {
         fun getStockInfoIntent(context: Context, stock: Stock, from: Activities): Intent {
             val intent = Intent(context, StockActivity::class.java)
             intent.putExtra("stock", stock)
+            intent.putExtra("from", from)
+            return intent
+        }
+        fun getStockInfoIntent(context: Context, stock: Stock, cache: List<Stock>, cacheTicker:  String, from: Activities): Intent {
+            val intent = Intent(context, StockActivity::class.java)
+            intent.putExtra("stock", stock)
+            intent.putExtra("cache", Klaxon().toJsonString(cache))
+            intent.putExtra("cacheStock", cacheTicker)
             intent.putExtra("from", from)
             return intent
         }

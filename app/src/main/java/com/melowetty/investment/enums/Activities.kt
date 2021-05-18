@@ -27,4 +27,10 @@ enum class Activities {
         }
     };
     abstract fun backToOldActivity(context: Context)
+    fun back(context: Context, cache: String, cacheStock: String) {
+        val intent = Intent(context, SearchActivity::class.java)
+        intent.putExtra("cache", cache)
+        intent.putExtra("cacheStock", cacheStock)
+        context.startActivity(intent)
+    }
 }
