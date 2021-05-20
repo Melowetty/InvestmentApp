@@ -28,7 +28,6 @@ class NewsViewModel: ViewModel() {
     private fun getNewsListObserverRx(): Observer<List<NewsModel>> {
         return object : Observer<List<NewsModel>> {
             override fun onComplete() {
-                // Hide progress bar
             }
 
             override fun onError(e: Throwable?) {
@@ -40,7 +39,6 @@ class NewsViewModel: ViewModel() {
             }
 
             override fun onSubscribe(d: Disposable?) {
-                // Show progress bar
             }
         }
     }

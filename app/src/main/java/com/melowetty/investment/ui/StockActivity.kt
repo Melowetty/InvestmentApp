@@ -312,7 +312,8 @@ class StockActivity : AppCompatActivity(), NewsClickListener {
 
         tvCost.text = stock.stockPrice.currency.format(stock.stockPrice.price)
         Helper.formatChangePrice(tvChange, stock.stockPrice)
-        btnBuy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
+        //btnBuy.text = "${getString(R.string.buy_btn)} ${stock.stockPrice.currency.format(stock.stockPrice.price)}"
+        btnBuy.text = "Denis Malinin"
 
         if(stock.isFavourite) ivFavourite.setImageResource(R.drawable.ic_favourite)
 

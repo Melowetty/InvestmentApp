@@ -173,7 +173,7 @@ class Helper {
         fun convertModelListToStringList(target: FindStockModel): List<String> {
             val stocks: ArrayList<String> = ArrayList()
             stocks.apply {
-                target.data.forEach {
+                target.result.forEach {
                     this.add(it.symbol)
                 }
             }

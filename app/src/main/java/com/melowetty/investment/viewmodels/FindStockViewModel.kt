@@ -3,6 +3,7 @@ package com.melowetty.investment.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.melowetty.investment.models.FindStockModel
+import com.melowetty.investment.network.RetrofitFinnhub
 import com.melowetty.investment.network.RetrofitMarketStack
 import com.melowetty.investment.network.RetrofitService
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -18,8 +19,8 @@ class FindStockViewModel: ViewModel() {
     }
 
     fun makeApiCall(query: String) {
-        val retrofitInstance = RetrofitMarketStack.getRetrofitInstance().create(RetrofitService::class.java)
-        retrofitInstance.searchStock(mapOf("search" to query, "access_key" to "65399ca190176f7d6152f5674cff3f87"))
+        val retrofitInstance = RetrofitFinnhub.getRetrofitInstance().create(RetrofitService::class.java)
+        retrofitInstance.searchStock(query)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(getFindStocksObserverRx())

@@ -16,8 +16,8 @@ interface RetrofitService {
     fun getCompanyNews(@QueryMap filters: Map<String, String>): Observable<List<NewsModel>>
     @GET("profile/{tickers}")
     fun getCompaniesProfile(@Path("tickers") tickers: String, @Query("apikey") apikey: String): Observable<List<ProfileModel>>
-    @GET("tickers")
-    fun searchStock(@QueryMap filters: Map<String, String>): Observable<FindStockModel>
+    @GET("search")
+    fun searchStock(@Query("q") ticker: String): Observable<FindStockModel>
     @GET("stock/candle")
     fun getCandles(@QueryMap filters: Map<String, String>): Observable<CandlesModel>
 }

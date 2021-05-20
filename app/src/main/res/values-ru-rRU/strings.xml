@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Инвестиции</string>
+    <string name="app_name">Мониторинг акций</string>
     <string name="find">Найти компанию или тикер</string>
     <string name="stocks">Акции</string>
     <string name="favourite">Избранное</string>
