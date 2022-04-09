@@ -33,6 +33,7 @@ class ProfileViewModel: ViewModel() {
             }
 
             override fun onError(e: Throwable?) {
+                System.out.println(e)
                 price.postValue(null)
             }
 

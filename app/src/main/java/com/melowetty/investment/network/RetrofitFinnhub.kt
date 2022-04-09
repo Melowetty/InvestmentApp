@@ -7,7 +7,7 @@ import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class RetrofitFinnhub {
+class   RetrofitFinnhub {
 
     companion object {
         private const val baseURL = "https://finnhub.io/api/v1/"
@@ -15,7 +15,7 @@ class RetrofitFinnhub {
         fun getRetrofitInstance() : Retrofit {
             val client: OkHttpClient = OkHttpClient.Builder().addInterceptor { chain ->
                 val newRequest: Request = chain.request().newBuilder()
-                    .addHeader("X-Finnhub-Token", "c1k7qbq37fks18c34u9g")
+                    .addHeader("X-Finnhub-Token", "c86h75qad3iddpknl790")
                     .build()
                 chain.proceed(newRequest)
             }.build()

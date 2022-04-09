@@ -213,9 +213,9 @@ class SearchActivity : AppCompatActivity(), StockClickListener, ItemClickListene
                 if (it != null) {
                     if (isShowError) hideErrorMessage()
                     clearResultList()
-                    getCompanyProfile(
-                        Helper.convertModelListToStringList(it).joinToString(separator = ",")
-                    )
+                    Helper.convertModelListToStringList(it).slice(1..5).forEach { company ->
+                        getCompanyProfile(company)
+                    }
 
                 } else {
                     showErrorMessage()

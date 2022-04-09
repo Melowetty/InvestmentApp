@@ -33,6 +33,7 @@ class FindStockViewModel: ViewModel() {
             }
 
             override fun onError(e: Throwable?) {
+                System.out.println(e)
                 findStocks.postValue(null)
             }
 

@@ -81,6 +81,7 @@ class Helper {
             try {
                 Picasso.get()
                     .load(url)
+                    .error(R.drawable.placeholder_background)
                     .into(imageView)
             }
             catch (e: Exception) {

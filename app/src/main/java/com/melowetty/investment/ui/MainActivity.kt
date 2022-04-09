@@ -149,7 +149,9 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             .observe(this) {
                 if (it != null) {
                     if (isShowError) hideErrorMessage()
-                    getCompanyProfile(it.constituents.joinToString(separator = ","))
+                    it.constituents.slice(1..20).forEach {
+                        getCompanyProfile(it)
+                    }
                 } else {
                     showErrorMessage()
                 }
@@ -192,7 +194,11 @@ class MainActivity : AppCompatActivity(), StockClickListener {
             showNotFoundFavoritesMessage()
         else if(favoriteStocks.isNullOrEmpty() && !initFavorite)
             waitingFavorites = true
-        else getCompanyProfile(favourites.joinToString(","))
+        else {
+            favourites.forEach {
+                getCompanyProfile(it)
+            }
+        }
     }
     private fun getIndexConstituents(indice: Indices) {
         indicesConstituentsModel.makeApiCall(indice.code)

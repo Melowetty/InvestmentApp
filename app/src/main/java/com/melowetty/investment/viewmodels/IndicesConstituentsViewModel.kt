@@ -33,6 +33,7 @@ class IndicesConstituentsViewModel: ViewModel() {
             }
 
             override fun onError(e: Throwable?) {
+                System.out.println(e)
                 constituentsList.postValue(null)
             }
 
